@@ -315,6 +315,7 @@
       "md:w-48",
       "me-2",
       "min-h-[calc(100vh-var(--navbar-height))]",
+      "min-h-screen",
       "min-w-0",
       "min-w-[18px]",
       "min-w-[24px]",
