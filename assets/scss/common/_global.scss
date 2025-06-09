@@ -284,3 +284,18 @@ body {
     opacity: 0;
   }
 }
+
+
+.divider {
+    position: relative;
+    display: flex;
+    align-items: center;
+    padding-bottom: .5rem;
+}
+
+.divider::before {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background-color: #8ed6fb;
+}
