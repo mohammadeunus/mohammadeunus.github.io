@@ -1,9 +1,13 @@
 ---
-title : "Open and responsible development and use of LLMs for code"
-description: "BigCode is an open scientific collaboration working on the responsible development and use of large language models for code"
-lead: "BigCode is an open scientific collaboration working on the responsible development of large language models for code"
-date: 2020-10-06T08:47:36+00:00
-lastmod: 2020-10-06T08:47:36+00:00
+title: "Dev Notes"
+description: ""
+lead: "Welcome to my little space on the internet!"
+date: 2023-09-07T16:33:54+02:00
+lastmod: 2023-09-07T16:33:54+02:00
 draft: false
-images: []
+seo:
+  title: "Dev Notes - ABP Framework & .NET Insights by Mohammad Eunus"
+  description: "Follow Mohammad Eunus, a full-stack developer specializing in ABP Framework, .NET MAUI, and modular architectures. Dive into real-world tips, dev logs, and project-based learning."
+  canonical: "https://eunus.dev/blog"
+  robots: "index, follow"
 ---
