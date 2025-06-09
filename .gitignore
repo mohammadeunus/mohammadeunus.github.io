@@ -3,3 +3,9 @@ public
 resources
 .netlify
 .hugo_build.lock
+.vs/note-nwe/CopilotIndices/17.13.444.19527/CodeChunks.db-shm
+.vs/note-nwe/CopilotIndices/17.13.444.19527/CodeChunks.db-wal
+.vs/note-nwe/CopilotIndices/17.13.444.19527/SemanticSymbols.db-shm
+.vs/note-nwe/CopilotIndices/17.13.444.19527/SemanticSymbols.db-wal
+.vs/slnx.sqlite
+/.vs
