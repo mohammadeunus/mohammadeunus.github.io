@@ -130,19 +130,17 @@ button#doks-versions {
   color: $link-color;
 }
 
-/*
 .navbar {
   background-color: rgba(255, 255, 255, 0.95);
   border-bottom: 1px solid $gray-200;
   margin-top: 4px;
 }
-*/
 
-/*.header-bar {
+.header-bar {
   border-top: 4px solid;
   border-image-source: linear-gradient(90deg, $primary, #8ed6fb 50%, #d32e9d);
   border-image-slice: 1;
-}*/
+}
 
 .offcanvas .header-bar {
   margin-bottom: -4px;
