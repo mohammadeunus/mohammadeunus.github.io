@@ -1,6 +1,6 @@
 [[main]]
   name = "notes"
-  url = "/docs"
+  url = "/docs/about/code_of_conduct/"
   weight = 10
 
 [[main]]
