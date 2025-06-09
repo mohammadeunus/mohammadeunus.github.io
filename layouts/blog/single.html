@@ -36,7 +36,7 @@
             <h4 class="h5">Tags</h4>
             <div>
               {{ range .Params.tags }}
-              <a class="btn btn-sm btn-light me-2 mb-2" href="{{ " /tags/" | absURL }}{{ . | urlize }}/">
+              <a class="btn btn-sm btn-light me-2 mb-2" href="{{ "/tags/" | absURL }}{{ . | urlize }}/">
                 <span class="text-muted">#{{ . }}</span>
               </a>
               {{ end }}
