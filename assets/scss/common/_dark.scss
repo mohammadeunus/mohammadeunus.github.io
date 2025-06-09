@@ -297,13 +297,9 @@ $navbar-dark-active-color:          $link-color-dark;
 @include media-breakpoint-up(lg) {
   [data-dark-mode] body .docs-sidebar {
     order: 0;
-    border-right: 1px solid $border-dark;
   }
 }
 
-[data-dark-mode] body .docs-navigation {
-  border-top: 1px solid $border-dark;
-}
 
 [data-dark-mode] body pre code::-webkit-scrollbar-thumb {
   background: $gray-400;
@@ -327,9 +323,6 @@ $navbar-dark-active-color:          $link-color-dark;
   border-left: 3px solid $border-dark;
 }
 
-[data-dark-mode] body .footer {
-  border-top: 1px solid $border-dark;
-}
 
 [data-dark-mode] body .docs-links,
 [data-dark-mode] body .docs-toc {
