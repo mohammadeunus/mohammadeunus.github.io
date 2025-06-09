@@ -1,9 +1,9 @@
 [[main]]
-  name = "Notes"
+  name = "notes"
   url = "/docs/about/mission"
   weight = 10
 
 [[main]]
-  name = "Blogs"
+  name = "blogs"
   url = "/blog"
   weight = 10
