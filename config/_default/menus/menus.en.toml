@@ -1,5 +1,5 @@
 [[docs]]
-  name = "About the project"
+  name = "asd"
   weight = 10
   identifier = "about"
   url = "/docs/about/mission"
@@ -29,7 +29,7 @@
   url = "/tutorial/lorem/"
 
 [[main]]
-  name = "About the project"
+  name = "Notes"
   url = "/docs/about/mission"
 # url = "/docs/1.0/prologue/introduction/"
   weight = 10
