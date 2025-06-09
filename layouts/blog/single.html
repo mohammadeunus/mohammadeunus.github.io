@@ -1,27 +1,58 @@
 {{ define "main" }}
-<article>
-<div class="row justify-content-center">
-  <div class="col-md-12 col-lg-10">
-    <div class="blog-header">
-      <h1>{{ .Title }}</h1>
-      {{ partial "main/blog-meta.html" . }}
+<article class="blog-post">
+  <div class="blog-post-header py-5 mb-5 bg-light">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-md-12 col-lg-10">
+          <h1 class="display-4 text-center mb-4">{{ .Title }}</h1>
+          <div class="blog-post-meta text-center text-muted mb-4">
+            <span class="me-3">
+              <i class="fas fa-calendar-alt me-1"></i>
+              {{ .Date.Format "January 2, 2006" }}
+            </span>
+            {{ if .Params.authors }}
+            <span class="me-3">
+              <i class="fas fa-user me-1"></i>
+              {{ range $index, $author := .Params.authors }}
+                {{- if gt $index 0 }}, {{ end -}}
+                {{- $author -}}
+              {{ end }}
+            </span>
+            {{ end }}
+            <span>
+              <i class="fas fa-clock me-1"></i>
+              {{ .ReadingTime }} min read
+            </span>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
-  <div class="col-md-13">
-    <div>
-      {{- .Scratch.Set "fillImage" "1270x715 Center" -}}
-      {{ partial "content/figure.html" . }}
-    </div>
-  </div>
-  <div class="col-md-12 col-lg-9">
-    {{ .Content }}
-    {{ if .Params.tags -}}
-    <div class="mt-4">
-      {{ range $index, $tag := .Params.tags -}}
-        <a class="btn btn-light" href="{{ "/tags/" | absURL }}{{ . | urlize }}/" role="button">{{ . }}</a>
-      {{ end -}}
-    </div>
-    {{ end -}}
+
+  <div class="container">
+    <div class="row justify-content-center">
+      {{ if .Params.images }}
+      <div class="col-md-12 col-lg-10 mb-5">
+        <div class="blog-featured-image">
+          {{- .Scratch.Set "fillImage" "1270x715 Center" -}}
+          {{ partial "content/figure.html" . }}
+        </div>
+      </div>
+      {{ end }}
+      
+      <div class="col-md-12 col-lg-8">
+        <div class="blog-post-content">
+          {{ .Content }}
+        </div>
+
+        {{ if .Params.tags -}}
+        <div class="blog-post-tags mt-5">
+          <h5 class="text-muted mb-3">Tags:</h5>
+          {{ range $index, $tag := .Params.tags -}}
+            <a class="btn btn-light me-2 mb-2" href="{{ "/tags/" | absURL }}{{ . | urlize }}/" role="button">#{{ . }}</a>
+          {{ end -}}
+        </div>
+        {{ end -}}
   </div>
 </div>
 </article>
