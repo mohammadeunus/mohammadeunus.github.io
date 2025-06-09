@@ -1,6 +1,6 @@
 [[main]]
   name = "notes"
-  url = "/docs/about/mission"
+  url = "/docs"
   weight = 10
 
 [[main]]
