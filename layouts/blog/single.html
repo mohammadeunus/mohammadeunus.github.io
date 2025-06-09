@@ -1,77 +1,75 @@
 {{ define "main" }}
-<article class="blog-post">
-  <div class="container py-5">
-    <div class="row">
-      <div class="col-md-8">
-        <h1 class="blog-title fw-bold mb-3">{{ .Title }}</h1>
-        <div class="d-flex align-items-center text-muted mb-5">
-          {{ if .Params.authors }}
-          <div class="me-3">
-            <span class="fw-medium">{{ range $index, $author := .Params.authors }}{{ if gt $index 0 }}, {{ end }}{{
-              $author }}{{ end }}</span>
-          </div>
-          {{ end }}
-          <div class="small">
-            {{ .ReadingTime }} min read · {{ .Date.Format "Jan 2, 2006" }}
-          </div>
-        </div>
-
-        {{ if .Params.images }}
-        <div class="blog-featured-image mb-5">
-          {{- .Scratch.Set "fillImage" "1270x715 Center" -}}
-          {{ partial "content/figure.html" . }}
-        </div>
-        {{ end }}
-
-        <div class="blog-post-content">
-          {{ .Content }}
-        </div>
-
-      </div>
-
-      <div class="col-md-4">
-        <div class="position-sticky" style="top: 2rem;">
-          {{ if .Params.tags }}
-          <div class="p-4">
-            <h4 class="h5">Tags</h4>
-            <div>
-              {{ range .Params.tags }}
-              <a class="btn btn-sm btn-light me-2 mb-2" href="{{ "/tags/" | absURL }}{{ . | urlize }}/">
-                <span class="text-muted">#{{ . }}</span>
-              </a>
-              {{ end }}
+<main class="flex-grow-1">
+  <article class="blog-post">
+    <div class="container py-5">
+      <div class="row">
+        <div class="col-md-8">
+          <h1 class="blog-title fw-bold mb-3">{{ .Title }}</h1>
+          <div class="d-flex align-items-center text-muted mb-5">
+            {{ if .Params.authors }}
+            <div class="me-3">
+              <span class="fw-medium">{{ range $index, $author := .Params.authors }}{{ if gt $index 0 }}, {{ end }}{{ $author }}{{ end }}</span>
+            </div>
+            {{ end }}
+            <div class="small">
+              {{ .ReadingTime }} min read · {{ .Date.Format "Jan 2, 2006" }}
             </div>
           </div>
+
+          {{ if .Params.images }}
+          <div class="blog-featured-image mb-5">
+            {{- .Scratch.Set "fillImage" "1270x715 Center" -}}
+            {{ partial "content/figure.html" . }}
+          </div>
           {{ end }}
+
+          <div class="blog-post-content">
+            {{ .Content }}
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="position-sticky" style="top: 2rem;">
+            {{ if .Params.tags }}
+            <div class="p-4">
+              <h4 class="h5">Tags</h4>
+              <div>
+                {{ range .Params.tags }}
+                <a class="btn btn-sm btn-light me-2 mb-2" href="{{ "/tags/" | absURL }}{{ . | urlize }}/">
+                  <span class="text-muted">#{{ . }}</span>
+                </a>
+                {{ end }}
+              </div>
+            </div>
+            {{ end }}
+          </div>
         </div>
       </div>
     </div>
-</article>
+  </article>
 
-</article>
-
-{{ $related := .Site.RegularPages.Related . | first 3 -}}
-{{ with $related -}}
-<div class="container pb-5">
-  <div class="row justify-content-center">
-    <div class="col-md-8">
-      <div class="border-top pt-5">
-        <h3 class="fs-5 text-muted mb-4">More like this</h3>
-        {{ range . -}}
-        <div class="mb-4">
-          <h4 class="h5 mb-2">
-            <a class="text-decoration-none link-dark" href="{{ .RelPermalink }}">{{ .Params.title }}</a>
-          </h4>
-          <p class="text-muted mb-1 small">{{ .Params.excerpt | safeHTML }}</p>
-          <div class="small text-muted">
-            {{ .ReadingTime }} min read · {{ .Date.Format "Jan 2" }}
+  {{ $related := .Site.RegularPages.Related . | first 3 -}}
+  {{ with $related -}}
+  <div class="container pb-5">
+    <div class="row justify-content-center">
+      <div class="col-md-8">
+        <div class="border-top pt-5">
+          <h3 class="fs-5 text-muted mb-4">More like this</h3>
+          {{ range . -}}
+          <div class="mb-4">
+            <h4 class="h5 mb-2">
+              <a class="text-decoration-none link-dark" href="{{ .RelPermalink }}">{{ .Params.title }}</a>
+            </h4>
+            <p class="text-muted mb-1 small">{{ .Params.excerpt | safeHTML }}</p>
+            <div class="small text-muted">
+              {{ .ReadingTime }} min read · {{ .Date.Format "Jan 2" }}
+            </div>
           </div>
+          {{ end -}}
         </div>
-        {{ end -}}
       </div>
     </div>
   </div>
-</div>
-{{ end -}}
-
+  {{ end -}}
+</main>
 {{ end }}
