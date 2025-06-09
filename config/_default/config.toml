@@ -1,4 +1,4 @@
-baseurl = "https://www.bigcode-project.org"
+baseurl = "https://eunus.dev"
 canonifyURLs = false
 disableAliases = true
 disableHugoGeneratorInject = true
@@ -10,7 +10,7 @@ rssLimit = 10
 
 # Multilingual
 defaultContentLanguage = "en"
-disableLanguages = ["de", "nl"]
+disableLanguages = ["ar", "de", "nl"]
 # defaultContentLanguageInSubdir = true
 
 # add redirects/headers
