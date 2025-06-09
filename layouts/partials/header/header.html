@@ -10,6 +10,7 @@
 
 <header class="navbar navbar-expand-lg navbar-light doks-navbar">
   <nav class="container-{{ if .Site.Params.options.fullWidth }}fluid{{ else }}xxl{{ end }} flex-wrap flex-lg-nowrap" aria-label="Main navigation">
+    <img alt="Logo BigCode" width="40" height="40" src="/images/logo-rtl.png" />&nbsp;&nbsp;&nbsp;
     <a class="navbar-brand order-0" href="{{ "/" | relLangURL }}" aria-label="{{ .Site.Params.Title }}">
       {{ .Site.Params.Title }}
     </a>
@@ -49,30 +50,30 @@
           {{- $current := . -}}
           {{- $section := $current.Section -}}
           {{ range .Site.Menus.main -}}
-            {{- $active := or ($current.IsMenuCurrent "main" .) ($current.HasMenuCurrent "main" .) -}}
-            {{- $active = or $active (eq .Name $current.Title) -}}
-            {{- $active = or $active (and (eq .Name ($section | humanize)) (eq $current.Section $section)) -}}
-            {{- $active = or $active (and (eq .Name "Blog") (eq $current.Section "blog" "contributors" "categories" "tags")) -}}
-            {{ if .HasChildren }}
-              <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle ps-0 py-1" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                  {{ .Name }}
-                  <span class="dropdown-caret"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down"><polyline points="6 9 12 15 18 9"></polyline></svg></span>
-                </a>
-                <ul class="dropdown-menu dropdown-menu-main shadow rounded border-0" aria-labelledby="navbarDropdownMenuLink">
-                  {{ range .Children -}}
-                  {{- $active = eq .Name $current.Title -}}
-                    <li>
-                      <a class="dropdown-item{{ if $active }} active{{ end }}" href="{{ .URL | relLangURL }}"{{ if $active }} aria-current="true"{{ end }}>{{ .Name }}</a>
-                    </li>
-                  {{ end -}}
-                </ul>
+          {{- $active := or ($current.IsMenuCurrent "main" .) ($current.HasMenuCurrent "main" .) -}}
+          {{- $active = or $active (eq .Name $current.Title) -}}
+          {{- $active = or $active (and (eq .Name ($section | humanize)) (eq $current.Section $section)) -}}
+          {{- $active = or $active (and (eq .Name "Blog") (eq $current.Section "blog" "contributors" "categories" "tags")) -}}
+          {{ if .HasChildren }}
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle ps-0 py-1" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              {{ .Name }}
+              <span class="dropdown-caret"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down"><polyline points="6 9 12 15 18 9"></polyline></svg></span>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-main shadow rounded border-0" aria-labelledby="navbarDropdownMenuLink">
+              {{ range .Children -}}
+              {{- $active = eq .Name $current.Title -}}
+              <li>
+                <a class="dropdown-item{{ if $active }} active{{ end }}" href="{{ .URL | relLangURL }}" {{ if $active }} aria-current="true" {{ end }}>{{ .Name }}</a>
               </li>
-            {{ else }}
-              <li class="nav-item">
-                <a class="nav-link ps-0 py-1{{ if $active }} active{{ end }}" href="{{ .URL | relLangURL }}">{{ .Name }}</a>
-              </li>
-            {{ end }}
+              {{ end -}}
+            </ul>
+          </li>
+          {{ else }}
+          <li class="nav-item">
+            <a class="nav-link ps-0 py-1{{ if $active }} active{{ end }}" href="{{ .URL | relLangURL }}">{{ .Name }}</a>
+          </li>
+          {{ end }}
           {{ end -}}
         </ul>
 
@@ -94,9 +95,9 @@
         <hr class="text-black-50 my-4 d-lg-none">
         <ul class="nav flex-column flex-lg-row">
           {{ range .Site.Menus.social -}}
-            <li class="nav-item">
-              <a class="nav-link social-link" href="{{ .URL | relURL }}">{{ .Pre | safeHTML }}<small class="ms-2 d-lg-none">{{ .Name | safeHTML }}</small></a>
-            </li>
+          <li class="nav-item">
+            <a class="nav-link social-link" href="{{ .URL | relURL }}">{{ .Pre | safeHTML }}<small class="ms-2 d-lg-none">{{ .Name | safeHTML }}</small></a>
+          </li>
           {{ end -}}
         </ul>
 
@@ -122,20 +123,20 @@
             <li><hr class="dropdown-divider"></li>
 
             {{ if .IsTranslated -}}
-              {{ range .Translations }}
-                <li><a class="dropdown-item" rel="alternate" href="{{ .RelPermalink }}" hreflang="{{ .Lang }}" lang="{{ .Lang }}">{{ .Language.LanguageName }}</a></li>
-              {{ end -}}
-            {{ else -}}
-              {{ range .Site.Languages -}}
-                {{ if ne $.Site.Language.Lang .Lang }}
-                  <li><a class="dropdown-item" rel="alternate" href="{{ .Lang | relLangURL }}" hreflang="{{ .Lang }}" lang="{{ .Lang }}">{{ .LanguageName }}</a></li>
-                {{ end -}}
-              {{ end -}}
+            {{ range .Translations }}
+            <li><a class="dropdown-item" rel="alternate" href="{{ .RelPermalink }}" hreflang="{{ .Lang }}" lang="{{ .Lang }}">{{ .Language.LanguageName }}</a></li>
             {{ end -}}
-              <!--
-              <li><hr class="dropdown-divider"></li>
-              <li><a class="dropdown-item" href="/docs/contributing/how-to-contribute/">Help Translate</a></li>
-              -->
+            {{ else -}}
+            {{ range .Site.Languages -}}
+            {{ if ne $.Site.Language.Lang .Lang }}
+            <li><a class="dropdown-item" rel="alternate" href="{{ .Lang | relLangURL }}" hreflang="{{ .Lang }}" lang="{{ .Lang }}">{{ .LanguageName }}</a></li>
+            {{ end -}}
+            {{ end -}}
+            {{ end -}}
+            <!--
+          <li><hr class="dropdown-divider"></li>
+          <li><a class="dropdown-item" href="/docs/contributing/how-to-contribute/">Help Translate</a></li>
+          -->
           </ul>
         </div>
         {{ end -}}
