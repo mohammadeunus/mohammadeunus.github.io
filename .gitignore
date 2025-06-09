@@ -9,3 +9,4 @@ resources
 .vs/note-nwe/CopilotIndices/17.13.444.19527/SemanticSymbols.db-wal
 .vs/slnx.sqlite
 /.vs
+*.sqlite
