@@ -20,30 +20,32 @@
 
 <!-- Latest Blog Posts Section -->
 <section class="section">
-  <div class="row mx-lg-5 justify-content-center">
-    <div class="col-12 position-relative mb-4">
-      <div class="divider">
+  <div class="container-xxl">
+    <div class="row justify-content-center">
+      <div class="col-18 position-relative mb-4">
+        <div class="divider">
           <a href="/blog" class="">&nbsp;&nbsp; latest blogs</a>
-      </div>
-    </div>
-  </div>
-  <div class="row  mx-5 justify-content-center">
-    {{ $posts := where .Site.RegularPages "Section" "blog" }}
-    {{ range first 2 $posts }}
-    <div class="col-lg-6 mb-4">
-      <div class="card h-100 shadow-sm">
-        {{ if .Params.image }}
-        <img src="{{ .Params.image }}" class="card-img-top" alt="{{ .Title }}">
-        {{ end }}
-        <div class="card-body">
-          <h3 class="h5 card-title">{{ .Title }}</h3>
-          <p class="card-text text-muted mb-2">{{ .Date.Format "January 2, 2006" }}</p>
-          <p class="card-text">{{ .Summary | truncate 120 }}</p>
-          <a href="{{ .Permalink }}" class="btn btn-link ps-0">Read more ...</a>
         </div>
       </div>
     </div>
-    {{ end }}
+    <div class="row justify-content-center">
+      {{ $posts := where .Site.RegularPages "Section" "blog" }}
+      {{ range first 2 $posts }}
+      <div class="col-lg-8 mb-4">
+        <div class="card h-100 shadow-sm">
+          {{ if .Params.image }}
+          <img src="{{ .Params.image }}" class="card-img-top" alt="{{ .Title }}">
+          {{ end }}
+          <div class="card-body">
+            <h3 class="h5 card-title">{{ .Title }}</h3>
+            <p class="card-text text-muted mb-2">{{ .Date.Format "January 2, 2006" }}</p>
+            <p class="card-text">{{ .Summary | truncate 120 }}</p>
+            <a href="{{ .Permalink }}" class="btn btn-link ps-0">Read more ...</a>
+          </div>
+        </div>
+      </div>
+      {{ end }}
+    </div>
   </div>
 </section>
 
@@ -52,15 +54,18 @@
     <div class="row">
       <div class="col-lg-5 mb-4">
         <h2 class="h4">Who am I?</h2>
-        <p>I'm Mohammad Eunus, a full-stack developer passionate about ABP Framework, .NET, and clean software design. I use this site to share what I learn through real-world development.</p>
+        <p>I'm Mohammad Eunus, a full-stack developer passionate about ABP Framework, .NET, and clean software design. I
+          use this site to share what I learn through real-world development.</p>
       </div>
       <div class="col-lg-5 mb-4">
         <h2 class="h4">What you'll find here</h2>
-        <p>Technical blogs, personal notes, and hands-on guides covering .NET, ABP, Modular Monoliths, Angular, Blazor, and more, all based on real project experience.</p>
+        <p>Technical blogs, personal notes, and hands-on guides covering .NET, ABP, Modular Monoliths, Angular, Blazor,
+          and more, all based on real project experience.</p>
       </div>
       <div class="col-lg-5 mb-4">
         <h2 class="h4">Explore by Category</h2>
-        <p>Dive into topics like <a href="/tags/abp/">ABP Framework</a>, <a href="/tags/modular-monolith/">Modular Monolith</a>, <a href="/tags/maui/">.NET MAUI</a>, and <a href="/tags/blazor/">Blazor</a>.</p>
+        <p>Dive into topics like <a href="/tags/abp/">ABP Framework</a>, <a href="/tags/modular-monolith/">Modular
+            Monolith</a>, <a href="/tags/maui/">.NET MAUI</a>, and <a href="/tags/blazor/">Blazor</a>.</p>
       </div>
       <div class="col-lg-8 mb-4">
         <h2 class="h4">Let’s connect</h2>
@@ -73,4 +78,3 @@
   </div>
 </section>
 {{ end }}
-
