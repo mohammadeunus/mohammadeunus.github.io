@@ -1,4 +1,4 @@
-baseurl = "https://mohammadeunus.github.io/"
+baseurl = "https://eunus.dev/"
 canonifyURLs = true
 disableAliases = true
 disableHugoGeneratorInject = true
