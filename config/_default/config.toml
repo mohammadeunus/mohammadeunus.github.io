@@ -1,5 +1,5 @@
-baseurl = "https://eunus.dev"
-canonifyURLs = false
+baseurl = "https://mohammadeunus.github.io/"
+canonifyURLs = true
 disableAliases = true
 disableHugoGeneratorInject = true
 enableEmoji = true
