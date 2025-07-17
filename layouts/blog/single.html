@@ -32,7 +32,7 @@
         <div class="col-md-5">
           <div class="position-sticky" style="top: 2rem;">
             {{ if .Params.tags }}
-            <div class="p-4">
+            <div >
               <h4 class="h5">Tags</h4>
               <div>
                 {{ range .Params.tags }}
@@ -43,6 +43,7 @@
               </div>
             </div>
             {{ end }}
+            {{ partial "sidebar/docs-toc.html" . }}
           </div>
         </div>
       </div>

@@ -29,7 +29,8 @@
       </div>
     </div>
     <div class="row justify-content-center">
-      {{ $posts := where .Site.RegularPages "Section" "blog" }}
+      {{ $posts := where (where .Site.RegularPages "Section" "blog") "IsPage" true }}
+      {{ $posts := sort $posts ".Date.Unix" "desc" }}
       {{ range first 2 $posts }}
       <div class="col-lg-8 mb-4">
         <div class="card h-100 shadow-sm">

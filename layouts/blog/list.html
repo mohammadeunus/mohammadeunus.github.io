@@ -2,7 +2,8 @@
 <div class="py-5">
     <div class="row">
         <div class="col-md-11">
-            {{ $paginator := .Paginate (.Data.Pages) }}
+            {{ $sortedPages := sort .Data.Pages ".Date.Unix" "desc" }}
+            {{ $paginator := .Paginate $sortedPages }}
             {{ range $paginator.Pages }}
             <article class="blog-post mb-5">
                 <div class="card border-0 shadow-sm h-100">
@@ -63,9 +64,15 @@
         <div class="col-md-5">
             <div class="position-sticky" style="top: 2rem;">
                 <div class="p-4 mb-3 bg-light rounded">
-                    <h4 class="h5">About</h4>
-                    <p class="mb-0">Welcome to my blog where I share my thoughts and experiences about technology,
-                        programming, and more.</p>
+                    <h4 class="h5">Quote Corner</h4>
+                    <div id="random-quote"></div>
+                    <script>
+                        const quotes = [
+                            "Your backend should never know your frontend exits.",
+                        ];
+                        const idx = Math.floor(Math.random() * quotes.length);
+                        document.getElementById('random-quote').innerHTML = `<p class="mb-0 fst-italic">"${quotes[idx]}"</p>`;
+                    </script>
                 </div>
 
                 {{ with .Site.Taxonomies.tags }}

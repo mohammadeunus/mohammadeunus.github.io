@@ -53,6 +53,25 @@
   }
 }
 
+// Dark mode styles for blog content
+[data-dark-mode] .blog-post-content {
+  color: $body-color-dark;
+  
+  h2, h3, h4, h5, h6 {
+    color: $body-color-dark;
+  }
+  
+  pre {
+    background: $gray-800;
+    color: $body-color-dark;
+  }
+  
+  blockquote {
+    border-left-color: $gray-600;
+    color: $body-color-dark;
+  }
+}
+
 .blog-featured-image {
   img {
     width: 100%;
@@ -96,6 +115,30 @@
     padding-left: 1rem;
     margin: 1.5rem 0;
     font-style: italic;
+  }
+}
+
+// Dark mode styles for blog post header and content
+[data-dark-mode] .blog-post-header {
+  background: linear-gradient(135deg, $gray-800 0%, $gray-900 100%);
+  border-bottom: 1px solid $gray-700;
+}
+
+[data-dark-mode] .blog-post-content {
+  color: $body-color-dark;
+  
+  h2, h3, h4, h5, h6 {
+    color: $body-color-dark;
+  }
+  
+  pre {
+    background: $gray-800;
+    color: $body-color-dark;
+  }
+  
+  blockquote {
+    border-left-color: $gray-600;
+    color: $body-color-dark;
   }
 }
 
