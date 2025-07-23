@@ -289,8 +289,11 @@ body {
 .subtitle {
   font-size: smaller;
 }
-.offcanvas { 
-  max-width: 55% !important;
+
+@media (max-width: 992px) {
+  .offcanvas { 
+    max-width: 55% !important;
+  }
 }
 
 
