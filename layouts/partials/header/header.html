@@ -196,3 +196,22 @@
   </aside>
 </div>
 {{ end -}}
+
+
+<!-- layouts/partials/footer.html -->
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const offcanvas = document.querySelector('.offcanvas');
+    const headerBar = document.querySelector('.header-bar');
+
+    if (!offcanvas || !headerBar) return;
+
+    offcanvas.addEventListener('shown.bs.offcanvas', () => {
+      document.body.classList.add('offcanvas-open');
+    });
+
+    offcanvas.addEventListener('hidden.bs.offcanvas', () => {
+      document.body.classList.remove('offcanvas-open');
+    });
+  });
+</script>

@@ -289,3 +289,14 @@ body {
 .subtitle {
   font-size: smaller;
 }
+.offcanvas { 
+  max-width: 55% !important;
+}
+
+
+.offcanvas.show:not(.hiding) {
+    border-left: 4px solid !important;
+    border-image-source: linear-gradient(180deg, #5d2f86, #8ed6fb 50%, #d32e9d) !important;
+    border-image-slice: 1 !important;
+
+}
