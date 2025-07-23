@@ -7,7 +7,7 @@ lastmod: 2025-07-15T00:00:00+06:00
 draft: false
 images: []
 categories: ["Development", "Best Practices", "SOLID"]
-tags: ["SOLID", "Clean Code", "OOP", "Best Practices"]
+tags: ["ABP Framework","SOLID", "Clean Code", "OOP", "Best Practices"]
 contributors: ["Your Name"]
 pinned: false
 homepage: false
