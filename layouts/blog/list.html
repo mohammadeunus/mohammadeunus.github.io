@@ -74,19 +74,7 @@
                         document.getElementById('random-quote').innerHTML = `<p class="mb-0 fst-italic">"${quotes[idx]}"</p>`;
                     </script>
                 </div>
-
-                {{ with .Site.Taxonomies.tags }}
-                <div class="p-4">
-                    <h4 class="h5">Tags</h4>
-                    <div>
-                        {{ range .ByCount }}
-                        <a class="btn btn-sm btn-light me-2 mb-2" href="{{ "/tags/" | absURL }}{{ .Name | urlize }}/" role="button">
-                            #{{ .Name }} ({{ .Count }})
-                        </a>
-                        {{ end }}
-                    </div>
-                </div>
-                {{ end }}
+                {{ partial "blog/tag-list.html" . }}
             </div>
         </div>
     </div>
