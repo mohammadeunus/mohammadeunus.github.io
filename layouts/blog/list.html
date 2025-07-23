@@ -62,32 +62,18 @@
         </div>
 
         <div class="col-md-5">
-            <div class="position-sticky" style="top: 2rem;">
-                <div class="p-4 mb-3 bg-light rounded">
-                    <h4 class="h5">Quote Corner</h4>
-                    <div id="random-quote"></div>
-                    <script>
-                        const quotes = [
-                            "Your backend should never know your frontend exits.",
-                        ];
-                        const idx = Math.floor(Math.random() * quotes.length);
-                        document.getElementById('random-quote').innerHTML = `<p class="mb-0 fst-italic">"${quotes[idx]}"</p>`;
-                    </script>
-                </div>
-
-                {{ with .Site.Taxonomies.tags }}
-                <div class="p-4">
-                    <h4 class="h5">Tags</h4>
-                    <div>
-                        {{ range .ByCount }}
-                        <a class="btn btn-sm btn-light me-2 mb-2" href="{{ "/tags/" | absURL }}{{ .Name | urlize }}/" role="button">
-                            #{{ .Name }} ({{ .Count }})
-                        </a>
-                        {{ end }}
-                    </div>
-                </div>
-                {{ end }}
-            </div>
+            <div class="p-4 mb-3 bg-light rounded">
+                <h4 class="h5">Quote Corner</h4>
+                <div id="random-quote"></div>
+                <script>
+                  const quotes = [
+                    "Your backend should never know your frontend exits.",
+                  ];
+                  const idx = Math.floor(Math.random() * quotes.length);
+                  document.getElementById('random-quote').innerHTML = `<p class=\"mb-0 fst-italic\">"${quotes[idx]}"</p>`;
+                </script>
+              </div>
+            {{ partial "blog/tag-list.html" . }}
         </div>
     </div>
 </div>
