@@ -358,15 +358,13 @@ Here's the thing about SOLID principles - they're not just academic concepts. Th
 - ✅ **Easier to understand** (each class has a clear purpose)
 - ✅ **Easier to extend** (you can add new features without breaking existing code)
 
-## Real-World Impact: My Code Quality Journey 📈
+## When to Reach for a Design Pattern
 
-Before applying SOLID principles, my code was like a tangled web of dependencies. Every change felt like walking through a minefield - you never knew what you'd break.
+Not every project requires the full set of design patterns, and that's perfectly fine. Patterns were not invented before coding; they evolved from experience, to make complex codebases more understandable, maintainable, and predictable across teams. In practice, you should consider applying a pattern when:
 
-After applying these principles:
-- My classes became smaller and more focused
-- Testing became easier (fewer dependencies to mock)
-- New features were easier to add
-- Bug fixes were more predictable
+- **You identify repeating or boilerplate code** that can be centralized.
+- **A strict business requirement demands** that a process is handled consistently and never fails.
+- **You want to ensure** that your codebase is easy for other developers to extend and evolve without introducing risk.
 
 ## Conclusion: Start Small, Think Big 🎯
 
