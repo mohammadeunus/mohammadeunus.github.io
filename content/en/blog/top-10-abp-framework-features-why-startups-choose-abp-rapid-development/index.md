@@ -4,7 +4,7 @@ description: ""
 excerpt: ""
 date: 2025-11-09T00:00:00+06:00
 lastmod: 2025-11-09T00:00:00+06:00
-draft: false
+draft: true
 images: []
 categories: ["Development", "ABP Framework", "Startup"]
 tags: ["ABP Framework", ".NET", "Startup", "Rapid Development", "SaaS", "Software Development", "Enterprise Framework", "Productivity", "Best Practices", "Software Architecture"]

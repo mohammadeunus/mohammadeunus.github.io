@@ -4,7 +4,7 @@ description: "A deep dive into building a flexible, dynamic subscription system 
 excerpt: "How I built a custom, dynamic SaaS subscription system with ABP Framework."
 date: 2025-07-14T00:00:00+06:00
 lastmod: 2025-07-14T00:00:00+06:00
-draft: false
+draft: true
 weight: 50
 images: []
 categories: ["Development", "SaaS", "ABP Framework"]

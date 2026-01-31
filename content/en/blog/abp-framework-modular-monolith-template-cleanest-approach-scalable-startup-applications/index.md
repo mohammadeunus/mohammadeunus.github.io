@@ -4,7 +4,7 @@ description: ""
 excerpt: ""
 date: 2025-11-09T00:00:00+06:00
 lastmod: 2025-11-09T00:00:00+06:00
-draft: false
+draft: true
 images: []
 categories: ["Development", "ABP Framework", "Software Architecture"]
 tags: ["ABP Framework", ".NET", "Modular Monolith", "Software Architecture", "Scalability", "Startup", "Clean Architecture", "Domain-Driven Design"]
