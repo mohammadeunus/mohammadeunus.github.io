@@ -13,11 +13,9 @@ pinned: false
 homepage: false
 ---
 
-Alright, let's talk about something that completely changed how I write code - SOLID principles! 🎯
+Have you ever opened a class with 13 injected dependencies, a 444-line method, or a payment API that takes 20 parameters? If so, you've hit the kind of code that SOLID principles are designed to fix.
 
-You know what's funny? I used to think these were just some fancy programming concepts that senior developers talked about to sound smart. But then I actually started applying them in my real projects, and oh boy, did my code quality skyrocket! 📈
-
-Today, I'm going to show you how SOLID principles became the backbone of my most reliable code. We're talking real-world scenarios here - no theoretical mumbo jumbo. Just straight-up, "I've been there, done that" examples that will make your code actually maintainable. 💪
+In this post, I walk through **four critical issues** I've run into on real ABP Framework projects—and how each maps to a SOLID principle and a concrete refactor. You'll see a bloated tenant subscription service, a payment method that became a parameter monster, a modular monolith with inverted dependencies, and an MQTT handler that broke every time we added a topic. Each example shows the problem, the pain it caused, and the refactored design that made the code maintainable again.
 
 ## The Single Responsibility Principle: When Your Class is Doing Too Much 😅
 
