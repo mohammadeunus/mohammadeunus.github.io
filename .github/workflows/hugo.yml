@@ -2,7 +2,7 @@ name: Deploy Hugo site to Pages
 
 on:
   push:
-    branches: ["master"]
+    branches: ["master", "main"]
   workflow_dispatch:
 
 permissions:
@@ -26,12 +26,8 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: '16'
-      - name: Setup Hugo
-        uses: peaceiris/actions-hugo@v2
-        with:
-          hugo-version: 'latest'
-          extended: true
+          node-version: '20'
+          cache: 'npm'
       - name: Install dependencies
         run: npm install
       - name: Build with Hugo
