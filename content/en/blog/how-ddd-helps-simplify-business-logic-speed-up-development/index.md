@@ -1,5 +1,6 @@
 ---
 title: "How DDD Helps Simplify Business Logic and Speed Up Development"
+slug: how-ddd-helps-simplify-business-logic-and-speed-up-development
 description: "How centralizing business logic in the domain—instead of scattering it across services and UI—reduces duplication, speeds up features, and cuts mistakes."
 excerpt: "DDD keeps business logic in one place so teams move faster, write less code, and make fewer mistakes. Here's how that looks in practice."
 date: 2025-11-09T00:00:00+06:00
