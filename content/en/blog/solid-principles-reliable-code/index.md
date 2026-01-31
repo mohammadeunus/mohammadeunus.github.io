@@ -257,9 +257,93 @@ This is textbook **Dependency Inversion Principle**:
 
 By introducing the interface in the Core and having child modules implement them, you enforce clean boundaries while still allowing extensibility. This makes your application architecture far more **maintainable** and **future-proof**.
 
-## The Open/Closed Principle: Coming Soon! 🚧
+## The Open/Closed Principle: Stop Cracking Open the Same Egg 🥚
 
-I'm working on some great examples for the Open/Closed Principle. Think of it as "open for extension, closed for modification." It's like building a plugin system - you can add new features without changing existing code.
+Ever had that moment where you add one new feature and suddenly you're editing the same giant class again? I've been there. The Open/Closed Principle says: **software should be open for extension, but closed for modification.** In plain English: add new behaviour by adding new code, not by rewriting the old code.
+
+Here's a pattern I ran into on an ABP project. We had one class that subscribed to MQTT and handled every topic in the world:
+
+```csharp
+// Before: One class, four topics, and every new topic meant editing this file again
+public class MqttEventHandler
+{
+    public async Task StartAsync(CancellationToken ct)
+    {
+        await _mqttClient.SubscribeAsync("swiftaccesshub/events/access", HandleAccessEventAsync);
+        await _mqttClient.SubscribeAsync("swiftaccesshub/events/device", HandleDeviceEventAsync);
+        await _mqttClient.SubscribeAsync("swiftaccesshub/events/vehicle", HandleVehicleEventAsync);
+        await _mqttClient.SubscribeAsync("swiftaccesshub/notification/result", HandleNotificationResultAsync);
+        // Tomorrow: another topic? Open this file again, add another method, more ifs...
+    }
+
+    private async Task HandleAccessEventAsync(string payload) { /* 200+ lines */ }
+    private async Task HandleDeviceEventAsync(string payload) { /* 100+ lines */ }
+    private async Task HandleVehicleEventAsync(string payload) { /* 300+ lines */ }
+    private async Task HandleNotificationResultAsync(string payload) { /* 80+ lines */ }
+}
+```
+
+Want to add a fifth topic? You're back inside this monster, adding another subscription and another huge method. That's not extension—that's **modification**. And every change risks breaking the other four handlers.
+
+### Why This Hurts 🩹
+
+- **One file has too many reasons to change**: New topic, new format for a topic, new business rule—all in the same class.
+- **Risk**: Tweaking access events can accidentally break vehicle or notification logic.
+- **Testing**: You can't test "just the access handler" without bringing in the whole thing.
+
+So the class is "open" in the worst way: we keep **opening** it to change it.
+
+### The Fix: One Handler Per Topic 🎯
+
+We made the system **open for extension** (new handler = new class) and **closed for modification** (existing handlers and the dispatcher stay untouched):
+
+```csharp
+// 1. One interface: "I handle one topic"
+public interface IMqttTopicHandler
+{
+    string Topic { get; }
+    Task HandleAsync(string payload, CancellationToken cancellationToken = default);
+}
+
+// 2. Dispatcher stays tiny and never changes when we add topics
+public class MqttEventHandler
+{
+    private readonly IEnumerable<IMqttTopicHandler> _handlers;
+
+    public async Task StartAsync(CancellationToken ct)
+    {
+        await _mqttClient.ConnectAsync();
+        foreach (var handler in _handlers)
+        {
+            await _mqttClient.SubscribeAsync(handler.Topic, payload => handler.HandleAsync(payload));
+        }
+    }
+}
+
+// 3. New topic? New class. Zero edits to MqttEventHandler or other handlers.
+public class AccessEventTopicHandler : IMqttTopicHandler
+{
+    public string Topic => "swiftaccesshub/events/access";
+    public async Task HandleAsync(string payload, CancellationToken ct) { /* only access logic */ }
+}
+
+public class VehicleEventTopicHandler : IMqttTopicHandler
+{
+    public string Topic => "swiftaccesshub/events/vehicle";
+    public async Task HandleAsync(string payload, CancellationToken ct) { /* only vehicle logic */ }
+}
+```
+
+New MQTT topic? **Add a new handler class and register it.** The dispatcher and all existing handlers stay exactly as they are. That's OCP in practice.
+
+### Why This Feels Better ✨
+
+- **Closed for modification**: `MqttEventHandler` and existing handlers don't need to change when we add topics.
+- **Open for extension**: New behaviour = new class implementing `IMqttTopicHandler`.
+- **Single place to change**: Bug in vehicle handling? You only touch `VehicleEventTopicHandler`.
+- **Testable**: Each handler can be unit-tested with a fake payload and scoped services.
+
+So: **open for extension, closed for modification.** Add features by adding code, not by cracking open the same egg over and over. 🥚➡️🐣
 
 ## The Liskov Substitution Principle: Also Coming Soon! 🚧
 
@@ -294,25 +378,6 @@ SOLID principles might seem overwhelming at first, but here's my advice: **Start
 4. **Master Open/Closed**: Design for extension, not modification
 5. **Perfect Liskov Substitution**: Ensure your inheritance hierarchies work correctly
 
-Remember, the goal isn't to follow these principles perfectly from day one. The goal is to write code that's easier to understand, test, and maintain. And trust me, once you start seeing the benefits, you'll never want to go back to the old way! 😄
-
-## Need Help Training Your Team? 👨‍💻
-
-If you're reading this and thinking "This makes perfect sense, but how do I get my development team to actually apply these principles consistently?" I totally get it! SOLID principles are great in theory, but implementing them across a team can be challenging.
-
-Here's the thing - it's not just about understanding the principles. It's about creating a culture where clean code becomes second nature. Whether you need help:
-
-- **Training your developers** on SOLID principles and clean code practices
-- **Refactoring existing codebases** to follow these patterns
-- **Setting up code review processes** that enforce these principles
-- **Building new features** with SOLID principles from the ground up
-
-I can help you create a development environment where these principles aren't just rules to follow, but tools that make your team more productive and your code more maintainable.
-
-The key is understanding both the technical principles and the human side of software development. It's not just about writing better code - it's about building better teams that write better code.
-
-So there you have it - SOLID principles in action! From single responsibility to dependency inversion, these principles have transformed how I write code. And honestly, once you start applying them, you'll wonder how you ever wrote code without them. 🚀
-
 ---
 
-*P.S. If you found this helpful and want to dive deeper into any of these principles, feel free to reach out! I love helping fellow developers write better code.* 😊 
+Remember, the goal isn't to follow these principles perfectly from day one. The goal is to write code that's easier to understand, test, and maintain. And trust me, once you start seeing the benefits, you'll never want to go back to the old way! 😊 
