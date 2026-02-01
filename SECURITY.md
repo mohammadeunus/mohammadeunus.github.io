@@ -1,4 +1,4 @@
-# Reporting Security Issues
+# Reporting Security 
 
 The Doks team and community take security issues in Doks seriously. We appreciate your efforts to responsibly disclose your findings, and will make every effort to acknowledge your contributions.
 
