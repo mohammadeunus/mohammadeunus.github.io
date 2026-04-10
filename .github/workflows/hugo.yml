@@ -34,10 +34,16 @@ jobs:
         run: npm run build
       - name: Copy CNAME into public
         run: cp CNAME public/CNAME
+      - name: Verify generated output
+        run: |
+          echo "public content:"
+          find public -maxdepth 2 -type f | sort
+          test -f public/index.html
+          test -f public/CNAME
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./public
+          path: public
 
   deploy:
     environment:
