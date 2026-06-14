@@ -14,9 +14,14 @@
 ## CI/CD
 - Workflow: `.github/workflows/hugo.yml`, deploys on push to `master`/`main`
 - Hugo is bundled as an npm package, invoked via `exec-bin`
-- **Known issue (fixed)**: intermittent 404 at `eunus.dev` was caused by `npm install` resolving different Hugo binary versions across runs. Fixed by switching to `npm ci`.
-- **Fixed**: removed redundant `cp CNAME public/CNAME` step — `static/CNAME` is already copied by Hugo automatically. Having both caused confusion about source of truth.
-- If 404 reappears: check the Actions run log first — a failed build leaves the previous deployment intact but GitHub Pages can sometimes show 404 during propagation (~2–5 min after deploy).
+- **Fixed**: switched `npm install` → `npm ci` for reproducible builds.
+- **Fixed**: removed redundant `cp CNAME public/CNAME` — `static/CNAME` is already copied by Hugo automatically.
+- **Root cause of recurring 404**: `mohammadeunus.github.io` repo Pages source was set to "Deploy from a branch" (master) instead of "GitHub Actions". This caused GitHub's Jekyll build to run on every push, finish after our Hugo deploy, and overwrite it with a broken output. Fixed by changing Settings → Pages → Source to "GitHub Actions".
+- If 404 reappears: check Settings → Pages → Source first — must be "GitHub Actions" not a branch.
+- Diagnostic commands used to find the issue:
+  - List recent runs: `(Invoke-RestMethod "https://api.github.com/repos/mohammadeunus/mohammadeunus.github.io/actions/runs?per_page=3").workflow_runs | Select-Object id, conclusion, name, created_at`
+  - List jobs in a run: `(Invoke-RestMethod "https://api.github.com/repos/mohammadeunus/mohammadeunus.github.io/actions/runs/{run_id}/jobs").jobs | Select-Object name, conclusion, started_at, completed_at`
+  - No auth token needed — repo is public. API docs: docs.github.com/en/rest/actions
 
 ## Homepage sections (order)
 1. Hero
