@@ -1,0 +1,70 @@
+{{ define "main" }}
+<div class="row flex-xl-nowrap">
+  <!-- Left: On this page styled panel with docs list -->
+  <nav class="col-lg-2 col-xl-2 d-none d-lg-block" aria-label="Docs navigation">
+    <div class="page-links">
+      <h3>Docs</h3>
+      <nav id="TableOfContents">
+        {{ $currentPage := . }}
+        <ul>
+          {{ range (where .Site.Sections "Section" "in" .Section) }}
+            {{ range .Sections }}
+              {{ range .RegularPages }}
+                <li><a href="{{ .RelPermalink }}"{{ if eq $currentPage.RelPermalink .RelPermalink }} class="active"{{ end }}>{{ .Title }}</a></li>
+              {{ end }}
+            {{ end }}
+          {{ end }}
+        </ul>
+      </nav>
+    </div>
+  </nav>
+
+  <!-- Right: content -->
+  <main class="docs-content col-lg-12 col-xl-12">
+    {{ if .Site.Params.options.breadCrumb -}}
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        {{ partial "main/breadcrumb" . -}}
+        <li class="breadcrumb-item active" aria-current="page">{{ .Title }}</li>
+      </ol>
+    </nav>
+    {{ end }}
+    <div class="d-flex justify-content-end gap-2 mb-2">
+      {{ with .OutputFormats.Get "Markdown" }}
+      <a href="{{ .Permalink }}" target="_blank" class="btn btn-sm btn-outline-secondary text-nowrap d-flex align-items-center gap-1" title="View raw Markdown — paste the URL into Claude">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+        View as Markdown
+      </a>
+      {{ end }}
+      <button id="copy-md-btn" class="btn btn-sm btn-outline-secondary text-nowrap d-flex align-items-center gap-1" onclick="copyPageMarkdown()" title="Copy page as Markdown to use in Claude">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+        <span id="copy-md-label">Copy</span>
+      </button>
+    </div>
+    <hr class="mt-0 mb-3">
+    <h1 class="mb-1">{{ .Title }}</h1>
+    {{ with .Params.lead }}<p class="lead mb-3">{{ . | safeHTML }}</p>{{ end }}
+    {{ .Content }}
+    <script id="raw-md" type="application/json">{{ .RawContent | jsonify }}</script>
+    <script>
+    function copyPageMarkdown() {
+      const raw = JSON.parse(document.getElementById('raw-md').textContent);
+      navigator.clipboard.writeText(raw).then(function() {
+        var label = document.getElementById('copy-md-label');
+        label.textContent = 'Copied!';
+        setTimeout(function() { label.textContent = 'Copy'; }, 2000);
+      });
+    }
+    </script>
+    <div class="page-footer-meta d-flex flex-column flex-md-row justify-content-between">
+      {{ if .Site.Params.lastMod -}}
+        {{ partial "main/last-modified.html" . }}
+      {{ end -}}
+      {{ if .Site.Params.editPage -}}
+        {{ partial "main/edit-page.html" . }}
+      {{ end -}}
+    </div>
+    {{ partial "main/docs-navigation.html" . }}
+  </main>
+</div>
+{{ end }}

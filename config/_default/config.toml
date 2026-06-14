@@ -46,6 +46,18 @@ isPlainText = true
 noUgly = true
 rel  = "sitemap"
 
+[mediaTypes."text/markdown"]
+suffixes = ["md"]
+
+[outputFormats.Markdown]
+mediaType = "text/markdown"
+baseName = "index"
+isPlainText = true
+notAlternative = false
+
+[uglyURLs]
+  markdown = true
+
 [caches]
   [caches.getjson]
     dir = ":cacheDir/:project"
