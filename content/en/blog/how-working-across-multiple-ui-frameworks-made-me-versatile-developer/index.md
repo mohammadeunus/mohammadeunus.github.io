@@ -1,21 +1,23 @@
 ---
 title: "Why I Stopped Calling Myself a Web Developer"
-description: "Working across frameworks, domains, and clients didn't just teach me new syntax — it taught me that software engineering is bigger than any label."
-excerpt: "I've worked across Angular, Blazor, React, .NET, healthcare, ERP, hospitality, and more. Here's what that actually taught me — and why the label was the first thing to go."
+description: "Working across frameworks, architectures, and domains didn't just teach me new syntax — it taught me that software engineering is bigger than any single label."
+excerpt: "I've worked across Angular, Blazor, React, .NET, multiple architectures, and a dozen domains. Here's what that actually taught me — and why the label was the first thing to go."
 date: 2026-01-01T00:00:00+06:00
-lastmod: 2026-01-01T00:00:00+06:00
+lastmod: 2026-06-15T00:00:00+06:00
 draft: false
 images: []
-categories: ["Development", "Career", "Personal Growth"]
-tags: ["UI Frameworks", "Blazor", "Angular", "React", "Frontend Development", "Career Development", "Software Architecture", "Full Stack", "Web Development"]
+categories: ["Development", "Software Architecture", "Career"]
+tags: ["Architecture", "Monolith", "Modular Monolith", "Microservices", "CQRS", "Angular", "Blazor", "Career Development", "Software Engineering"]
 contributors: []
 pinned: false
 homepage: false
 ---
 
-Early in my career, I would have described myself as a .NET developer. Then a project came along that needed Blazor. Then another needed React. Then Next.js, then MAUI, then Angular, then ABP Framework.
+When someone asks me what I do, I used to say "I'm a web developer." It felt accurate. I built web apps. I wrote APIs. I worked with databases.
 
-I didn't plan to work across all of them. It just happened — one project at a time. And somewhere along the way I stopped thinking of myself as an Angular developer, or a Blazor developer, or any kind of framework developer.
+But somewhere between my first monolith and my fourth SaaS system, that label stopped feeling right. I wasn't just building web pages anymore. I was making decisions about how systems would grow over five years, how teams would own code without stepping on each other, and why a system that looked fine at 100 users started falling apart at 10,000.
+
+The shift happened gradually — one project at a time, one framework at a time, one architecture at a time. And at some point I stopped thinking of myself as an Angular developer, or a .NET developer, or any kind of framework developer.
 
 I started thinking of myself as a software engineer.
 
@@ -37,73 +39,67 @@ Once you see it once, you see it everywhere:
 
 - **Component architecture** — Angular components, Blazor components, React components. Props go in, events come out. Different decorators, same model.
 - **Reactive state** — RxJS Observables in Angular, `useState` and `useEffect` in React, Blazor's `StateHasChanged`. Different APIs, same idea: something changed, update the view.
-- **Form validation** — Angular's reactive forms, Blazor's `EditForm` with `DataAnnotations`, React controlled inputs. The pattern is always: bind → validate → surface errors → submit.
-- **HTTP and data fetching** — `HttpClient` in .NET, Angular's `HttpClient`, `fetch` in JavaScript, Next.js `getServerSideProps`. Different layers, same responsibility: call something, handle the response, handle the failure.
+- **Form validation** — Angular's reactive forms, Blazor's `EditForm` with DataAnnotations, React controlled inputs. The pattern is always: bind → validate → surface errors → submit.
+- **HTTP and data fetching** — `HttpClient` in .NET and Angular, `fetch` in JavaScript, Next.js `getServerSideProps`. Different layers, same responsibility: call something, handle the response, handle the failure.
 
 When you work in only one framework, these feel like framework features. When you work across several, you realise they are software engineering fundamentals that every framework implements in its own way.
 
 ---
 
-## Architecture Travels Better Than Syntax
+## Architecture Travels the Same Way
 
-The deeper lesson wasn't about patterns — it was about architecture.
+The same thing happened when I moved through different architectural styles — monolith, modular monolith, CQRS, microservices.
 
-A well-structured Angular application and a well-structured Blazor application look similar at the conceptual level. Separation of concerns. Clear boundaries between UI and business logic. Services that do one thing. Components that know only what they need to know.
+Each one taught me a pattern. And once I had seen each pattern in a real system, I stopped treating them as a hierarchy — as if microservices were the "advanced" level you graduate to and monoliths were the beginner version you leave behind. They are different tools with different tradeoffs, and the skill is knowing which one fits the moment.
 
-When I moved from Angular to Blazor on a new project, the syntax was unfamiliar. But the questions I asked were the same: *Where does this logic live? Who owns this state? How does this component communicate with that one?*
+Working in a traditional monolith taught me speed — how much you can ship when there are no distributed systems in the way. Working in a modular monolith taught me boundaries — how much cleaner a codebase becomes when modules own their data and communicate through interfaces rather than reaching into each other directly. CQRS taught me that read and write workloads are fundamentally different problems that deserve different solutions. And microservices taught me operational cost — what you take on when you make each service independently deployable.
 
-Those questions don't belong to any framework. They belong to software engineering. And once you've answered them well in one place, answering them in another becomes faster — not because the framework is similar, but because the discipline is the same.
+That progression also corrected something I had assumed early in my career: that architecture determines performance. It doesn't, not directly.
 
-This is what I mean when I say working across frameworks made me architecturally sound. Not that I memorised more APIs. That I stopped asking "how do I do this in Angular?" and started asking "what is the right way to do this?" — and then finding the answer in whatever framework I was working in.
+One of the clearest lessons from working across all of these is that fast APIs are almost never the result of the right deployment topology. They are the result of good data access patterns — proper indexing, efficient queries, read-optimized models, caching, and returning only the data that is actually needed. A well-designed monolith, backed by a properly optimized database, can handle significant traffic and deliver millisecond response times. Microservices offer real benefits — independent deployment, independent scaling, team autonomy — but performance is not on that list. You do not need distributed infrastructure to build a fast system. You need discipline in how you access data.
 
-That shift also changed how I evaluate tools. A developer who only knows one framework tends to reach for it regardless of fit. When you have worked across several, you stop defaulting and start comparing. A public-facing site with SEO requirements points toward Next.js. An enterprise dashboard with complex role-based UI points toward Angular. A cross-platform desktop and mobile app points toward MAUI. A rapid internal tool points toward Blazor. The frameworks did not change — but your ability to match the right one to the problem did.
+This matters practically for how I advise on architecture decisions. For most MVPs and early-stage products, a monolith or modular monolith is the stronger choice. It enables faster development, simpler deployments, and lower operational complexity — while still supporting future growth if the internal structure is clean. The transition to microservices should be driven by concrete requirements: a module that genuinely needs to scale independently, a team that needs autonomous deployment, a data store that needs to diverge. Not by assumptions about what the system might need someday.
 
-The same thing happened across domains. I worked across hotel management, healthcare, ERP, field services, education, and more. Each domain had its own language, its own stakeholders, its own edge cases. But the structural problems underneath were familiar — multi-step workflows, approval chains, billing cycles, user roles, reporting. Once you have solved a booking system, you recognise the shape of a scheduling system. Once you have built a modular ERP, you understand why a hospital needs the same boundaries between its departments.
-
-That cross-domain exposure changed how I work with requirements. When a client describes what they need, I am not hearing it for the first time. I have usually seen a version of that problem before — in a different industry, with a different name, solved a different way. That context makes it easier to ask the right questions, spot what is missing in the spec, and propose something better than what was originally asked for. Not because I am clever, but because I have enough reference points to recognise patterns the client themselves might not see yet.
-
-It also changed how I work with other developers. Having written Angular, I understand what a frontend developer means when they say state management is getting messy. Having built MAUI apps, I understand the constraints a mobile developer is working within. Having worked on backend ABP modules, I understand why a backend engineer pushes back on a UI-driven requirement that breaks domain boundaries. You cannot fake that understanding. It comes from having been in each position yourself — and it reduces the kind of friction that slows cross-functional teams down.
+A good technical lead optimizes for what the business needs right now, not what it might need in two years. Starting simple and evolving deliberately is not a compromise — it is the more disciplined approach.
 
 ---
 
 ## The Contradiction I Should Mention
 
-Here is where I have to be honest, because what I just said sounds like an argument for spreading yourself thin across many languages and frameworks equally. That is not what I am saying.
+Here is where I have to be honest, because what I just said could sound like an argument for spreading yourself thin across everything equally. That is not what I am saying.
 
-I worked in TypeScript, JavaScript, and C#. But I focused on C#. That was my primary language — the one I understood deeply, the one I reached for when I needed to think clearly about a problem.
+I worked in TypeScript, JavaScript, PHP, and C#. But I focused on C#. That was my primary language — the one I understood deeply, the one I reached for when I needed to think clearly about a problem.
 
-TypeScript and JavaScript were slower. I learned them, I used them, I got things done in them. But I approached them through the lens of what I already knew from C#. Interfaces, generics, type systems, async patterns — I recognised these in TypeScript because I already understood them in C#. The learning curve was shorter because the concept was already familiar.
+The other languages were slower. I learned them, used them, got things done in them. But I approached them through the lens of what I already knew from C#. Interfaces, generics, type systems, async patterns — I recognised these in TypeScript because I already understood them in C#. The learning curve was shorter because the concept was already familiar.
 
 So the contradiction resolves like this:
 
 > Versatility does not mean equal depth in everything. It means one strong anchor, and the confidence to transfer what you know.
 
-A developer who has only ever used Angular is not necessarily shallow — they might be deeply skilled. But if they have never had to solve the same problem a different way, they may not know whether their solution is a good solution or just an Angular solution. Working across frameworks forces that question.
+A developer who has only ever used one framework is not necessarily shallow — they might be deeply skilled. But if they have never had to solve the same problem a different way, they may not know whether their solution is a good solution or just the solution their framework reaches for by default. Working across frameworks forces that question.
 
 The goal is not to be an "Angular developer" or a "C# developer." Those are tools. The goal is to be a software engineer who happens to be most fluent in C# — and who can pick up any framework, recognise the patterns underneath it, and build something well.
 
 ---
 
-## What Sticking to One Framework Costs You
+## What Sticking to One Thing Costs You
 
-I have worked with developers who were highly skilled in one framework and genuinely uncomfortable outside it. Not bad developers — often very good ones. But when the project changed, or the framework version broke something fundamental, or the team decided to move in a different direction, the adjustment was harder than it needed to be.
+I have worked with developers who were highly skilled in one framework and genuinely uncomfortable outside it. Not bad developers — often very good ones. But when the project changed, or the team decided to move in a different direction, the adjustment was harder than it needed to be.
 
 The problem was not that they knew one framework well. The problem was that they had mistaken framework knowledge for engineering knowledge. When the framework changed, they felt like beginners again — because the thing they had mastered was the tool, not the discipline behind it.
 
-Working across Blazor, Blazor Hybrid, Angular, React, Next.js, MAUI, .NET Core, and ABP Framework did not make me an expert in all of them. It made me not afraid of any of them. And in practice, that confidence is worth more than deep expertise in a single tool — because tools change, and confidence transfers.
-
-This matters more now than it did a few years ago. The pace at which the industry is shifting — AI-assisted development, new runtimes, new paradigms — means adaptability is no longer a nice trait to have. It is the work. Developers who have only ever operated inside one familiar environment tend to struggle when the environment changes. Developers who have moved across environments before know that the discomfort is temporary, the fundamentals carry over, and the ramp-up is faster than it looks from the outside.
+Working across Angular, Blazor, Blazor Hybrid, React, Next.js, MAUI, .NET Core, ABP Framework, Laravel, and multiple architectural styles did not make me an expert in all of them. It made me not afraid of any of them. And in practice, that confidence is worth more than deep expertise in a single tool — because tools change, and confidence transfers.
 
 ---
 
 ## The Real Lesson
 
-If you want to become a more versatile developer, the answer is not to learn every framework. It is to learn *why* the frameworks you use make the decisions they do.
+If you want to become a more versatile engineer, the answer is not to learn every framework. It is to learn *why* the frameworks you use make the decisions they do — and to ask the same question of every architecture pattern, every performance decision, every tradeoff.
 
-Why does Angular use modules? Why does React prefer composition over inheritance? Why does Blazor lean on the .NET type system? The answers are not arbitrary. They reflect real trade-offs in real problems that every UI framework has to solve.
+Why does Angular use modules? Why does CQRS separate reads from writes? Why does a monolith outperform a naively designed microservices system? The answers are not arbitrary. They reflect real tradeoffs in real problems that every system eventually has to face.
 
-When you understand the trade-offs, you understand the pattern. When you understand the pattern, the syntax is just syntax.
+Master your primary language. Learn it deeply enough that you think in it. Then use that depth as a foundation to recognise the same ideas in new places — new frameworks, new architectures, new domains.
 
-Master your primary language. Learn it deeply enough that you think in it. Then use that depth as a foundation to recognise the same ideas in new places. The second language will be slower. The third will be faster than the second. By the time you are in unfamiliar territory, the most important things will already feel familiar.
+I stopped calling myself a "web developer" because that label implies the work stops at the browser. What I actually do is make decisions about how systems behave under load, how teams collaborate without collisions, and how code written today won't become the bottleneck of tomorrow.
 
 That is software engineering. The framework is just the vocabulary it speaks today.

@@ -1,13 +1,13 @@
 ---
-title: "Dev Notes"
-description: ""
-lead: "Welcome to my little space on the internet!"
+title: "Mohammad Eunus"
+description: "Software engineering notes by Mohammad Eunus — real decisions, patterns, and tradeoffs from building enterprise SaaS with ABP Framework, .NET, Angular, and Blazor."
+lead: "Notes on building enterprise software — ABP, .NET, architecture decisions, and what actually works in production."
 date: 2023-09-07T16:33:54+02:00
 lastmod: 2023-09-07T16:33:54+02:00
 draft: false
 seo:
-  title: "Dev Notes - ABP Framework & .NET Insights by Mohammad Eunus"
-  description: "Follow Mohammad Eunus, a full-stack developer specializing in ABP Framework, .NET MAUI, and modular architectures. Dive into real-world tips, dev logs, and project-based learning."
-  canonical: "https://eunus.dev/blog"
+  title: "Mohammad Eunus — Engineering Notes on ABP, .NET & SaaS Architecture"
+  description: "Software engineering notes by Mohammad Eunus — real decisions, patterns, and tradeoffs from building enterprise SaaS with ABP Framework, .NET, Angular, and Blazor."
+  canonical: "https://eunus.dev"
   robots: "index, follow"
 ---
