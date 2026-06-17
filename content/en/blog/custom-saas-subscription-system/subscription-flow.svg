@@ -1,0 +1,117 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="775" viewBox="0 0 1100 775" font-family="Segoe UI, Arial, sans-serif" font-size="13">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#444"/>
+    </marker>
+    <marker id="arr-purple" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#7b1fa2"/>
+    </marker>
+  </defs>
+
+  <rect width="1100" height="775" fill="#ffffff"/>
+
+  <!-- Column headings -->
+  <text x="305" y="30" text-anchor="middle" font-size="14" font-weight="bold" fill="#333">Customer Journey</text>
+  <text x="830" y="30" text-anchor="middle" font-size="14" font-weight="bold" fill="#333">Admin Portal</text>
+  <line x1="582" y1="12" x2="582" y2="730" stroke="#cccccc" stroke-width="1" stroke-dasharray="6 4"/>
+
+  <!-- ═══════════ MAIN FLOW ═══════════ -->
+
+  <!-- Box 1: PUBLIC PORTAL -->
+  <rect x="50" y="48" width="510" height="108" rx="8" fill="#e8f5e9" stroke="#388e3c" stroke-width="1.5"/>
+  <text x="70" y="70" font-weight="bold" font-size="13" fill="#1b5e20">PUBLIC PORTAL — Plan Builder</text>
+  <text x="70" y="91" font-size="12" fill="#333">· Select number of rooms and hotels</text>
+  <text x="70" y="110" font-size="12" fill="#333">· Pick features from marketplace: add-ons, integrations, one-time services</text>
+  <text x="70" y="129" font-size="12" fill="#333">· Price updates live as features are toggled</text>
+  <text x="70" y="147" font-size="11" fill="#777" font-style="italic">No account required — open to anyone</text>
+
+  <!-- Arrow 1 -->
+  <line x1="305" y1="156" x2="305" y2="183" stroke="#444" stroke-width="1.5" marker-end="url(#arr)"/>
+  <text x="313" y="174" font-size="11" fill="#555" font-style="italic">Customer submits — account and payment initiated</text>
+
+  <!-- Box 2: ACCOUNT & PAYMENT SETUP -->
+  <rect x="50" y="185" width="510" height="96" rx="8" fill="#e3f2fd" stroke="#1565c0" stroke-width="1.5"/>
+  <text x="70" y="207" font-weight="bold" font-size="13" fill="#0d47a1">ACCOUNT &amp; PAYMENT SETUP</text>
+  <text x="70" y="228" font-size="12" fill="#333">· Property account created immediately</text>
+  <text x="70" y="248" font-size="12" fill="#333">· Selected plan and features recorded</text>
+  <text x="70" y="268" font-size="12" fill="#333">· Payment initiated — customer sent to secure payment page</text>
+
+  <!-- Arrow 2 -->
+  <line x1="305" y1="281" x2="305" y2="308" stroke="#444" stroke-width="1.5" marker-end="url(#arr)"/>
+  <text x="313" y="299" font-size="11" fill="#555" font-style="italic">Redirected to secure payment page</text>
+
+  <!-- Box 3: TAP PAYMENT -->
+  <rect x="50" y="310" width="510" height="76" rx="8" fill="#fff3e0" stroke="#e65100" stroke-width="1.5"/>
+  <text x="70" y="332" font-weight="bold" font-size="13" fill="#bf360c">TAP PAYMENT GATEWAY</text>
+  <text x="70" y="353" font-size="12" fill="#333">· Customer completes payment on Tap's hosted form</text>
+  <text x="70" y="374" font-size="12" fill="#333">· Payment result sent back to the system securely</text>
+
+  <!-- Arrow 3 -->
+  <line x1="305" y1="386" x2="305" y2="413" stroke="#444" stroke-width="1.5" marker-end="url(#arr)"/>
+  <text x="313" y="404" font-size="11" fill="#555" font-style="italic">Payment confirmed</text>
+
+  <!-- Box 4: ACTIVATION -->
+  <rect x="50" y="415" width="510" height="96" rx="8" fill="#ede7f6" stroke="#512da8" stroke-width="1.5"/>
+  <text x="70" y="437" font-weight="bold" font-size="13" fill="#311b92">ACTIVATION</text>
+  <text x="70" y="458" font-size="12" fill="#333">· Payment recorded</text>
+  <text x="70" y="478" font-size="12" fill="#333">· Every selected feature switched on for this property</text>
+  <text x="70" y="498" font-size="12" fill="#333">· Account activated  ·  Confirmation email sent with login details</text>
+
+  <!-- Arrow 4 -->
+  <line x1="305" y1="511" x2="305" y2="537" stroke="#444" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- Box 5: ACTIVE TENANT -->
+  <rect x="50" y="539" width="510" height="72" rx="8" fill="#e0f2f1" stroke="#00796b" stroke-width="1.5"/>
+  <text x="70" y="561" font-weight="bold" font-size="13" fill="#004d40">SUBSCRIBED TENANT</text>
+  <text x="70" y="581" font-size="12" fill="#333">· All purchased features available in the portal  ·  Invoices visible</text>
+  <text x="70" y="601" font-size="12" fill="#333">· Auto-renews on billing date using saved card — no action needed</text>
+
+  <!-- Arrow 5 -->
+  <line x1="305" y1="611" x2="305" y2="635" stroke="#444" stroke-width="1.5" marker-end="url(#arr)"/>
+  <text x="313" y="628" font-size="11" fill="#555" font-style="italic">Customer adds a feature — prorated charge for remaining period</text>
+
+  <!-- Box 6: ADD FEATURE -->
+  <rect x="50" y="637" width="510" height="68" rx="8" fill="#fce4ec" stroke="#c2185b" stroke-width="1.5"/>
+  <text x="70" y="659" font-weight="bold" font-size="13" fill="#880e4f">ADD FEATURE MID-SUBSCRIPTION</text>
+  <text x="70" y="679" font-size="12" fill="#333">· Only the incremental cost for the remaining billing period is charged</text>
+  <text x="70" y="699" font-size="12" fill="#333">· Feature becomes available the moment payment clears</text>
+
+  <!-- ═══════════ ADMIN PORTAL ═══════════ -->
+
+  <rect x="600" y="48" width="462" height="410" rx="8" fill="#f3e5f5" stroke="#7b1fa2" stroke-width="1.5"/>
+
+  <!-- Admin: Pricing Management -->
+  <rect x="618" y="72" width="426" height="92" rx="6" fill="#ffffff" stroke="#ab47bc" stroke-width="1"/>
+  <text x="634" y="92" font-weight="bold" font-size="12" fill="#4a148c">Pricing Management</text>
+  <text x="634" y="112" font-size="12" fill="#333">· Set price per feature: fixed amount, per hotel, or per room</text>
+  <text x="634" y="131" font-size="12" fill="#333">· Multi-language feature descriptions  (Arabic · English)</text>
+  <text x="634" y="150" font-size="12" fill="#333">· Room-count pricing tiers with multi-hotel discounts</text>
+
+  <!-- Admin: Trial & Overrides -->
+  <rect x="618" y="174" width="426" height="80" rx="6" fill="#ffffff" stroke="#ab47bc" stroke-width="1"/>
+  <text x="634" y="194" font-weight="bold" font-size="12" fill="#4a148c">Trial Periods &amp; Price Overrides</text>
+  <text x="634" y="214" font-size="12" fill="#333">· Grant a free trial period — time-limited access at no charge</text>
+  <text x="634" y="234" font-size="12" fill="#333">· Override subscription end date or total price per tenant</text>
+  <text x="634" y="252" font-size="11" fill="#777" font-style="italic">Any tenant can be placed on a trial without going through payment</text>
+
+  <!-- Admin: Monitoring -->
+  <rect x="618" y="264" width="426" height="80" rx="6" fill="#ffffff" stroke="#ab47bc" stroke-width="1"/>
+  <text x="634" y="284" font-weight="bold" font-size="12" fill="#4a148c">Monitoring &amp; Audit</text>
+  <text x="634" y="304" font-size="12" fill="#333">· All tenant subscriptions, invoices, and payment status in one view</text>
+  <text x="634" y="324" font-size="12" fill="#333">· Full activity timeline — every change logged with timestamp</text>
+  <text x="634" y="342" font-size="11" fill="#777" font-style="italic">Every invoice captures a full snapshot of the plan at that moment</text>
+
+  <!-- Admin: Coupons -->
+  <rect x="618" y="354" width="426" height="56" rx="6" fill="#ffffff" stroke="#ab47bc" stroke-width="1"/>
+  <text x="634" y="374" font-weight="bold" font-size="12" fill="#4a148c">Coupon Codes</text>
+  <text x="634" y="394" font-size="12" fill="#333">· Create percentage or fixed-amount discount codes with usage limits</text>
+
+  <!-- Dashed connecting arrow Admin → Main flow -->
+  <line x1="600" y1="118" x2="562" y2="105" stroke="#7b1fa2" stroke-width="1.3" stroke-dasharray="5 3" marker-end="url(#arr-purple)"/>
+  <text x="596" y="111" text-anchor="end" font-size="10.5" fill="#7b1fa2" font-style="italic">feeds live pricing</text>
+
+  <!-- ═══════════ ABP FOUNDATION BAR ═══════════ -->
+  <rect x="50" y="738" width="1012" height="28" rx="6" fill="#f5f5f5" stroke="#9e9e9e" stroke-width="1"/>
+  <text x="556" y="756" text-anchor="middle" font-size="12" fill="#333">ABP Foundation:  Edition per tenant  ·  Feature Management  ·  Payment Module  ·  Tenant Activation</text>
+
+</svg>
