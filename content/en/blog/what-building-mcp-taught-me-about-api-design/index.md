@@ -46,6 +46,7 @@ Here is what I found — and what each problem taught me about how APIs should b
 - **Child records repeat what the parent already knows** — redundant data, inconsistent state
 - **Date arithmetic pushed to the client** — server stores a different value than it displays
 - **Inconsistent return values** — no contract for what a write operation returns
+- **Create and update collapsed into one tool** — required fields, modes, and contracts doubled in one description
 
 ---
 
@@ -69,13 +70,15 @@ Because the same endpoint served all variants, it couldn't enforce required fiel
 - **Split by type, not by flag.** When a resource has genuinely different required fields per variant, give each its own endpoint. A single endpoint that serves four variants cannot enforce required fields for any of them — adding `required` to a field breaks the variants that don't need it. Separate endpoints each declare exactly what they need.
 
 ```
-// Bad — one endpoint, five different payloads, no enforcement
-POST /resources
+// Bad — one endpoint, multiple types, different required fields per type — no enforcement
+POST /resources  { type: "contract", ... }
+POST /resources  { type: "rebate",   ... }  // same endpoint — different required fields
 
-// Good — each endpoint enforces its own contract
-POST /resources/contract      → status, supplierId, vendorIds required
-POST /resources/rebate        → supplierId N/A, id=null signals new items
-POST /resources/standard      → status required, vendorIds optional
+// Good — each type gets its own endpoint and enforces its own contract
+POST /resources/contract  { supplierId, vendorIds, status, ... }
+POST /resources/rebate    { items, ... }       // supplierId not applicable; id=null means new item
+POST /resources/standard  { status, ... }
+POST /resources/supplier  { supplierId, ... }
 ```
 
 - **A field that means opposite things is not a field — it's a bug.** Same field, inverted meaning, no backend validation to catch mistakes. The fix is a universal convention: `id=null` always means new record, regardless of variant — no flags, no conditional logic.
@@ -101,9 +104,16 @@ The problems that followed were predictable:
 A better design splits reads by sub-resource:
 
 ```
-GET /resources/{id}              → header only
-GET /resources/{id}/items        → line items only
-GET /resources/{id}/linked       → linked records only
+// Bad — one call returns the entire object graph regardless of what the caller needs
+GET /resources/9  →  header + items[] + customers[] + catalogues[] + contacts[] + vendors[]
+
+// Good — sub-resource endpoints; each returns only what was asked for
+GET /resources/9                         →  header only
+GET /resources/9/items                   →  items[]
+GET /resources/9/items/{itemId}          →  single item
+GET /resources/9/customers               →  customers[]
+GET /resources/9/customers/{customerId}  →  single customer
+GET /resources/9/catalogues              →  catalogues[]
 ```
 
 - **Return only what was asked for.** A header request should return the header. An items request should return items. Mixing them into one response forces every consumer to parse the full graph every time, even when they only need two fields.
@@ -111,6 +121,21 @@ GET /resources/{id}/linked       → linked records only
 - **Similar-looking sibling fields in one response are a collision waiting to happen.** When a response contains multiple arrays with overlapping names, the AI will eventually read from the wrong one — and there is no error to catch it. Multiple arrays with similar names signal that the response is doing too much.
 
 - **A field that is always null is actively misleading.** If `linkedIds` is always `null` in the GET response while the real data lives in `associations[].id`, the null field implies it will eventually be populated. Remove it or populate it — a null field that silently points nowhere is worse than no field at all.
+
+The sub-resource split also has a concrete performance benefit on the frontend. Where there was one large blocking call, there can now be parallel calls — each section resolves independently and the page renders as each one completes:
+
+```ts
+// Before — one blocking call returns the entire object graph
+resourceService.get(9).subscribe(...)
+
+// After — parallel calls; page renders as each section resolves
+forkJoin({
+  header:     resourceService.getHeader(9),
+  items:      resourceService.getItems(9),
+  customers:  resourceService.getCustomers(9),
+  catalogues: resourceService.getCatalogues(9),
+}).subscribe(...)
+```
 
 One trade-off worth naming: multiple sub-resource endpoints means multiple round trips where there was once one. For most AI tool chains this is the right call — smaller and less error-prone outweighs the extra latency. But if a single operation genuinely needs all sub-resources together, a `?include=items,linked` query parameter can offer both in one call.
 
@@ -146,16 +171,43 @@ It worked with the frontend because:
 A proper design makes intent explicit:
 
 ```
-PATCH /resources/{id}                    → update header fields only
-PATCH /resources/{id}/items              → add or update specific items
-DELETE /resources/{id}/items/{itemId}    → explicit, intentional removal
+// Bad — one endpoint overwrites every child collection; changing one item requires resending everything
+PUT /resources/42  { header, items[], notifications[], shippingDetail, billingDetail }
+
+// Good — one endpoint per child collection; each change is scoped and explicit
+PUT    /resources/42/header               { type, companyId, contactId, ... }
+POST   /resources/42/items               { productId, quantity, price, ... }   // add one
+PUT    /resources/42/items/{itemId}      { quantity, price, ... }              // update one
+DELETE /resources/42/items               { ids: [itemId] }                      // remove one or many
+POST   /resources/42/notifications       { name, email, type }
+DELETE /resources/42/notifications       { ids: [id] }
+PUT    /resources/42/shipping            { recipient, address, suburb, state, postCode }
 ```
 
 The delete-and-recreate pattern also has a cascade effect that isn't obvious until you hit it: **IDs are reassigned on every save**. A child record that had `id: 42` before the save will have a completely different ID after it. Any parent-child reference breaks silently on every update. The only workaround is to GET the record again immediately after every save to retrieve the new IDs. That's a hidden tax on every operation, imposed entirely on the client.
 
+```
+// Side effect of delete-and-recreate — IDs change on every save
+GET /resources/42  →  item.id = 7
+PUT /resources/42  { items: [item1] }
+GET /resources/42  →  item.id = 11   // id changed — any cached reference to 7 is now dangling
+```
+
 There is a subtler variant that is even harder to recover from: **data deleted on every update because the write shape simply doesn't expose the field**. In one resource, data present in the GET response had no corresponding parameter on the update endpoint — it could not be passed back even if the client wanted to preserve it. Every update silently wiped it. There was no workaround because the client had no way to include what the endpoint wouldn't accept.
 
 The pattern also surfaces a dual-identity problem on child records. One approach found in the codebase attempted to solve unstable IDs by exposing two ID fields per child item — an ephemeral `id` (reassigned on every save) and a stable `uid` (a GUID that survives saves). The write endpoint requires the current ephemeral `id` for parent-child references, but the only reliable way to obtain it is to GET immediately before writing, locate the item by its stable `uid`, then read off whatever `id` it currently has. Two parallel identity systems on the same object, each valid for a different operation, with no consistency guarantee between them.
+
+```
+// Current — id is ephemeral; uid is stable but the write endpoint still demands the current id
+GET /resources/42  →  item.id = 7,  item.uid = "a3f-xyz"
+PUT /resources/42  →  items deleted and reinserted — id becomes 11, uid = "a3f-xyz" preserved
+GET /resources/42  →  item.id = 11, child.parentId = 7   // dangling — row 7 no longer exists
+
+// Expected — stable uid persists across saves; server resolves ephemeral id internally
+GET /resources/42  →  item.id = 11, item.uid = "a3f-xyz"
+PUT /resources/42  →  pass uid = "a3f-xyz" as parent reference
+GET /resources/42  →  child.parentUid = "a3f-xyz"   // stable across all saves
+```
 
 ---
 
@@ -177,18 +229,21 @@ The update would succeed even with the wrong shape. The linked records would jus
 - **What you read should be what you write.** If the write endpoint accepts `linkedIds: int[]`, the GET response must return `linkedIds: int[]` in the same location — not `associations[].id` buried in a nested array. Every structural difference between read and write is a manual translation step imposed on every consumer, with no error if the mapping is wrong.
 
 ```json
-// Bad — GET and write use different shapes
+// Bad — GET returns linked records as objects; write endpoint expects int array
 // GET /resources/{id} returns:
-{ "associations": [{ "id": 1 }, { "id": 2 }], "linkedIds": null }
+{ "linkedRecords": [{ "id": 1, "name": "Record A" }, { "id": 2, "name": "Record B" }], "linkedIds": null }
 
-// PATCH /resources/{id} expects:
+// PUT /resources/{id} expects:
 { "linkedIds": [1, 2] }
 
-// Good — mirror shape, no translation needed
-// GET /resources/{id} returns:
-{ "linkedIds": [1, 2] }
+// A caller copying the GET response sends linkedRecords (ignored) and an empty linkedIds
+// The linked records silently disappear — 200 OK, no error
 
-// PATCH /resources/{id} expects:
+// Good — GET exposes the same field the write endpoint accepts
+// GET /resources/{id} returns:
+{ "linkedIds": [1, 2], "linkedRecords": [{ "id": 1, "name": "Record A" }] }
+
+// PUT /resources/{id} expects:
 { "linkedIds": [1, 2] }
 ```
 
@@ -234,6 +289,27 @@ The most extreme example: one tool description contains the instruction *"before
 > A backend that only works correctly when a specific client is in front of it is not a complete backend.
 
 - **Every rule in a tool description is a missing server-side rejection.** If a null owner field causes a blank document, the backend should return a `400` — not a warning sentence that an AI reads before every call. Documentation does not replace validation. It compensates for the absence of it.
+
+One of the clearest examples was version creation. After every successful save, the frontend immediately called the same endpoint a second time to create a version — because the backend never chained it automatically:
+
+```ts
+// Frontend triggering version creation manually — the backend should own this
+resourceService.save(data).subscribe(res => {
+  this.id = res;
+  if (this.isFormChangeDetected) {
+    resourceService.createVersion(this.id); // second API call — backend doesn't chain it
+  }
+});
+```
+
+```
+// Bad — caller must trigger version creation; two calls per save
+POST /resources         { ... }   // 1. save
+POST /resources/version { ... }   // 2. caller immediately calls this after every save
+
+// Good — backend owns the rule; one call from any consumer
+POST /resources         { ... }   // backend creates version internally if changes detected
+```
 
 ```csharp
 // Bad — backend accepts anything, frontend guards the gate
@@ -312,6 +388,27 @@ This pattern created real problems:
 
 - **Redundancy compounds in large collections.** A small payload with redundant IDs is noise. A payload with 200 items, each echoing the same parent ID, is 200 opportunities for a mismatch that produces unpredictable behavior and no validation error.
 
+There is a related form of this problem on display fields. When a payload already includes a foreign key, the backend can resolve display fields from it at save time. Requiring the caller to pre-fetch and re-supply them means any consumer that skips the pre-fetch — as an AI tool naturally might — saves a broken record that renders blank. No error; the data silently stores null.
+
+- **If you have the ID, look up the display fields yourself.** A payload that already contains a `productId` does not need `productName`, `description`, or `imagePath` from the caller — the server can resolve them from the ID. When callers are required to supply what the server could derive, they become the single point of failure for data they should never have needed to touch.
+
+```json
+// Bad — caller must pre-fetch and re-send display fields the server could resolve
+{
+  "productId": 17,
+  "productName": "Widget A",         // null if caller didn't pre-fetch — saves blank
+  "description": "A small widget",   // null if caller didn't pre-fetch — saves blank
+  "imagePath": "/images/widget.jpg"  // null if caller didn't pre-fetch — saves blank
+}
+
+// Good — caller supplies only the ID; server resolves display fields at save time
+{
+  "productId": 17
+}
+// server: var product = await productRepo.GetAsync(productId);
+// name = product.Name, description = product.Description, ...
+```
+
 ---
 
 ## Problem 7: The Server Stored a Different Value Than It Displayed
@@ -365,6 +462,36 @@ POST /resources/c  → { "id": 91 }
 
 ---
 
+## Problem 9: Create and Update Collapsed Into One Tool
+
+**The backend used a single endpoint for both create and update — `id=0` means create, `id>0` means update. Wrapped as one MCP tool, the description had to cover both operations simultaneously. Required fields for create, required pre-flight GET for update, different failure modes, different field contracts. Two verbs. One description. Half the clarity of either.**
+
+The proper fix runs through all three layers. The backend needs genuinely separate endpoints — create with its own required-field contract, update with a clear diff model. Angular needs to handle them as distinct forms, not a single form with an `id` mode flag. And the MCP tools need to be split to match — one verb each, unambiguous descriptions, no mode logic buried in the description.
+
+**The lesson:**
+
+> Create and update are different operations. They need different contracts — at every layer.
+
+- **A tool that does two things has two descriptions worth of complexity.** Create requires all fields from scratch. Update requires a pre-flight GET, then a targeted change. Combining them into one tool — or one endpoint — forces every consumer to read both contracts and pick the right one. Neither contract can be expressed cleanly in a shared description.
+
+- **The mode flag (`id=0` vs `id>0`) is a deferred design decision.** It signals that create and update were never separated at the right layer. Each consumer has to implement the branching logic independently — the frontend form, the MCP tool, any future consumer. The backend should own the split, not delegate it to every caller.
+
+```
+// Bad — one tool, two modes, one description covering both contracts
+create_or_update_resource  { id: 0,  status, companyId, ... }  // create — all fields required
+create_or_update_resource  { id: 42, status, companyId, ... }  // update — requires pre-flight GET
+
+// Good — separate contracts at every layer
+// Backend:   POST /resources           (create)
+//            PUT  /resources/{id}      (update)
+// Angular:   separate create form      separate edit form
+// MCP:
+create_resource  { status, companyId, ... }   // all create-required fields, no id
+update_resource  { id: 42, ... }              // mandates get_resource pre-flight; no accidental wipe
+```
+
+---
+
 ---
 
 ## The Real Lesson
@@ -376,5 +503,7 @@ But "works when the original client is in front of it" is not the same as "desig
 MCP didn't break the system. It just removed the layer that had been quietly compensating for the backend's gaps. And once that layer was gone, the assumptions underneath became impossible to miss.
 
 If you love software development, this kind of task is a gift. You pick up what looks like plumbing work and come out understanding API design, domain modeling, and the difference between a backend that works and a backend that's correct.
+
+The problems weren't mine to fix at the time. But documenting them clearly enough to make the case — that turned out to be the more important work.
 
 Every task has something to teach you — if you're curious enough to look for it.
