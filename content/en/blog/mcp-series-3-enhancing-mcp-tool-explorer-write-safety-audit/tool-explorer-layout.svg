@@ -1,0 +1,160 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="500" viewBox="0 0 1000 500" font-family="Segoe UI, Arial, sans-serif" font-size="13">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#444"/>
+    </marker>
+  </defs>
+
+  <rect width="1000" height="500" fill="#ffffff"/>
+
+  <!-- ═══ LEFT SIDEBAR ═══ -->
+  <rect x="0" y="0" width="224" height="500" rx="0" fill="#f5f5f5" stroke="#e0e0e0" stroke-width="1.5"/>
+
+  <!-- Sidebar header -->
+  <rect x="0" y="0" width="224" height="44" fill="#00796b"/>
+  <text x="112" y="27" text-anchor="middle" font-weight="bold" font-size="14" fill="#ffffff">MCP Tools</text>
+
+  <!-- Search box -->
+  <rect x="10" y="52" width="204" height="28" rx="5" fill="#ffffff" stroke="#b2dfdb" stroke-width="1.5"/>
+  <text x="22" y="71" font-size="12" fill="#9e9e9e">&#x1F50D; Search tools…</text>
+
+  <!-- Group label -->
+  <text x="14" y="101" font-size="11" font-weight="bold" fill="#777">VERB GROUPS</text>
+
+  <!-- Group rows — y spacing 34px each -->
+  <!-- Search (active) -->
+  <rect x="6" y="107" width="212" height="28" rx="5" fill="#e0f7fa" stroke="#00796b" stroke-width="1.5"/>
+  <text x="18" y="126" font-size="12" fill="#00796b">&#9679; Search</text>
+  <rect x="178" y="111" width="30" height="18" rx="9" fill="#00796b"/>
+  <text x="193" y="124" text-anchor="middle" font-size="11" font-weight="bold" fill="#ffffff">5</text>
+
+  <!-- Get -->
+  <rect x="6" y="139" width="212" height="28" rx="5" fill="#ffffff" stroke="#e0e0e0" stroke-width="1"/>
+  <text x="18" y="158" font-size="12" fill="#444">&#9675; Get</text>
+  <rect x="178" y="143" width="30" height="18" rx="9" fill="#bdbdbd"/>
+  <text x="193" y="156" text-anchor="middle" font-size="11" font-weight="bold" fill="#ffffff">5</text>
+
+  <!-- List -->
+  <rect x="6" y="171" width="212" height="28" rx="5" fill="#ffffff" stroke="#e0e0e0" stroke-width="1"/>
+  <text x="18" y="190" font-size="12" fill="#444">&#9675; List</text>
+  <rect x="178" y="175" width="30" height="18" rx="9" fill="#bdbdbd"/>
+  <text x="193" y="188" text-anchor="middle" font-size="11" font-weight="bold" fill="#ffffff">3</text>
+
+  <!-- Create -->
+  <rect x="6" y="203" width="212" height="28" rx="5" fill="#ffffff" stroke="#e0e0e0" stroke-width="1"/>
+  <text x="18" y="222" font-size="12" fill="#444">&#9675; Create</text>
+  <rect x="178" y="207" width="30" height="18" rx="9" fill="#bdbdbd"/>
+  <text x="193" y="220" text-anchor="middle" font-size="11" font-weight="bold" fill="#ffffff">2</text>
+
+  <!-- Update -->
+  <rect x="6" y="235" width="212" height="28" rx="5" fill="#ffffff" stroke="#e0e0e0" stroke-width="1"/>
+  <text x="18" y="254" font-size="12" fill="#444">&#9675; Update</text>
+  <rect x="178" y="239" width="30" height="18" rx="9" fill="#bdbdbd"/>
+  <text x="193" y="252" text-anchor="middle" font-size="11" font-weight="bold" fill="#ffffff">2</text>
+
+  <!-- Delete -->
+  <rect x="6" y="267" width="212" height="28" rx="5" fill="#ffffff" stroke="#e0e0e0" stroke-width="1"/>
+  <text x="18" y="286" font-size="12" fill="#444">&#9675; Delete</text>
+  <rect x="178" y="271" width="30" height="18" rx="9" fill="#bdbdbd"/>
+  <text x="193" y="284" text-anchor="middle" font-size="11" font-weight="bold" fill="#ffffff">1</text>
+
+  <!-- Send -->
+  <rect x="6" y="299" width="212" height="28" rx="5" fill="#ffffff" stroke="#e0e0e0" stroke-width="1"/>
+  <text x="18" y="318" font-size="12" fill="#444">&#9675; Send</text>
+  <rect x="178" y="303" width="30" height="18" rx="9" fill="#bdbdbd"/>
+  <text x="193" y="316" text-anchor="middle" font-size="11" font-weight="bold" fill="#ffffff">1</text>
+
+  <!-- ═══ MAIN CONTENT AREA ═══ -->
+  <rect x="225" y="0" width="775" height="500" fill="#ffffff"/>
+  <line x1="225" y1="0" x2="225" y2="500" stroke="#e0e0e0" stroke-width="1.5"/>
+
+  <!-- Stats row — 4 cards -->
+  <!-- Card 1: Total Tools -->
+  <rect x="236" y="10" width="170" height="60" rx="8" fill="#e0f7fa" stroke="#00796b" stroke-width="1.5"/>
+  <text x="321" y="36" text-anchor="middle" font-weight="bold" font-size="20" fill="#00796b">47</text>
+  <text x="321" y="56" text-anchor="middle" font-size="12" fill="#00796b">Total Tools</text>
+
+  <!-- Card 2: Categories -->
+  <rect x="416" y="10" width="170" height="60" rx="8" fill="#e3f2fd" stroke="#1565c0" stroke-width="1.5"/>
+  <text x="501" y="36" text-anchor="middle" font-weight="bold" font-size="20" fill="#1565c0">8</text>
+  <text x="501" y="56" text-anchor="middle" font-size="12" fill="#1565c0">Categories</text>
+
+  <!-- Card 3: With Parameters -->
+  <rect x="596" y="10" width="170" height="60" rx="8" fill="#f3e5f5" stroke="#7b1fa2" stroke-width="1.5"/>
+  <text x="681" y="36" text-anchor="middle" font-weight="bold" font-size="20" fill="#7b1fa2">44</text>
+  <text x="681" y="56" text-anchor="middle" font-size="12" fill="#7b1fa2">With Parameters</text>
+
+  <!-- Card 4: Required Params -->
+  <rect x="776" y="10" width="178" height="60" rx="8" fill="#fff3e0" stroke="#e65100" stroke-width="1.5"/>
+  <text x="865" y="36" text-anchor="middle" font-weight="bold" font-size="20" fill="#e65100">12</text>
+  <text x="865" y="56" text-anchor="middle" font-size="12" fill="#e65100">Required Params</text>
+
+  <!-- Filter bar -->
+  <rect x="236" y="80" width="718" height="34" rx="6" fill="#fafafa" stroke="#e0e0e0" stroke-width="1.5"/>
+  <text x="250" y="102" font-size="12" fill="#555">Filter by:</text>
+  <rect x="310" y="86" width="110" height="22" rx="4" fill="#e0f7fa" stroke="#00796b" stroke-width="1"/>
+  <text x="365" y="101" text-anchor="middle" font-size="12" fill="#00796b">Permission &#9660;</text>
+  <rect x="432" y="86" width="90" height="22" rx="4" fill="#e0f7fa" stroke="#00796b" stroke-width="1"/>
+  <text x="477" y="101" text-anchor="middle" font-size="12" fill="#00796b">Verb &#9660;</text>
+  <rect x="534" y="86" width="100" height="22" rx="4" fill="#e0f7fa" stroke="#00796b" stroke-width="1"/>
+  <text x="584" y="101" text-anchor="middle" font-size="12" fill="#00796b">Domain &#9660;</text>
+
+  <!-- ── Tool Card 1: search_quotes ── -->
+  <rect x="236" y="124" width="718" height="150" rx="8" fill="#ffffff" stroke="#b2dfdb" stroke-width="1.5"/>
+  <!-- Card header bar -->
+  <rect x="236" y="124" width="718" height="36" rx="8" fill="#e0f7fa" stroke="#b2dfdb" stroke-width="1.5"/>
+  <rect x="236" y="142" width="718" height="18" rx="0" fill="#e0f7fa"/>
+  <text x="254" y="147" font-weight="bold" font-size="13" fill="#00796b">search_quotes</text>
+  <rect x="730" y="130" width="52" height="18" rx="4" fill="#00796b"/>
+  <text x="756" y="143" text-anchor="middle" font-size="11" font-weight="bold" fill="#ffffff">GET</text>
+  <text x="792" y="143" font-size="18" fill="#00796b">&#9660;</text>
+  <!-- Description -->
+  <text x="254" y="175" font-size="12" fill="#555">Search and filter quotes with advanced criteria and pagination.</text>
+  <!-- Params header -->
+  <text x="254" y="197" font-size="11" font-weight="bold" fill="#777">PARAMETERS</text>
+  <!-- Param rows -->
+  <rect x="254" y="203" width="688" height="22" rx="4" fill="#f9fbe7" stroke="#e0e0e0" stroke-width="1"/>
+  <text x="266" y="218" font-size="12" fill="#333">advanceFilter</text>
+  <text x="380" y="218" font-size="11" fill="#9e9e9e">string</text>
+  <rect x="440" y="206" width="60" height="14" rx="3" fill="#f5f5f5" stroke="#bdbdbd" stroke-width="1"/>
+  <text x="470" y="217" text-anchor="middle" font-size="10" fill="#777">optional</text>
+  <text x="510" y="218" font-size="11" fill="#555">Filter expression applied to the result set</text>
+
+  <rect x="254" y="228" width="688" height="22" rx="4" fill="#ffffff" stroke="#e0e0e0" stroke-width="1"/>
+  <text x="266" y="243" font-size="12" fill="#333">MaxResultCount</text>
+  <text x="380" y="243" font-size="11" fill="#9e9e9e">integer</text>
+  <rect x="440" y="231" width="60" height="14" rx="3" fill="#f5f5f5" stroke="#bdbdbd" stroke-width="1"/>
+  <text x="470" y="242" text-anchor="middle" font-size="10" fill="#777">optional</text>
+  <text x="510" y="243" font-size="11" fill="#555">Maximum number of results to return</text>
+
+  <rect x="254" y="251" width="688" height="22" rx="4" fill="#f9fbe7" stroke="#e0e0e0" stroke-width="1"/>
+  <text x="266" y="266" font-size="12" fill="#333">SkipCount</text>
+  <text x="380" y="266" font-size="11" fill="#9e9e9e">integer</text>
+  <rect x="440" y="254" width="60" height="14" rx="3" fill="#f5f5f5" stroke="#bdbdbd" stroke-width="1"/>
+  <text x="470" y="265" text-anchor="middle" font-size="10" fill="#777">optional</text>
+  <text x="510" y="266" font-size="11" fill="#555">Number of records to skip for pagination</text>
+
+  <!-- ── Tool Card 2: get_quote ── -->
+  <rect x="236" y="284" width="718" height="110" rx="8" fill="#ffffff" stroke="#bbdefb" stroke-width="1.5"/>
+  <!-- Card header bar -->
+  <rect x="236" y="284" width="718" height="36" rx="8" fill="#e3f2fd" stroke="#bbdefb" stroke-width="1.5"/>
+  <rect x="236" y="302" width="718" height="18" rx="0" fill="#e3f2fd"/>
+  <text x="254" y="307" font-weight="bold" font-size="13" fill="#1565c0">get_quote</text>
+  <rect x="730" y="290" width="52" height="18" rx="4" fill="#1565c0"/>
+  <text x="756" y="303" text-anchor="middle" font-size="11" font-weight="bold" fill="#ffffff">GET</text>
+  <text x="792" y="303" font-size="18" fill="#1565c0">&#9660;</text>
+  <!-- Description -->
+  <text x="254" y="335" font-size="12" fill="#555">Retrieve a single quote by its unique identifier.</text>
+  <!-- Params header -->
+  <text x="254" y="355" font-size="11" font-weight="bold" fill="#777">PARAMETERS</text>
+  <!-- Param row: id (required) -->
+  <rect x="254" y="361" width="688" height="22" rx="4" fill="#fff3e0" stroke="#ffe0b2" stroke-width="1"/>
+  <text x="266" y="376" font-size="12" fill="#333">id</text>
+  <text x="380" y="376" font-size="11" fill="#9e9e9e">integer</text>
+  <rect x="440" y="364" width="60" height="14" rx="3" fill="#e65100" stroke="#e65100" stroke-width="1"/>
+  <text x="470" y="375" text-anchor="middle" font-size="10" font-weight="bold" fill="#ffffff">required</text>
+  <text x="510" y="376" font-size="11" fill="#555">The unique ID of the quote to retrieve</text>
+
+  <!-- Footer caption -->
+  <text x="612" y="482" text-anchor="middle" font-size="11" fill="#9e9e9e" font-style="italic">Tool Explorer — Swagger-like UI served at / from wwwroot/index.html</text>
+</svg>

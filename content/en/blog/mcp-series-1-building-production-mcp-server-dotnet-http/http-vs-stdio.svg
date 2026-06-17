@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="380" viewBox="0 0 900 380" font-family="Segoe UI, Arial, sans-serif" font-size="13">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#444"/>
+    </marker>
+  </defs>
+
+  <rect width="900" height="380" fill="#ffffff"/>
+
+  <!-- Title -->
+  <text x="450" y="32" text-anchor="middle" font-size="16" font-weight="bold" fill="#333">stdio vs HTTP Transport</text>
+
+  <!-- Vertical divider -->
+  <line x1="450" y1="48" x2="450" y2="355" stroke="#cccccc" stroke-width="1" stroke-dasharray="6 4"/>
+
+  <!-- ═══ LEFT: stdio ═══ -->
+  <text x="225" y="62" text-anchor="middle" font-size="14" font-weight="bold" fill="#555">stdio</text>
+
+  <!-- Claude process box -->
+  <rect x="50" y="75" width="350" height="56" rx="8" fill="#f5f5f5" stroke="#9e9e9e" stroke-width="1.5"/>
+  <text x="225" y="98" text-anchor="middle" font-weight="bold" font-size="13" fill="#333">Claude Process</text>
+  <text x="225" y="118" text-anchor="middle" font-size="12" fill="#555">running on your machine</text>
+
+  <!-- Arrow: spawns -->
+  <line x1="225" y1="131" x2="225" y2="161" stroke="#444" stroke-width="1.5" marker-end="url(#arr)"/>
+  <text x="233" y="151" font-size="11" fill="#555" font-style="italic">spawns process</text>
+
+  <!-- MCP Server process box -->
+  <rect x="50" y="163" width="350" height="56" rx="8" fill="#f5f5f5" stroke="#9e9e9e" stroke-width="1.5"/>
+  <text x="225" y="186" text-anchor="middle" font-weight="bold" font-size="13" fill="#333">MCP Server Process</text>
+  <text x="225" y="206" text-anchor="middle" font-size="12" fill="#555">stdin / stdout · same machine only</text>
+
+  <!-- Drawbacks box -->
+  <rect x="50" y="242" width="350" height="92" rx="8" fill="#fafafa" stroke="#bdbdbd" stroke-width="1.5"/>
+  <text x="225" y="263" text-anchor="middle" font-weight="bold" font-size="12" fill="#757575">Limitations</text>
+  <text x="70" y="282" font-size="12" fill="#555">· Same machine only — not deployable</text>
+  <text x="70" y="300" font-size="12" fill="#555">· Cannot share across a team</text>
+  <text x="70" y="318" font-size="12" fill="#555">· No load-balancing or scaling</text>
+  <text x="70" y="323" font-size="11" fill="#9e9e9e" font-style="italic"></text>
+
+  <!-- ═══ RIGHT: HTTP ═══ -->
+  <text x="675" y="62" text-anchor="middle" font-size="14" font-weight="bold" fill="#1565c0">HTTP (Streamable HTTP)</text>
+
+  <!-- Claude (any machine) box -->
+  <rect x="470" y="75" width="400" height="56" rx="8" fill="#e3f2fd" stroke="#1565c0" stroke-width="1.5"/>
+  <text x="670" y="98" text-anchor="middle" font-weight="bold" font-size="13" fill="#0d47a1">Claude (any machine)</text>
+  <text x="670" y="118" text-anchor="middle" font-size="12" fill="#1565c0">Claude Code · Claude.ai · any MCP client</text>
+
+  <!-- Arrow: HTTPS POST /mcp -->
+  <line x1="670" y1="131" x2="670" y2="161" stroke="#444" stroke-width="1.5" marker-end="url(#arr)"/>
+  <text x="678" y="151" font-size="11" fill="#555" font-style="italic">HTTPS POST /mcp</text>
+
+  <!-- MCP Server (deployed) box -->
+  <rect x="470" y="163" width="400" height="56" rx="8" fill="#e8f5e9" stroke="#388e3c" stroke-width="1.5"/>
+  <text x="670" y="186" text-anchor="middle" font-weight="bold" font-size="13" fill="#1b5e20">MCP Server (deployed)</text>
+  <text x="670" y="206" text-anchor="middle" font-size="12" fill="#388e3c">ASP.NET Core · any host · any region</text>
+
+  <!-- Benefits box -->
+  <rect x="470" y="242" width="400" height="92" rx="8" fill="#e8f5e9" stroke="#388e3c" stroke-width="1.5"/>
+  <text x="670" y="263" text-anchor="middle" font-weight="bold" font-size="12" fill="#1b5e20">Why HTTP</text>
+  <text x="490" y="282" font-size="12" fill="#333">· Any client, any machine, any region</text>
+  <text x="490" y="300" font-size="12" fill="#333">· Deployable — runs like any web service</text>
+  <text x="490" y="318" font-size="12" fill="#333">· Multi-user · load-balancer friendly</text>
+
+</svg>

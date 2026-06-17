@@ -1,0 +1,104 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="700" viewBox="0 0 1000 700" font-family="Segoe UI, Arial, sans-serif" font-size="13">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#444"/>
+    </marker>
+    <marker id="arr-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#1565c0"/>
+    </marker>
+    <marker id="arr-orange" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#e65100"/>
+    </marker>
+    <marker id="arr-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#388e3c"/>
+    </marker>
+  </defs>
+
+  <rect width="1000" height="700" fill="#ffffff"/>
+
+  <!-- Column headers -->
+  <rect x="20" y="12" width="160" height="34" rx="6" fill="#f5f5f5" stroke="#9e9e9e" stroke-width="1.2"/>
+  <text x="100" y="33" text-anchor="middle" font-size="13" font-weight="bold" fill="#333">Claude CLI</text>
+
+  <rect x="220" y="12" width="160" height="34" rx="6" fill="#f5f5f5" stroke="#9e9e9e" stroke-width="1.2"/>
+  <text x="300" y="33" text-anchor="middle" font-size="13" font-weight="bold" fill="#333">MCP Server</text>
+
+  <rect x="420" y="12" width="200" height="34" rx="6" fill="#f5f5f5" stroke="#9e9e9e" stroke-width="1.2"/>
+  <text x="520" y="33" text-anchor="middle" font-size="13" font-weight="bold" fill="#333">IdentityServer (OpenIddict)</text>
+
+  <rect x="660" y="12" width="200" height="34" rx="6" fill="#f5f5f5" stroke="#9e9e9e" stroke-width="1.2"/>
+  <text x="760" y="33" text-anchor="middle" font-size="13" font-weight="bold" fill="#333">Backend API</text>
+
+  <!-- Vertical lifelines -->
+  <line x1="100" y1="46" x2="100" y2="620" stroke="#cccccc" stroke-width="1" stroke-dasharray="5 4"/>
+  <line x1="300" y1="46" x2="300" y2="620" stroke="#cccccc" stroke-width="1" stroke-dasharray="5 4"/>
+  <line x1="520" y1="46" x2="520" y2="620" stroke="#cccccc" stroke-width="1" stroke-dasharray="5 4"/>
+  <line x1="760" y1="46" x2="760" y2="620" stroke="#cccccc" stroke-width="1" stroke-dasharray="5 4"/>
+
+  <!-- ── STEP 1: Discovery ── -->
+  <rect x="20" y="62" width="560" height="44" rx="8" fill="#e3f2fd" stroke="#1565c0" stroke-width="1.5"/>
+  <text x="300" y="80" text-anchor="middle" font-size="11" font-weight="bold" fill="#0d47a1">1 — DISCOVERY</text>
+  <text x="300" y="98" text-anchor="middle" font-size="11" fill="#333">Claude → GET /.well-known/oauth-protected-resource  →  returns issuer URL + endpoints</text>
+  <line x1="100" y1="84" x2="296" y2="84" stroke="#1565c0" stroke-width="1.5" marker-end="url(#arr-blue)"/>
+
+  <!-- ── STEP 2: DCR ── -->
+  <rect x="20" y="124" width="560" height="44" rx="8" fill="#e3f2fd" stroke="#1565c0" stroke-width="1.5"/>
+  <text x="300" y="142" text-anchor="middle" font-size="11" font-weight="bold" fill="#0d47a1">2 — MOCK DCR</text>
+  <text x="300" y="160" text-anchor="middle" font-size="11" fill="#333">Claude → POST /connect/register  →  returns MyApp_Claude client_id (pre-registered, nothing stored)</text>
+  <line x1="100" y1="146" x2="296" y2="146" stroke="#1565c0" stroke-width="1.5" marker-end="url(#arr-blue)"/>
+
+  <!-- ── STEP 3: Authorize request to IdentityServer ── -->
+  <rect x="20" y="186" width="700" height="44" rx="8" fill="#fff3e0" stroke="#e65100" stroke-width="1.5"/>
+  <text x="360" y="204" text-anchor="middle" font-size="11" font-weight="bold" fill="#bf360c">3 — AUTHORIZE REQUEST</text>
+  <text x="360" y="222" text-anchor="middle" font-size="11" fill="#333">Claude → GET /connect/authorize?redirect_uri=localhost:39616/callback&amp;code_challenge=...  (PKCE)</text>
+  <line x1="100" y1="208" x2="516" y2="208" stroke="#e65100" stroke-width="1.5" marker-end="url(#arr-orange)"/>
+
+  <!-- ── STEP 4: Bridge middleware rewrites ── -->
+  <rect x="420" y="248" width="300" height="50" rx="8" fill="#f3e5f5" stroke="#7b1fa2" stroke-width="1.5"/>
+  <text x="570" y="267" text-anchor="middle" font-size="11" font-weight="bold" fill="#7b1fa2">4 — BRIDGE MIDDLEWARE</text>
+  <text x="570" y="283" text-anchor="middle" font-size="11" fill="#555">saves port in cookie · rewrites</text>
+  <text x="570" y="297" text-anchor="middle" font-size="11" fill="#555">redirect_uri → /claude-callback-bridge</text>
+
+  <!-- ── STEP 5: User login + auth code ── -->
+  <rect x="420" y="316" width="300" height="50" rx="8" fill="#fff3e0" stroke="#e65100" stroke-width="1.5"/>
+  <text x="570" y="335" text-anchor="middle" font-size="11" font-weight="bold" fill="#bf360c">5 — USER LOGIN</text>
+  <text x="570" y="351" text-anchor="middle" font-size="11" fill="#333">User enters credentials · OpenIddict issues</text>
+  <text x="570" y="365" text-anchor="middle" font-size="11" fill="#333">auth code → redirects to /claude-callback-bridge</text>
+
+  <!-- Bridge redirects back to Claude's random port -->
+  <line x1="420" y1="341" x2="104" y2="341" stroke="#e65100" stroke-width="1.5" stroke-dasharray="5 3" marker-end="url(#arr-orange)"/>
+  <text x="260" y="334" text-anchor="middle" font-size="10.5" fill="#e65100" font-style="italic">bridge redirects → localhost:39616/callback?code=...</text>
+
+  <!-- ── STEP 6: Token exchange ── -->
+  <rect x="20" y="384" width="700" height="44" rx="8" fill="#fff3e0" stroke="#e65100" stroke-width="1.5"/>
+  <text x="360" y="402" text-anchor="middle" font-size="11" font-weight="bold" fill="#bf360c">6 — TOKEN EXCHANGE</text>
+  <text x="360" y="420" text-anchor="middle" font-size="11" fill="#333">Claude → POST /connect/token (redirect_uri rewritten by middleware) → Bearer JWT</text>
+  <line x1="100" y1="406" x2="516" y2="406" stroke="#e65100" stroke-width="1.5" marker-end="url(#arr-orange)"/>
+  <line x1="516" y1="420" x2="104" y2="420" stroke="#e65100" stroke-width="1.3" stroke-dasharray="5 3" marker-end="url(#arr-orange)"/>
+
+  <!-- ── STEP 7: Authenticated MCP call ── -->
+  <rect x="20" y="446" width="560" height="44" rx="8" fill="#e8f5e9" stroke="#388e3c" stroke-width="1.5"/>
+  <text x="300" y="464" text-anchor="middle" font-size="11" font-weight="bold" fill="#1b5e20">7 — AUTHENTICATED MCP CALL</text>
+  <text x="300" y="482" text-anchor="middle" font-size="11" fill="#333">Claude → POST /mcp  with  Authorization: Bearer &lt;token&gt;  →  tool response</text>
+  <line x1="100" y1="468" x2="296" y2="468" stroke="#388e3c" stroke-width="1.5" marker-end="url(#arr-green)"/>
+
+  <!-- ── STEP 8: Backend forwarding ── -->
+  <rect x="20" y="508" width="940" height="44" rx="8" fill="#e8f5e9" stroke="#388e3c" stroke-width="1.5"/>
+  <text x="480" y="526" text-anchor="middle" font-size="11" font-weight="bold" fill="#1b5e20">8 — TOKEN FORWARDING</text>
+  <text x="480" y="544" text-anchor="middle" font-size="11" fill="#333">MCP Server → Backend API  (BearerTokenForwardingHandler re-attaches same JWT)  →  tenant-scoped response</text>
+  <line x1="300" y1="530" x2="656" y2="530" stroke="#388e3c" stroke-width="1.5" marker-end="url(#arr-green)"/>
+
+  <!-- ── LEGEND ── -->
+  <rect x="710" y="430" width="270" height="108" rx="8" fill="#f5f5f5" stroke="#9e9e9e" stroke-width="1.2"/>
+  <text x="845" y="450" text-anchor="middle" font-size="12" font-weight="bold" fill="#333">Legend</text>
+  <line x1="726" y1="468" x2="776" y2="468" stroke="#1565c0" stroke-width="2" marker-end="url(#arr-blue)"/>
+  <text x="786" y="472" font-size="11" fill="#555">Discovery</text>
+  <line x1="726" y1="490" x2="776" y2="490" stroke="#e65100" stroke-width="2" marker-end="url(#arr-orange)"/>
+  <text x="786" y="494" font-size="11" fill="#555">Authentication</text>
+  <line x1="726" y1="512" x2="776" y2="512" stroke="#388e3c" stroke-width="2" marker-end="url(#arr-green)"/>
+  <text x="786" y="516" font-size="11" fill="#555">API Calls (authenticated)</text>
+
+  <!-- Bottom note -->
+  <rect x="20" y="570" width="940" height="32" rx="6" fill="#f5f5f5" stroke="#9e9e9e" stroke-width="1"/>
+  <text x="490" y="589" text-anchor="middle" font-size="11" fill="#555">Bridge middleware is development-only · In production, registered redirect URIs are used directly · All tokens are JWTs signed by OpenIddict</text>
+</svg>

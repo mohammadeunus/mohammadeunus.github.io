@@ -1,0 +1,8 @@
+<div class="card border-0 bg-light my-5">
+  <div class="card-body p-4">
+    <p class="text-uppercase text-muted mb-1" style="font-size:0.72rem;letter-spacing:.08em;font-weight:600;">{{ with .Get "label" }}{{ . }}{{ else }}Next in this series{{ end }}</p>
+    <h5 class="card-title mb-2" style="font-weight:700;">{{ .Get "title" }}</h5>
+    {{ with .Get "description" }}<p class="card-text text-muted mb-3" style="font-size:0.95rem;">{{ . }}</p>{{ end }}
+    <a href="{{ .Get "url" }}" class="btn btn-primary btn-sm">Read next &rarr;</a>
+  </div>
+</div>
