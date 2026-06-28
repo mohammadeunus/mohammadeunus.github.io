@@ -1,9 +1,9 @@
 [[main]]
-  name = "docs"
-  url = "/docs"
+  name = "portfolio"
+  url = "https://portfolio.eunus.dev"
   weight = 10
 
 [[main]]
   name = "blogs"
   url = "/blog"
-  weight = 10
+  weight = 20

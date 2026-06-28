@@ -486,3 +486,242 @@ button#doks-versions {
     padding-left: 0.5rem;
   }
 }
+
+// ── Mobile offcanvas: 75% width on mobile + tablet ──────────────────
+@include media-breakpoint-down(lg) {
+  #offcanvasDoks {
+    width: 75vw;
+  }
+}
+
+// ── Post tags marquee ─────────────────────────────────────────────────
+@keyframes mobile-tags-scroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+.mobile-tags-marquee {
+  overflow: hidden;
+  mask-image: linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
+}
+
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: mobile-tags-scroll 18s linear infinite;
+
+  &:hover {
+    animation-play-state: paused;
+  }
+}
+
+.marquee-content {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding-right: 1rem;
+}
+
+.mobile-tag {
+  display: inline-block;
+  white-space: nowrap;
+  padding: 0.2rem 0.55rem;
+  border-radius: 2rem;
+  background: $gray-100;
+  color: $gray-600;
+  font-size: 0.72rem;
+  font-weight: 500;
+  text-decoration: none;
+  flex-shrink: 0;
+
+  &:hover {
+    background: $gray-200;
+    color: $link-color;
+    text-decoration: none;
+  }
+}
+
+// ── Section labels ────────────────────────────────────────────────────
+.mobile-section-label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  color: $gray-500;
+  margin-bottom: 0.5rem;
+}
+
+// ── TOC inside offcanvas ──────────────────────────────────────────────
+.mobile-toc-wrap {
+  position: relative;
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 28px;
+    background: linear-gradient(to bottom, transparent, rgba(255,255,255,0.85));
+    pointer-events: none;
+    transition: opacity 0.2s;
+  }
+
+  &:hover::after {
+    opacity: 0;
+  }
+}
+
+.mobile-toc {
+  max-height: 180px;
+  overflow-y: auto;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar { width: 3px; }
+  &::-webkit-scrollbar-thumb { background: transparent; border-radius: 2px; }
+
+  &:hover {
+    scrollbar-width: thin;
+    scrollbar-color: $gray-300 transparent;
+
+    &::-webkit-scrollbar-thumb { background: $gray-300; }
+  }
+
+  nav#TableOfContents ul {
+    list-style: none;
+    padding-left: 0;
+    margin: 0;
+  }
+
+  nav#TableOfContents ul ul {
+    padding-left: 0.875rem;
+  }
+
+  nav#TableOfContents a {
+    display: block;
+    padding: 0.25rem 0;
+    font-size: 0.875rem;
+    color: $body-color;
+    text-decoration: none;
+    line-height: 1.35;
+
+    &:hover {
+      color: $link-color;
+    }
+  }
+}
+
+// ── Series navigation ─────────────────────────────────────────────────
+.mobile-series-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  padding: 0.3rem 0;
+  text-decoration: none;
+  color: $body-color;
+  font-size: 0.85rem;
+  line-height: 1.35;
+
+  &:hover {
+    color: $link-color;
+    text-decoration: none;
+  }
+
+  &.is-current {
+    color: $link-color;
+    font-weight: 600;
+
+    .series-dot {
+      background: $link-color;
+    }
+  }
+}
+
+.series-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: $gray-400;
+  margin-top: 0.35rem;
+  flex-shrink: 0;
+}
+
+.series-title {
+  flex: 1;
+}
+
+// ── Offcanvas utility buttons (dark mode toggle + language picker) ────
+#offcanvasDoks {
+  #mode {
+    font-size: 0.78rem;
+    padding: 0.2rem 0;
+    gap: 0.35rem;
+
+    svg { width: 15px; height: 15px; }
+    span { font-size: 0.78rem; }
+  }
+
+  #doks-languages {
+    font-size: 0.78rem;
+    padding: 0.2rem 0.5rem;
+  }
+}
+
+// ── Dark mode ─────────────────────────────────────────────────────────
+[data-dark-mode] body {
+  .mobile-tag {
+    background: $gray-800;
+    color: $gray-400;
+
+    &:hover {
+      background: $gray-700;
+      color: $link-color-dark;
+    }
+  }
+
+  .mobile-author-bio,
+  .mobile-section-label {
+    color: $gray-600;
+  }
+
+  .mobile-toc-wrap::after {
+    background: linear-gradient(to bottom, transparent, rgba($body-bg-dark, 0.85));
+  }
+
+  .mobile-toc {
+    &:hover {
+      scrollbar-color: $gray-700 transparent;
+
+      &::-webkit-scrollbar-thumb { background: $gray-700; }
+    }
+
+    nav#TableOfContents a {
+      color: $gray-300;
+
+      &:hover {
+        color: $link-color-dark;
+      }
+    }
+  }
+
+  .mobile-series-item {
+    color: $gray-300;
+
+    &:hover {
+      color: $link-color-dark;
+    }
+
+    &.is-current {
+      color: $link-color-dark;
+
+      .series-dot {
+        background: $link-color-dark;
+      }
+    }
+  }
+
+  .series-dot {
+    background: $gray-700;
+  }
+}

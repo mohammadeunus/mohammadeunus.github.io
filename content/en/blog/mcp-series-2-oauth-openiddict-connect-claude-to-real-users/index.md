@@ -13,11 +13,25 @@ tags: ["MCP", "Model Context Protocol", "OAuth", "OpenIddict", "ASP.NET Core", "
 contributors: []
 pinned: false
 homepage: false
+series: "MCP Series"
+series_weight: 2
 ---
 
-In [Series 1](../mcp-series-1-build-your-first-mcp-server-aspnet-core) I showed how to build a basic MCP server in ASP.NET Core and wire it up to Claude. The server worked — Claude could call tools and get data back. But every outgoing HTTP call from that server used a service account with admin privileges. That is the wrong design for a multi-tenant SaaS application.
+Series 1 ended with a working MCP server — but every tool call it made to the backend used a service account with admin access and no tenant context. Which means Claude could, in theory, pull data from any tenant in the system. No audit trail. No permission boundaries. Just a skeleton key with your API's address on it.
 
-This post fixes it. By the end, Claude will authenticate as the actual logged-in user, forward their JWT to every backend API call, and respect their tenant, their permissions, and their data boundaries. The centrepiece is a piece of middleware I wrote to solve a specific, frustrating OAuth spec problem. We will get to that.
+That's not a security model. That's a liability.
+
+This post replaces the service account with OAuth 2.1 bearer token forwarding — so Claude authenticates as the real logged-in user, inherits their exact permissions, and every action it takes is stamped with their identity. Here's what it covers:
+
+- [Why a service account is the wrong design — and what bearer token forwarding gives you instead](#why-not-a-service-account)
+- [The two-client design: PKCE for Claude Code, client credentials for scripts and CI](#the-two-client-design)
+- [The OAuth discovery chain Claude follows automatically before it ever prompts you to log in](#oauth-discovery-endpoints)
+- [A mock DCR endpoint that returns your pre-registered client without touching the database](#the-mock-dcr-endpoint)
+- [Why Claude's random localhost ports break redirect URI validation — and what it forces you to build](#the-localhost-port-problem)
+- [The bridge middleware: four steps that map an unpredictable local port to a fixed registered URI](#the-bridge-middleware-solution)
+- [JWT Bearer validation on the MCP server and the one dev-only config that must not reach production](#jwt-bearer-authentication-on-the-mcp-server)
+- [The delegating handler that re-attaches the user JWT to every outgoing backend call](#bearer-token-forwarding)
+- [Disabling ABP's default service account so it does not silently overwrite your forwarded token](#disabling-the-service-account)
 
 ---
 

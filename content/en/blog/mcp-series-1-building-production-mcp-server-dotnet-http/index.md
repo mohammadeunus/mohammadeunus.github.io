@@ -5,243 +5,386 @@ description: "A practical walkthrough of building an MCP server in ASP.NET Core 
 excerpt: "Most MCP tutorials show stdio — a local process Claude talks to directly. That works on your laptop, but it's not deployable. Here's how to build an MCP server in ASP.NET Core that runs over HTTP, where the tools, the transport, and the deployment story all actually make sense."
 date: 2026-06-18T00:00:00+06:00
 lastmod: 2026-06-18T00:00:00+06:00
-draft: true
 weight: 50
 images: []
 categories: ["Development", "AI", "MCP", ".NET"]
-tags: ["MCP", "Model Context Protocol", "ASP.NET Core", "HTTP", ".NET", "AI Integration", "Claude", "Tools"]
+tags: ["MCP", "Model Context Protocol", "ASP.NET Core", "HTTP", ".NET", "AI Integration", "Claude", "Tools", "ABP Framework"]
 contributors: []
 pinned: false
 homepage: false
+series: "MCP Series"
+series_weight: 1
 ---
 
-I was building an internal tooling layer for our product — a set of capabilities we wanted Claude to be able to call — and I kept running into the same wall. Every MCP tutorial I found used stdio transport. You run a local process, Claude talks to it over stdin/stdout, and it works on your laptop.
+I was building a multi-tenant SaaS platform on ABP Framework and kept hitting the same wall: I wanted Claude to create tenants, query bookings, and manage configuration — not by generating code for me to run, but by calling the actual API directly. Like giving an AI assistant a real key to the backend, not a stack of printed instructions.
 
-But our tools need to call internal APIs. They need to run on a server. They need to be pointed at by multiple developers' Claude instances, not just mine. stdio is a dead end for that use case.
+That's exactly what MCP enables. But once I started digging, every tutorial I found showed stdio — a local process Claude spawns and kills. Runs on your machine, dies in your terminal, can't be shared, can't be deployed. A demo, not a product.
 
-After spending time with the actual MCP spec and the .NET SDK, here is what I learned about building an MCP server that uses HTTP transport — stateless, load-balancer friendly, and actually deployable.
+This post is about building a deployable MCP server in ASP.NET Core — not a stdio toy, but one wired into a real ABP Framework backend so Claude can call your actual application services. HTTP transport, ABP client proxies, structured logging, tests. Here's what we'll cover:
 
----
-
-## What MCP Is and Why HTTP Changes Things
-
-Model Context Protocol is a specification that lets AI models call external tools in a structured way. Instead of Claude guessing what API to call or hallucinating function signatures, MCP gives it an explicit list of available tools with typed parameters and descriptions. Claude reads the list, picks the right tool for the job, and calls it with structured arguments.
-
-The transport layer is how Claude reaches your server. Two options exist:
-
-**stdio** — Your MCP server is a process that Claude spawns locally. Claude writes JSON to stdin, your process responds on stdout. This works well for local developer tools (file system access, running build scripts, reading logs). The problem is it cannot be deployed. You cannot point a server-hosted Claude instance at a stdio process, you cannot load-balance it, and you cannot share it across a team.
-
-**HTTP (Streamable HTTP)** — Your MCP server is an HTTP endpoint. Claude POSTs to `/mcp`, your server processes the request and responds with JSON. This is what you would actually deploy. It is stateless, scales like any other web service, and can be placed behind any reverse proxy.
-
-For anything beyond a personal local tool — internal APIs, shared team tooling, production integrations — HTTP is the only sensible choice.
-
-{{< figure src="http-vs-stdio.svg" alt="stdio vs HTTP transport comparison — why HTTP is the right choice for production MCP servers" >}}
+- [Why Streamable HTTP is the right transport — and why stdio and SSE fall short](#the-three-transports)
+- [Project layout: packages, project reference, and one common gotcha](#project-setup)
+- [How ABP HTTP client proxies eliminate all `HttpClient` boilerplate from your tools](#abp-http-client-proxies)
+- [The `Program.cs` startup order that matters, with Serilog wired in](#programcs)
+- [Structured logging with Serilog, configured from appsettings](#serilog)
+- [Writing a stateless tool and a tool backed by a real API call](#tools)
+- [Testing tool classes in isolation with mocked service interfaces](#tests)
+- [The `.mcp.json` file, connecting to Claude Code, and the common failure modes](#connecting-to-claude-code)
 
 ---
 
-## Setting Up the Server
+## The Three Transports
 
-The .NET SDK for MCP is the `ModelContextProtocol.AspNetCore` NuGet package. Add it to a standard ASP.NET Core project:
+Before writing a line of code, it's worth understanding what you're actually choosing between — because the transport decision shapes everything from how you deploy to how Claude connects.
+
+MCP defines three transports:
+
+**stdio** — Claude spawns a local process and talks to it over stdin/stdout. Zero setup, but it's fundamentally a local tool. You can't put it behind a URL, you can't share it across a team, and you can't load-balance it. Fine for a proof of concept, not for anything real.
+
+**SSE (Server-Sent Events)** — The original HTTP transport. Client sends requests via `POST`, server streams responses back over a persistent SSE connection. It works, but the long-lived connection is a headache behind most reverse proxies and load balancers. It was deprecated in the 2025-11-25 spec for good reason.
+
+**Streamable HTTP** — The current standard. A single `POST /mcp` handles everything: the initialize handshake, tool calls, responses. Stateless, horizontally scalable, works behind any proxy. This is what `MapMcp` implements, and this is what we're building.
+
+{{< figure src="http-vs-stdio.svg" alt="stdio vs SSE vs Streamable HTTP transport comparison" >}}
+
+---
+
+## Project Setup
+
+Create a standard ASP.NET Core web project. Three NuGet packages and one project reference are all you need:
 
 ```xml
-<PackageReference Include="ModelContextProtocol.AspNetCore" Version="0.3.*" />
+<ItemGroup>
+  <PackageReference Include="ModelContextProtocol.AspNetCore" Version="0.3.*" />
+  <PackageReference Include="Volo.Abp.Autofac" Version="10.4.1" />
+  <PackageReference Include="Serilog.AspNetCore" Version="9.0.0" />
+  <PackageReference Include="Serilog.Sinks.Async" Version="2.1.0" />
+</ItemGroup>
+<ItemGroup>
+  <ProjectReference Include="..\YourApp.HttpApi.Client\YourApp.HttpApi.Client.csproj" />
+</ItemGroup>
 ```
 
-The server setup in `Program.cs` is minimal. You register the MCP server with the DI container and map it to an endpoint:
+The project reference points to your solution's existing `HttpApi.Client` module — the one that already knows how to talk to your API. The MCP server has no direct dependency on `Volo.Abp.Http.Client`; that lives in the client module where it belongs.
 
-```csharp
-var builder = WebApplication.CreateBuilder(args);
+The full reference tree looks like this:
 
-builder.Services.AddMcpServer()
-    .WithTools<RandomNumberTools>();
-
-builder.Services.AddCors(options =>
-{
-    options.AddDefaultPolicy(policy =>
-    {
-        policy.AllowAnyOrigin()
-              .AllowAnyMethod()
-              .AllowAnyHeader();
-    });
-});
-
-var app = builder.Build();
-
-app.UseCors();
-
-app.MapMcp("/mcp");
-
-await app.RunAsync();
+```
+YourApp.McpServer
+└── YourApp.HttpApi.Client
+    ├── YourApp.Application.Contracts
+    ├── YourApp.Application
+    │   └── YourApp.Domain.Shared
+    └── Volo.Abp.Http.Client          ← owns AddHttpClientProxies
 ```
 
-That is the entire server setup. `AddMcpServer()` registers the MCP infrastructure. `.WithTools<RandomNumberTools>()` tells it which tool class to expose. `MapMcp("/mcp")` wires up the HTTP endpoint.
+The MCP server depends on exactly one project. Everything else — the contracts, the proxy infrastructure, the URL config — is pulled in transitively. Adding a new module's contracts to `HttpApi.Client` automatically makes its interfaces available to the MCP server without touching `McpServer.csproj`.
 
-CORS is enabled here with a permissive policy because during development you will be calling this from Claude Code running on your machine, and the origin may not match. You will tighten this before going to production — but during Series 1, getting it working without auth or access restrictions is the goal.
+> **Gotcha 1:** if your repo has a shared `common.props` that does not set `<ImplicitUsings>`, add `<ImplicitUsings>enable</ImplicitUsings>` explicitly in this project's `<PropertyGroup>`. Without it, `WebApplication`, `HttpContext`, and `Random` all fail to resolve with CS0103/CS0246.
 
-One extra endpoint worth adding: a `GET /mcp` that returns a discovery hint. The Claude SDK sometimes probes with a GET before it knows the server supports POST. Without this, you get a confusing 405. With it, you get a clear signal:
+> **Gotcha 2:** `AddMcpServer()` requires `.WithHttpTransport()` chained before any `.WithTools<T>()`. Without it, `MapMcp()` throws `InvalidOperationException: You must call WithHttpTransport()` at startup — after ABP finishes initializing, which makes it easy to miss in the noise.
+
+The ABP module declaration for the MCP server is minimal — no configuration needed here, since proxy registration lives in the client module:
 
 ```csharp
-app.MapGet("/mcp", async (HttpContext context) =>
-{
-    context.Response.StatusCode = 200;
-    context.Response.ContentType = "application/json";
-    await context.Response.WriteAsJsonAsync(new
-    {
-        protocol = "mcp",
-        version = "2025-11-25",
-        transport = "http",
-        endpoint = "/mcp",
-        method = "POST",
-        message = "Use POST /mcp for MCP protocol communication"
-    });
-}).WithName("MCPDiscovery");
-
-// POST is handled by MapMcp
-app.MapMcp("/mcp");
+[DependsOn(typeof(YourAppHttpApiClientModule))]
+public class McpServerModule : AbpModule { }
 ```
 
 ---
 
-## Writing Your First Tool
+## ABP HTTP Client Proxies
 
-A tool is a C# class decorated with `[McpServerToolType]` at the class level and `[McpServerTool]` on each method. The descriptions you provide are what Claude reads to decide when and how to call the tool — they matter.
+This is the key feature that makes ABP-backed MCP tools clean to write.
 
-Here is the simplest possible tool: a random number generator. It is deliberately trivial so the mechanics are obvious before you add real business logic.
+ABP's `AddHttpClientProxies` scans an Application.Contracts assembly at startup and generates a [Castle DynamicProxy](https://www.castleproject.org/projects/dynamicproxy/) implementation for every `IApplicationService` interface it finds. These proxies are registered in the DI container. When a tool asks for `IOrderAppService`, it receives a proxy that serializes the call and POSTs to the real API — no `HttpClient`, no URL construction, no deserialization code in your tool.
+
+The registration lives in your `HttpApi.Client` module, following ABP's own convention (same pattern as `AbpIdentityHttpApiClientModule`, etc.):
 
 ```csharp
-using ModelContextProtocol.Server;
-using System.ComponentModel;
-
-[McpServerToolType]
-internal class RandomNumberTools
+[DependsOn(
+    typeof(YourAppApplicationContractsModule),
+    typeof(AbpHttpClientModule)
+)]
+public class YourAppHttpApiClientModule : AbpModule
 {
-    [McpServerTool(ReadOnly = true)]
-    [Description("Generates a random number between the specified minimum and maximum values.")]
-    public int GetRandomNumber(
-        [Description("Minimum value (inclusive)")] int min = 0,
-        [Description("Maximum value (exclusive)")] int max = 100)
+    public override void ConfigureServices(ServiceConfigurationContext context)
     {
-        return Random.Shared.Next(min, max);
+        var apiUrl = context.Services.GetConfiguration()["App:ApiUrl"]
+                     ?? "https://localhost:44300";
+
+        // Scans the contracts assembly and registers a proxy for every IApplicationService
+        context.Services.AddHttpClientProxies(
+            typeof(YourAppApplicationContractsModule).Assembly,
+            remoteServiceName: "Default"
+        );
+
+        Configure<AbpRemoteServiceOptions>(options =>
+        {
+            options.RemoteServices.Default = new RemoteServiceConfiguration(apiUrl);
+        });
     }
 }
 ```
 
-A few things to note:
+`appsettings.json` supplies the base URL the proxy uses for every outbound call:
 
-`ReadOnly = true` is a hint to Claude that this tool has no side effects. It affects how Claude describes the tool in its UI and how cautious it is about calling it without asking you. Mark it accurately — read-only tools get called more freely, write tools prompt for confirmation.
+```json
+{
+  "App": {
+    "SelfUrl": "http://localhost:5010",
+    "ApiUrl": "https://localhost:44300",
+    "IdentityServerUrl": "https://localhost:44300"
+  }
+}
+```
 
-The `[Description]` attributes on the method and each parameter are what Claude reads when it decides whether to call this tool. Write them the way you would write documentation for a junior developer: clear, specific, and honest about units and edge cases. Claude is reading these at inference time, not at compile time.
+With this in place, a tool class just declares a constructor parameter for whatever service interface it needs. ABP resolves it to the generated proxy at runtime.
 
-Your tools can take any injected services as constructor parameters. `WithTools<T>()` registers the tool type with the DI container, so if your tool needs an `IHttpClientFactory`, a repository, or any other registered service, just add it to the constructor and it will be resolved.
+---
+
+## Program.cs
+
+```csharp
+using Serilog;
+
+Log.Logger = new LoggerConfiguration()
+    .WriteTo.Async(c => c.Console())
+    .CreateBootstrapLogger();
+
+try
+{
+    var builder = WebApplication.CreateBuilder(args);
+
+    builder.Host
+        .UseAutofac()                           // must be before AddApplicationAsync
+        .UseSerilog((ctx, svc, cfg) =>
+            cfg.ReadFrom.Configuration(ctx.Configuration)
+               .ReadFrom.Services(svc));
+
+    await builder.AddApplicationAsync<McpServerModule>();
+
+    builder.Services.AddMcpServer()
+        .WithHttpTransport()
+        .WithTools<PingTools>()
+        .WithTools<OrderTools>();
+
+    builder.Services.AddCors(options =>
+        options.AddDefaultPolicy(p =>
+            p.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader()));
+
+    var app = builder.Build();
+    await app.InitializeApplicationAsync();     // must be before middleware
+
+    app.UseCors();
+
+    app.MapMcp("/mcp");
+    await app.RunAsync();
+}
+catch (Exception ex)
+{
+    Log.Fatal(ex, "MCP server terminated unexpectedly");
+}
+finally
+{
+    Log.CloseAndFlush();
+}
+```
+
+Two ordering rules are non-negotiable:
+
+- `UseAutofac()` before `AddApplicationAsync` — ABP wires services into Autofac's `ContainerBuilder` during that call. If Autofac is not yet the factory, proxy registrations are lost silently.
+- `InitializeApplicationAsync()` before any middleware — ABP's `OnApplicationInitialization` hooks finalize the dynamic proxy registrations at this point.
+
+---
+
+## Serilog
+
+Serilog is configured entirely from `appsettings.json` — no sink code in `Program.cs`. The bootstrap logger (Console only) runs before the host is built, so startup exceptions are never silently swallowed.
+
+```json
+"Serilog": {
+  "MinimumLevel": {
+    "Default": "Information",
+    "Override": {
+      "Microsoft": "Warning",
+      "Microsoft.AspNetCore": "Warning",
+      "System": "Warning"
+    }
+  },
+  "WriteTo": [
+    {
+      "Name": "File",
+      "Args": {
+        "path": "Logs/log-.txt",
+        "rollingInterval": "Day",
+        "retainedFileCountLimit": 30,
+        "outputTemplate": "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] {Message:lj}{NewLine:l}{Exception}"
+      }
+    },
+    {
+      "Name": "Console",
+      "Args": {
+        "outputTemplate": "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] {Message:lj}{NewLine:l}{Exception}"
+      }
+    }
+  ],
+  "Enrich": ["FromLogContext"]
+}
+```
+
+`ReadFrom.Services(svc)` (the second call in `UseSerilog`) lets Serilog enrichers that are registered in DI — such as ABP's correlation ID enricher — participate in the pipeline automatically.
+
+---
+
+## Tools
+
+A tool class gets `[McpServerToolType]`; each method gets `[McpServerTool]`. The `[Description]` text is what Claude reads at inference time to decide which tool to call and how to fill its arguments.
+
+**Stateless tool:**
+
+```csharp
+[McpServerToolType]
+internal class PingTools
+{
+    [McpServerTool(ReadOnly = true)]
+    [Description("Returns a random integer between min (inclusive) and max (exclusive).")]
+    public int GetRandomNumber(
+        [Description("Minimum value (inclusive)")] int min = 0,
+        [Description("Maximum value (exclusive)")] int max = 100)
+        => Random.Shared.Next(min, max);
+}
+```
+
+`ReadOnly = true` tells Claude the tool has no side effects — it calls it without asking for confirmation.
+
+**Tool backed by an ABP application service:**
 
 ```csharp
 [McpServerToolType]
 internal class OrderTools
 {
-    private readonly IOrderService _orders;
+    private readonly IOrderAppService _orders;
+    public OrderTools(IOrderAppService orders) => _orders = orders;
 
-    public OrderTools(IOrderService orders)
+    [McpServerTool]
+    [Description("Creates a new order in the system.")]
+    public async Task<string> CreateOrder(
+        [Description("Customer name")] string customerName,
+        [Description("Product SKU")] string sku,
+        [Description("Quantity")] int quantity)
     {
-        _orders = orders;
+        var result = await _orders.CreateAsync(new CreateOrderDto
+        {
+            CustomerName = customerName,
+            Sku = sku,
+            Quantity = quantity
+        });
+        return $"Order #{result.OrderNumber} created for {customerName}.";
     }
+}
+```
 
-    [McpServerTool(ReadOnly = true)]
-    [Description("Looks up the current status of an order by its ID.")]
-    public async Task<string> GetOrderStatus(
-        [Description("The order ID to look up")] string orderId)
+`IOrderAppService` is resolved by ABP to the Castle DynamicProxy that was registered in `AddHttpClientProxies`. When `CreateOrder` runs, the proxy serializes the DTO and POSTs it to the API — no `HttpClient` code anywhere in the tool.
+
+---
+
+## Tests
+
+Tool classes are `internal` to keep them out of any public surface. Expose them to the test project with one line:
+
+```csharp
+// AssemblyInfo.cs
+[assembly: InternalsVisibleTo("YourApp.McpServer.Test")]
+```
+
+The test project needs only xUnit and NSubstitute — no ABP, no `HttpClient`, no running server:
+
+```xml
+<ItemGroup>
+  <PackageReference Include="xunit" Version="2.9.3" />
+  <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
+  <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2" />
+  <PackageReference Include="NSubstitute" Version="5.3.0" />
+</ItemGroup>
+<ItemGroup>
+  <ProjectReference Include="..\YourApp.McpServer\YourApp.McpServer.csproj" />
+</ItemGroup>
+```
+
+Mock the service interface and assert on the return string:
+
+```csharp
+public class OrderToolsTests
+{
+    private readonly IOrderAppService _orderService = Substitute.For<IOrderAppService>();
+    private readonly OrderTools _sut;
+
+    public OrderToolsTests() => _sut = new OrderTools(_orderService);
+
+    [Fact]
+    public async Task CreateOrder_CallsServiceAndReturnsConfirmation()
     {
-        var order = await _orders.GetByIdAsync(orderId);
-        return order is null ? "Order not found" : $"Order {orderId}: {order.Status}";
+        _orderService.CreateAsync(Arg.Any<CreateOrderDto>())
+            .Returns(new OrderCreatedDto { OrderNumber = "ORD-001" });
+
+        var result = await _sut.CreateOrder("Alice", "SKU-42", 3);
+
+        Assert.Contains("ORD-001", result);
+        await _orderService.Received(1).CreateAsync(Arg.Any<CreateOrderDto>());
     }
 }
 ```
 
+The tool's logic — argument mapping, return string formatting, error handling — is fully testable without spinning up ABP or hitting a real API.
+
 ---
 
-## How Claude Discovers and Calls Your Tools
+## Connecting to Claude Code
 
-The MCP handshake is worth understanding because it changes how you debug problems.
+### The .mcp.json file
 
-When Claude Code connects to an MCP server, it goes through an initialization exchange first. It sends an `initialize` request to `POST /mcp` with its client information and the protocol version it supports. Your server responds with its capabilities, including the list of tools. Claude caches this tool list for the session.
+Claude Code discovers MCP servers from a `.mcp.json` file at the repo root — not from `/mcp add` alone. Without it, the server is invisible to `/mcp` regardless of whether it's running.
 
-{{< figure src="mcp-handshake.svg" alt="MCP protocol handshake sequence — initialize, tools/list, and tools/call over POST /mcp" >}}
-
-When you ask Claude to do something and it decides a tool is relevant, it sends a `tools/call` request to the same `POST /mcp` endpoint with the tool name and the arguments it has constructed.
-
-```
-POST /mcp
-Content-Type: application/json
-
+```json
 {
-  "jsonrpc": "2.0",
-  "method": "tools/call",
-  "params": {
-    "name": "GetRandomNumber",
-    "arguments": { "min": 1, "max": 50 }
-  },
-  "id": 1
+  "mcpServers": {
+    "MyAppMCPServer": {
+      "type": "http",
+      "url": "http://localhost:5010/mcp"
+    }
+  }
 }
 ```
 
-Your server routes this to the right tool method, executes it, and returns the result:
+Create this file, open Claude Code in the repo directory, and the server appears automatically in `/mcp` once it's running. No manual `/mcp add` needed.
 
-```
-HTTP/1.1 200 OK
-Content-Type: application/json
+{{< figure src="mcp-in-claude-code.jpg" alt="AmarArena MCP server listed in Claude Code's /mcp panel after adding .mcp.json" >}}
 
-{
-  "jsonrpc": "2.0",
-  "result": {
-    "content": [{ "type": "text", "text": "37" }]
-  },
-  "id": 1
-}
+### Running the server
+
+```bash
+dotnet run
+# Listening on http://localhost:5010
 ```
 
-The `GET /mcp` discovery endpoint you added earlier handles the case where Claude probes to check if the endpoint is live before sending the initialize request. It is not part of the official MCP spec, but it prevents confusing 404 or 405 errors when Claude first tries to reach your server.
+Ask: _"Give me a random number between 10 and 20"_ — Claude calls `GetRandomNumber(min: 10, max: 20)` and the tool call appears in the conversation.
+
+### Common failure modes
+
+| Symptom | Cause |
+|---|---|
+| Server not listed in `/mcp` | Missing `.mcp.json` at repo root |
+| Connection refused | Server not running |
+| Tool not found | Missing `[McpServerToolType]` or `.WithTools<T>()` |
+| `InvalidOperationException` at startup | Missing `.WithHttpTransport()` after `AddMcpServer()` |
+| Proxy not resolved | `UseAutofac()` placed after `AddApplicationAsync` |
 
 ---
 
-## Testing It with Claude Code
+## What's Next
 
-Once the server is running, point Claude Code at it with the `/mcp` command:
-
-```
-/mcp add
-```
-
-Claude Code will prompt you for the server URL and a name. Enter the URL where your server is listening — `http://localhost:5000` if you are running locally — and give it a name like `my-server`.
-
-If the connection succeeds, Claude Code will show the server as connected and list the tools it found. You can verify by asking Claude something that would require the tool:
-
-> "Give me a random number between 10 and 20"
-
-If the tool is wired up correctly, Claude will call `GetRandomNumber` with `min: 10, max: 20` and return the result. In Claude Code, you will see the tool call logged in the conversation with the arguments and response.
-
-When something goes wrong, the failure modes are usually:
-
-- **Connection refused** — the server is not running, or the URL is wrong
-- **405 on GET /mcp** — you mapped `MapMcp` but did not add the GET discovery endpoint
-- **Tool not found** — the tool class was not registered with `.WithTools<T>()`, or the `[McpServerToolType]` attribute is missing
-- **Argument mismatch** — parameter names or types do not match what Claude sends; check that your `[Description]` attributes match your actual parameter names
-
-Running the server with `dotnet run` and watching the console output while you trigger tool calls is the fastest way to diagnose any of these.
-
----
-
-## What Is Missing
-
-This setup works. Tools are callable, the transport is HTTP, and you can deploy it.
-
-What it does not have: any form of access control. Right now, anyone who knows the URL of your `/mcp` endpoint can connect and call every tool on your server. For a local development server this is fine. For anything shared — a staging environment, a server multiple people access, anything with real data — this is not acceptable.
-
-The production version of this server requires authentication. Claude needs a way to identify itself, your server needs a way to verify that identity, and unauthorized requests need to be rejected before they reach any tool code.
-
-That is what Series 2 covers: adding OAuth 2.0 Bearer authentication to the MCP endpoint, how Claude handles the `WWW-Authenticate` challenge, and what changes in `Program.cs` when you add `.RequireAuthorization()` to `MapMcp`.
-
-For now, the server works without it. Get comfortable with the tool lifecycle, the discovery handshake, and the request/response format — then add the auth layer on top of a working foundation rather than debugging both at once.
-
----
+No authentication yet — anyone who knows the URL can call your tools, and the API receives unauthenticated proxy calls. Series 2 adds OAuth 2.1 Bearer on the MCP endpoint and client credentials on the proxy side.
 
 **Series 2 →** Securing the MCP server with OAuth Bearer tokens, the `WWW-Authenticate` header flow, and how Claude Code handles authentication challenges automatically.
 

@@ -13,13 +13,22 @@ tags: ["MCP", "Model Context Protocol", "ASP.NET Core", "Tool Explorer", "Write 
 contributors: []
 pinned: false
 homepage: false
+series: "MCP Series"
+series_weight: 3
 ---
 
-Series 1 and 2 gave us a working, secured server. Once it was in production, we kept hitting the same friction points.
+Series 1 and 2 shipped a working, secured server. Then we put it in front of real users.
 
-The first was visibility. With fifty-plus tools registered, there was no way to see what the server actually offered without asking Claude — which meant waiting for an AI to describe its own capabilities. The second was safety. Write tools worked, but there was nothing stopping Claude from executing a destructive mutation the moment it decided to. The third was errors. When something went wrong, Claude would receive a raw exception message with a stack trace and no clear path forward.
+Within the first week, three things broke the experience in ways the code never surfaced: nobody could see what tools existed without asking Claude, a misread prompt could trigger a destructive write the moment Claude decided to act, and when something went wrong the error coming back was a raw stack trace the AI had no idea what to do with.
 
-None of these were blockers in development. All three became problems in production, within the first week of real use. This post covers what we built to fix them.
+None of these are bugs. They are the gap between "it works" and "it's usable." This post covers what we built to close that gap — not a stdio toy patched with duct tape, but a server you can hand to a team and not regret:
+
+- [A static tool explorer — Swagger for your MCP server, reads the live manifest on load, no backend proxy](#the-tool-explorer--a-swagger-ui-for-mcp)
+- [Two grouping dimensions in the sidebar: by verb (get, create, update, delete) and by domain](#the-tool-explorer--a-swagger-ui-for-mcp)
+- [Two-step write confirmation: the first call returns a token and does nothing; the second executes](#write-tool-safety)
+- [Idempotency via `clientRequestId`: a three-state cache that catches exact replays and payload conflicts](#write-tool-safety)
+- [Structured error envelopes with machine-readable codes Claude can act on — not a stack trace](#structured-error-envelopes)
+- [The modification source header that stamps every backend write with `"MCP"` in the audit log, with no per-tool code](#audit-trail--knowing-what-the-ai-did)
 
 ---
 

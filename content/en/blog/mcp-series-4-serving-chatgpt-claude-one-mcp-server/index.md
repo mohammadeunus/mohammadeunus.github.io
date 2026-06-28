@@ -13,17 +13,23 @@ tags: ["MCP", "Model Context Protocol", "ChatGPT", "OpenAI", "OAuth", "OpenIddic
 contributors: []
 pinned: false
 homepage: false
+series: "MCP Series"
+series_weight: 4
 ---
 
-Across the first three posts in this series, I built an MCP server in ASP.NET Core, secured it with OAuth 2.1 through OpenIddict, and hardened it for production. Every line of it was tested against Claude — Claude Code on the terminal and Claude Desktop on the desktop.
+After three posts building and securing an MCP server for Claude, a colleague asked the obvious question: can ChatGPT use it too? I assumed yes, eventually — after another week of OAuth plumbing, a forked server, and a pile of special-casing I didn't want to write.
 
-Then came the question I should have seen coming: *"Can ChatGPT use this too?"*
+It took an afternoon. One server, no fork. And the single most complex piece I built for Claude — the bridge middleware that tamed its random localhost ports — was completely unnecessary for ChatGPT.
 
-My first instinct was that I would be building a second server. ChatGPT is a different vendor, a different client, presumably a different protocol dialect and a different auth dance. I budgeted a week.
+Here's what this post covers:
 
-It took an afternoon. One server serves both. And the single most complex thing I built for Claude — the localhost bridge middleware from [Series 2](/blog/model-context-protocol-series-2-oauth-2.1-for-mcp-connecting-claude-to-your-real-users-with-openiddict/) — turned out to be completely unnecessary for ChatGPT.
-
-This post is about why, and the handful of config changes that were actually required.
+- [Why the MCP protocol layer is genuinely vendor-neutral — one server, both clients, no special-casing](#one-server-or-two)
+- [The one fact that explains everything: Claude runs on your laptop, ChatGPT runs in OpenAI's cloud](#the-one-difference-that-explains-everything)
+- [Why the bridge middleware isn't needed for ChatGPT — and the one-line gate that kept it from interfering](#why-the-bridge-middleware-isnt-needed)
+- [The only config change that actually matters: one new OAuth client with a fixed redirect URI](#what-you-actually-have-to-change)
+- [DCR versus Client ID Metadata Documents — two registration paths and which one to reach for](#the-dcr-endpoint-dcr-vs-cimd)
+- [What didn't change at all: transport, JWT validation, CORS, discovery, bearer token forwarding](#what-didnt-change-at-all)
+- [Two ChatGPT-specific platform gotchas worth knowing before you promise anything to stakeholders](#two-chatgpt-specific-gotchas)
 
 ---
 
