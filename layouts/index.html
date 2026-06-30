@@ -124,44 +124,24 @@
                 <div class="ha-card" data-idx="1">
                   <div class="ha-hl">I can ship your MVP fast —<br>production-ready, AI-powered, and built so you never have to rebuild it.</div>
                   <div class="ha-sub">From idea to production-ready in weeks. Full-stack, scalable, and ready for real users from day one.</div>
-                  <div class="ha-tags">
-                    <span class="ha-tag">12+ systems shipped</span>
-                    <span class="ha-tag">3+ years</span>
-                    <span class="ha-tag">6 countries</span>
-                  </div>
                 </div>
 
                 <!-- 2: AI — how it's different -->
                 <div class="ha-card" data-idx="2">
                   <div class="ha-hl">With AI built in —<br>not bolted on later.</div>
                   <div class="ha-sub">Semantic Kernel and MCP servers wired into your product from the start. Real AI features, not wrappers.</div>
-                  <div class="ha-tags">
-                    <span class="ha-tag">Semantic Kernel</span>
-                    <span class="ha-tag">MCP Servers</span>
-                    <span class="ha-tag">.NET / ABP</span>
-                  </div>
                 </div>
 
                 <!-- 3: Scale — built to grow -->
                 <div class="ha-card" data-idx="3">
                   <div class="ha-hl">That scales to millions —<br>because I design for it upfront.</div>
                   <div class="ha-sub">Multi-tenant SaaS with modular architecture. You grow into it — you don't outgrow it.</div>
-                  <div class="ha-tags">
-                    <span class="ha-tag">Multi-tenant</span>
-                    <span class="ha-tag">Modular monolith</span>
-                    <span class="ha-tag">9 SaaS products</span>
-                  </div>
                 </div>
 
-                <!-- 4: Close — trust + CTA -->
+                <!-- 4: Close — warm invite -->
                 <div class="ha-card" data-idx="4">
-                  <div class="ha-hl">By an engineer who ships,<br>writes, and stays accountable.</div>
-                  <div class="ha-sub">Founding engineer experience. I build what I write about.</div>
-                  <div class="ha-tags">
-                    <span class="ha-tag">many articles published</span>
-                    <span class="ha-tag">Founding engineer</span>
-                    <span class="ha-tag">eunus.dev</span>
-                  </div>
+                  <div class="ha-hl">If this sounds like what you need,<br>I'd genuinely love to hear about it.</div>
+                  <div class="ha-sub">No pitch decks, no pressure. Just drop me a message and let's figure out if we're a good fit — I usually reply within a day.</div>
                   <a href="mailto:100eunus@gmail.com" class="ha-card-cta">Let's talk →</a>
                 </div>
 
@@ -201,6 +181,13 @@
     clearTimeout(timer);
     if (active === 0) {
       revealHook();
+    } else if (active === cards.length - 1) {
+      var hl = cards[active].querySelector('.ha-hl');
+      if (hl) {
+        hl.classList.remove('ha-hl-reveal');
+        void hl.offsetWidth;
+        hl.classList.add('ha-hl-reveal');
+      }
     } else {
       var hl = cards[active].querySelector('.ha-hl');
       if (hl) {

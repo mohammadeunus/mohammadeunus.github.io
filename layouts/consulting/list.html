@@ -124,7 +124,7 @@
   <div class="row justify-content-center mb-5">
     <div class="col-lg-10">
       <h2 class="h5 fw-bold text-center mb-4">How We Work Together</h2>
-      <div class="row g-3 text-center justify-content-center">
+      <div class="row g-3 text-center justify-content-center mb-4">
         {{ $steps := slice (slice "01" "Discovery" "Understand your idea, users, and constraints") (slice "02" "Design" "Architecture, tech choices, and a clear roadmap") (slice "03" "Build" "Iterative delivery with regular updates") (slice "04" "Launch" "Handover with docs, deployment, and support") }}
         {{ range $steps }}
         <div class="col-8 col-md-4">
@@ -136,6 +136,26 @@
         </div>
         {{ end }}
       </div>
+
+      <!-- AI in the workflow -->
+      <div class="p-4 rounded" style="background:rgba(var(--bs-primary-rgb,13,110,253),0.04);border:1px solid rgba(var(--bs-primary-rgb,13,110,253),0.12);">
+        <div class="fw-semibold small mb-3" style="color:var(--bs-primary,#0d6efd);text-transform:uppercase;letter-spacing:.06em;font-size:.68rem;">AI built into the process</div>
+        <div class="row g-3">
+          <div class="col-16 col-md-5">
+            <div class="fw-semibold small mb-1">Development</div>
+            <p class="text-muted mb-0" style="font-size:0.78rem;">AI-assisted scaffolding and code generation cut repetitive work, so more time goes into the architecture decisions that actually matter for your product.</p>
+          </div>
+          <div class="col-16 col-md-5">
+            <div class="fw-semibold small mb-1">Testing</div>
+            <p class="text-muted mb-0" style="font-size:0.78rem;">AI-generated test coverage targets edge cases and regression paths that are easy to miss by hand — broader coverage without the manual grind.</p>
+          </div>
+          <div class="col-16 col-md-5">
+            <div class="fw-semibold small mb-1">Auto bug fixes</div>
+            <p class="text-muted mb-0" style="font-size:0.78rem;">Static analysis paired with AI-suggested fixes catches common issues before they reach production, not after a user reports them.</p>
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
 
