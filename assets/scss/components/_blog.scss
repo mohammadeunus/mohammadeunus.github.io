@@ -153,13 +153,117 @@
 .blog-pagination {
   .btn {
     padding: 0.5rem 1rem;
-    
+
     &:not(:disabled) {
       &:hover {
         background-color: var(--bs-primary);
         color: var(--bs-white);
         border-color: var(--bs-primary);
       }
+    }
+  }
+}
+
+// ── Mobile responsive overrides ─────────────────────────────
+@include media-breakpoint-down(md) {
+  .blog-title {
+    font-size: 1.75rem;
+  }
+
+  .blog-post-content {
+    font-size: 1rem;
+    line-height: 1.7;
+
+    h2 {
+      font-size: 1.35rem;
+      margin-top: 1.75rem;
+    }
+
+    h3 {
+      font-size: 1.15rem;
+      margin-top: 1.5rem;
+    }
+
+    p {
+      margin-bottom: 1.25rem;
+    }
+  }
+}
+
+// ── Mobile share bar ────────────────────────────────────────
+.blog-mobile-share {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  background: #fff;
+  border-top: 1px solid #e2e8f0;
+  padding: 0.6rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.06);
+
+  .share-label {
+    font-size: 0.8rem;
+    color: #64748b;
+    white-space: nowrap;
+    margin-right: 0.25rem;
+  }
+
+  .share-btn-mob {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.3rem;
+    flex: 1;
+    padding: 0.45rem 0.5rem;
+    border-radius: 0.5rem;
+    border: 1.5px solid #e2e8f0;
+    background: #fff;
+    color: #475569;
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-decoration: none;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: border-color 0.15s, color 0.15s;
+
+    &:hover,
+    &:focus {
+      border-color: var(--bs-primary, #5d2f86);
+      color: var(--bs-primary, #5d2f86);
+      text-decoration: none;
+    }
+  }
+}
+
+// bottom padding on mobile so the fixed share bar doesn't cover last content
+@include media-breakpoint-down(xl) {
+  .blog-post {
+    padding-bottom: 4rem;
+  }
+}
+
+[data-dark-mode] .blog-mobile-share {
+  background: #1e293b;
+  border-top-color: #334155;
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.3);
+
+  .share-label {
+    color: #94a3b8;
+  }
+
+  .share-btn-mob {
+    background: #1e293b;
+    border-color: #334155;
+    color: #94a3b8;
+
+    &:hover,
+    &:focus {
+      border-color: #93c5fd;
+      color: #93c5fd;
     }
   }
 }

@@ -1,2 +1,25 @@
 <!-- Custom head -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<style>
+/* Available-for-consulting indicator on nav */
+.navbar a[href="/consulting"]::after {
+  content: '';
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #198754;
+  margin-left: 5px;
+  vertical-align: middle;
+  position: relative;
+  top: -1px;
+  animation: navDotPulse 2s ease-in-out infinite;
+}
+@keyframes navDotPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(25,135,84,0.55); }
+  55%       { box-shadow: 0 0 0 4px rgba(25,135,84,0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .navbar a[href="/consulting"]::after { animation: none; }
+}
+</style>

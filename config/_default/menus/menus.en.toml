@@ -1,9 +1,14 @@
 [[main]]
-  name = "portfolio"
-  url = "https://portfolio.eunus.dev"
-  weight = 10
-
-[[main]]
   name = "blogs"
   url = "/blog"
   weight = 20
+
+[[main]]
+  name = "consulting"
+  url = "/consulting"
+  weight = 30
+
+[[main]]
+  name = "contact"
+  url = "/contact"
+  weight = 40

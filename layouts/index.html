@@ -1,42 +1,271 @@
-{{ define "main" }}{{ end }}
+{{ define "main" }}{{ end }} {{ define "sidebar-prefooter" }}
 
-{{ define "sidebar-prefooter" }}
+<style>
+/* ── Hero Story Billboard ──────────────────────────────── */
+.ha-section { padding-bottom: 0; }
+.ha-section .card:hover { transform: none !important; }
+
+.ha-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 1.5rem 0 1.5rem;
+}
+
+/* Stage: CSS grid stacks all cards in one cell */
+.ha-stage {
+  width: 100%;
+  display: grid;
+  align-items: center;
+  min-height: 160px;
+}
+.ha-card {
+  grid-area: 1 / 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: none;
+  pointer-events: none;
+}
+/* Hook headline — bigger */
+.ha-card[data-idx="0"] .ha-hl {
+  font-size: 2rem;
+  letter-spacing: -0.03em;
+}
+
+.ha-card.is-active {
+  opacity: 1;
+  pointer-events: auto;
+}
+.ha-hl {
+  font-size: 1.55rem;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  line-height: 1.25;
+  margin: 0 0 0.55rem;
+}
+.ha-sub {
+  font-size: 0.83rem;
+  color: var(--bs-secondary-color, #6c757d);
+  margin: 0;
+  line-height: 1.65;
+  max-width: 520px;
+}
+.ha-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  justify-content: center;
+  margin-top: 0.8rem;
+}
+.ha-tag {
+  font-size: 0.65rem;
+  font-weight: 500;
+  padding: 0.18rem 0.55rem;
+  border-radius: 999px;
+  border: 1px solid rgba(var(--bs-primary-rgb, 13,110,253), 0.25);
+  color: var(--bs-primary, #0d6efd);
+  background: rgba(var(--bs-primary-rgb, 13,110,253), 0.05);
+  white-space: nowrap;
+}
+/* CTA inside last card */
+.ha-card-cta {
+  display: inline-block;
+  margin-top: 1.1rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  padding: 0.48rem 1.2rem;
+  border-radius: 999px;
+  background: var(--bs-primary, #0d6efd);
+  color: #fff !important;
+  text-decoration: none !important;
+  transition: opacity 0.2s;
+}
+.ha-card-cta:hover { opacity: 0.82; }
+
+
+@media (max-width: 576px) {
+  .ha-hl  { font-size: 1.2rem; }
+  .ha-sub { font-size: 0.8rem; }
+}
+/* Blur-to-sharp reveal on hook headline */
+@keyframes haBlurReveal {
+  from { opacity: 0; filter: blur(8px); }
+  to   { opacity: 1; filter: blur(0);   }
+}
+.ha-hl-reveal      { animation: haBlurReveal 0.9s ease forwards; }
+.ha-hl-reveal-fast { animation: haBlurReveal 0.45s ease forwards; }
+@media (prefers-reduced-motion: reduce) {
+  .ha-card { transition: none !important; }
+  .ha-hl-reveal, .ha-hl-reveal-fast { animation: none; opacity: 1; filter: none; }
+}
+</style>
+
+<!-- Hero Story Billboard -->
+<section class="ha-section section section-md" aria-label="Consulting">
+  <div class="container-xxl">
+    <div class="row justify-content-center">
+      <div class="col-lg-14">
+        <div class="card card-bar" style="border: 1px solid var(--bs-border-color); box-shadow: none !important;">
+          <div class="card-body p-4 p-md-5">
+            <div class="ha-body">
+
+              <div class="ha-stage" id="ha-stage">
+
+                <!-- 0: Hook -->
+                <div class="ha-card is-active" data-idx="0">
+                  <div class="ha-hl">Have a project in mind?</div>
+                </div>
+
+                <!-- 1: MVP — what I do -->
+                <div class="ha-card" data-idx="1">
+                  <div class="ha-hl">I can ship your MVP fast —<br>production-ready, AI-powered, and built so you never have to rebuild it.</div>
+                  <div class="ha-sub">From idea to production-ready in weeks. Full-stack, scalable, and ready for real users from day one.</div>
+                  <div class="ha-tags">
+                    <span class="ha-tag">12+ systems shipped</span>
+                    <span class="ha-tag">3+ years</span>
+                    <span class="ha-tag">6 countries</span>
+                  </div>
+                </div>
+
+                <!-- 2: AI — how it's different -->
+                <div class="ha-card" data-idx="2">
+                  <div class="ha-hl">With AI built in —<br>not bolted on later.</div>
+                  <div class="ha-sub">Semantic Kernel and MCP servers wired into your product from the start. Real AI features, not wrappers.</div>
+                  <div class="ha-tags">
+                    <span class="ha-tag">Semantic Kernel</span>
+                    <span class="ha-tag">MCP Servers</span>
+                    <span class="ha-tag">.NET / ABP</span>
+                  </div>
+                </div>
+
+                <!-- 3: Scale — built to grow -->
+                <div class="ha-card" data-idx="3">
+                  <div class="ha-hl">That scales to millions —<br>because I design for it upfront.</div>
+                  <div class="ha-sub">Multi-tenant SaaS with modular architecture. You grow into it — you don't outgrow it.</div>
+                  <div class="ha-tags">
+                    <span class="ha-tag">Multi-tenant</span>
+                    <span class="ha-tag">Modular monolith</span>
+                    <span class="ha-tag">9 SaaS products</span>
+                  </div>
+                </div>
+
+                <!-- 4: Close — trust + CTA -->
+                <div class="ha-card" data-idx="4">
+                  <div class="ha-hl">By an engineer who ships,<br>writes, and stays accountable.</div>
+                  <div class="ha-sub">Founding engineer experience. I build what I write about.</div>
+                  <div class="ha-tags">
+                    <span class="ha-tag">many articles published</span>
+                    <span class="ha-tag">Founding engineer</span>
+                    <span class="ha-tag">eunus.dev</span>
+                  </div>
+                  <a href="mailto:100eunus@gmail.com" class="ha-card-cta">Let's talk →</a>
+                </div>
+
+              </div>
+
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+(function () {
+  'use strict';
+  var stage = document.getElementById('ha-stage');
+  if (!stage) return;
+  var cards   = Array.from(stage.querySelectorAll('.ha-card'));
+  var active  = 0;
+  var timer;
+  var DURATIONS = [5500, 3400, 3400, 3400, 5500];
+  var hookEl = cards[0] && cards[0].querySelector('.ha-hl');
+
+  function revealHook() {
+    if (!hookEl) return;
+    hookEl.classList.remove('ha-hl-reveal');
+    void hookEl.offsetWidth;
+    hookEl.classList.add('ha-hl-reveal');
+  }
+
+  function goTo(idx) {
+    cards[active].classList.remove('is-active');
+    active = (idx + cards.length) % cards.length;
+    cards[active].classList.add('is-active');
+    clearTimeout(timer);
+    if (active === 0) {
+      revealHook();
+    } else {
+      var hl = cards[active].querySelector('.ha-hl');
+      if (hl) {
+        hl.classList.remove('ha-hl-reveal-fast');
+        void hl.offsetWidth;
+        hl.classList.add('ha-hl-reveal-fast');
+      }
+    }
+    timer = setTimeout(function () { goTo(active + 1); }, DURATIONS[active]);
+  }
+
+  revealHook();
+  timer = setTimeout(function () { goTo(1); }, DURATIONS[0]);
+}());
+</script>
 
 <!-- Posts + extras -->
-<section class="section section-md" style="position: relative; overflow: hidden;">
-  <div class="d-flex justify-content-start" style="position: absolute; top: 0; left: 0; right: 0; pointer-events: none;">
+<section
+  class="section section-md"
+  style="position: relative; overflow: hidden"
+>
+  <div
+    class="d-flex justify-content-start"
+    style="position: absolute; top: 0; left: 0; right: 0; pointer-events: none"
+  >
     <div class="bg-dots"></div>
     <div class="bg-dots"></div>
   </div>
   <div class="container-xxl">
     <div class="row justify-content-center">
       <div class="col-lg-14">
-
-        {{ $allposts := where (where .Site.RegularPages "Section" "blog") "IsPage" true }}
-        {{ $posts := sort $allposts ".Date.Unix" "desc" }}
+        {{ $allposts := where (where .Site.RegularPages "Section" "blog")
+        "IsPage" true }} {{ $posts := sort $allposts ".Date.Unix" "desc" }}
 
         <!-- Stats bar -->
         <p class="text-muted small mb-5">
-          {{ len $allposts }} posts
-          {{ range first 5 .Site.Taxonomies.tags.ByCount }}
-            &middot; <a href="{{ .Page.RelPermalink }}" class="text-muted">{{ .Page.Title }}</a>
-          {{ end }}
+          {{ range first 5 .Site.Taxonomies.tags.ByCount -}}
+          <a href="{{ .Page.RelPermalink }}" class="text-muted me-2">#{{ .Page.Title }}</a>
+          {{- end }}
         </p>
 
         <!-- Featured post -->
         <div class="mb-4">
           <div class="divider"><span>&nbsp;&nbsp; Featured</span></div>
         </div>
-        {{ $featured := index (where $posts "Params.featured" true) 0 }}
-        {{ if not $featured }}{{ $featured = index $posts 0 }}{{ end }}
+        {{ $featured := index (where $posts "Params.featured" true) 0 }} {{ if
+        not $featured }}{{ $featured = index $posts 0 }}{{ end }}
         <div class="card card-bar shadow-sm mb-5">
           <div class="card-body p-4">
             <h3 class="h4 mb-1">
-              <a href="{{ $featured.Permalink }}" class="text-reset text-decoration-none">{{ $featured.Title }}</a>
+              <a
+                href="{{ $featured.Permalink }}"
+                class="text-reset text-decoration-none"
+                >{{ $featured.Title }}</a
+              >
             </h3>
-            <p class="text-muted small mb-3">{{ $featured.Date.Format "Jan 2, 2006" }}</p>
-            {{ with $featured.Summary }}<p class="mb-3">{{ . | truncate 220 }}</p>{{ end }}
-            <a href="{{ $featured.Permalink }}" class="btn btn-primary btn-sm">Read →</a>
+            <p class="text-muted small mb-3">
+              {{ $featured.Date.Format "Jan 2, 2006" }}
+            </p>
+            {{ with $featured.Summary }}
+            <p class="mb-3">{{ . | truncate 220 }}</p>
+            {{ end }}
+            <a href="{{ $featured.Permalink }}" class="btn btn-primary btn-sm"
+              >Read →</a
+            >
           </div>
         </div>
 
@@ -47,14 +276,20 @@
         {{ range first 5 (after 1 $posts) }}
         <article class="mb-4 pb-4 border-bottom">
           <h3 class="h5 mb-1">
-            <a href="{{ .Permalink }}" class="text-reset text-decoration-none">{{ .Title }}</a>
+            <a href="{{ .Permalink }}" class="text-reset text-decoration-none"
+              >{{ .Title }}</a
+            >
           </h3>
           <p class="text-muted small mb-2">{{ .Date.Format "Jan 2, 2006" }}</p>
-          {{ with .Summary }}<p class="mb-0 text-muted">{{ . | truncate 150 }}</p>{{ end }}
+          {{ with .Summary }}
+          <p class="mb-0 text-muted">{{ . | truncate 150 }}</p>
+          {{ end }}
         </article>
         {{ end }}
         <div class="pt-1 mb-5">
-          <a href="/blog" class="btn btn-outline-secondary btn-sm">All posts →</a>
+          <a href="/blog" class="btn btn-outline-secondary btn-sm"
+            >All posts →</a
+          >
         </div>
 
         <!-- Topic pills -->
@@ -63,12 +298,19 @@
         </div>
         <div class="mb-2">
           {{ range first 10 .Site.Taxonomies.tags.ByCount }}
-          <a href="{{ .Page.RelPermalink }}" class="badge rounded-pill border text-decoration-none me-1 mb-2 py-2 px-3" style="border-color: var(--bs-border-color) !important; color: inherit; font-weight: 400;">
+          <a
+            href="{{ .Page.RelPermalink }}"
+            class="badge rounded-pill border text-decoration-none me-1 mb-2 py-2 px-3"
+            style="
+              border-color: var(--bs-border-color) !important;
+              color: inherit;
+              font-weight: 400;
+            "
+          >
             {{ .Page.Title }} <span class="text-muted ms-1">{{ .Count }}</span>
           </a>
           {{ end }}
         </div>
-
       </div>
     </div>
   </div>
@@ -90,24 +332,49 @@
                   src="https://portfolio.eunus.dev/images/profile.png"
                   alt="Eunusur Rahaman"
                   class="rounded shadow-sm"
-                  style="width: 140px; height: 200px; object-fit: cover;"
+                  style="width: 140px; height: 200px; object-fit: cover"
                 />
               </div>
               <div class="col">
                 <h2 class="h4 mb-1">Eunusur Rahaman</h2>
-                <p class="text-muted mb-2 small">Senior Software Engineer L1 — ABP/.NET · SaaS · Modular Architecture</p>
-                <p class="mb-3">I build and evolve enterprise SaaS systems across .NET, Angular, Blazor, and MAUI — focusing on modular architecture, long-term maintainability, and scalable design.</p>
+                <p class="text-muted mb-2 small">
+                  Senior Software Engineer L1 — ABP/.NET · SaaS · Modular
+                  Architecture
+                </p>
+                <p class="mb-3">
+                  I build and evolve enterprise SaaS systems across .NET,
+                  Angular, Blazor, and MAUI — focusing on modular architecture,
+                  long-term maintainability, and scalable design.
+                </p>
                 <ul class="list-inline text-muted small mb-3">
                   <li class="list-inline-item">3+ years experience</li>
                   <li class="list-inline-item">&middot;</li>
                   <li class="list-inline-item">12+ products · 9 SaaS</li>
                   <li class="list-inline-item">&middot;</li>
-                  <li class="list-inline-item">Angular · Blazor · .NET · MAUI</li>
+                  <li class="list-inline-item">
+                    Angular · Blazor · .NET · MAUI
+                  </li>
                 </ul>
                 <div class="d-flex gap-2 flex-wrap">
-                  <a href="https://portfolio.eunus.dev" target="_blank" rel="noopener" class="btn btn-primary btn-sm">View Portfolio</a>
-                  <a href="mailto:100eunus@gmail.com" class="btn btn-outline-secondary btn-sm">Contact</a>
-                  <a href="https://github.com/mohammadeunus" target="_blank" rel="noopener" class="btn btn-outline-secondary btn-sm">GitHub</a>
+                  <a
+                    href="https://portfolio.eunus.dev"
+                    target="_blank"
+                    rel="noopener"
+                    class="btn btn-primary btn-sm"
+                    >View Portfolio</a
+                  >
+                  <a
+                    href="mailto:100eunus@gmail.com"
+                    class="btn btn-outline-secondary btn-sm"
+                    >Contact</a
+                  >
+                  <a
+                    href="https://github.com/mohammadeunus"
+                    target="_blank"
+                    rel="noopener"
+                    class="btn btn-outline-secondary btn-sm"
+                    >GitHub</a
+                  >
                 </div>
               </div>
             </div>

@@ -1,0 +1,151 @@
+{{ define "main" }}
+<div class="container-xxl py-5">
+
+  <!-- Hero -->
+  <div class="row justify-content-center mb-5">
+    <div class="col-lg-8 text-center">
+      <h1 class="h2 fw-bold mb-3">Build your AI-powered SaaS MVP —<br>fast, scalable, production-ready.</h1>
+      <p class="text-muted mb-4">I help startups and SMEs turn ideas into real products. From multi-tenant architecture to AI automation built in from day one — shipped in weeks, not months.</p>
+      <div class="d-flex gap-3 justify-content-center flex-wrap">
+        <a href="/contact" class="btn btn-primary">Let's build together →</a>
+        <a href="https://portfolio.eunus.dev" target="_blank" rel="noopener" class="btn btn-outline-secondary">View portfolio →</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Track record -->
+  <div class="row justify-content-center mb-5">
+    <div class="col-lg-10">
+      <div class="row g-3 text-center">
+        {{ $stats := slice (slice "3+" "years experience") (slice "12+" "systems shipped") (slice "6" "countries served") (slice "9" "SaaS products") }}
+        {{ range $stats }}
+        <div class="col-8 col-md-4">
+          <div class="fw-bold" style="font-size:1.8rem;letter-spacing:-0.02em;color:var(--bs-primary,#0d6efd);">{{ index . 0 }}</div>
+          <div class="text-muted small">{{ index . 1 }}</div>
+        </div>
+        {{ end }}
+      </div>
+    </div>
+  </div>
+
+  <!-- Primary service — featured -->
+  <div class="row justify-content-center mb-4">
+    <div class="col-16">
+      <div class="card border shadow-sm p-4 p-md-5" style="border-color:var(--bs-primary,#0d6efd) !important;">
+        <div class="row align-items-start g-4">
+          <div class="col-16 col-md-8">
+            <span class="badge mb-3" style="background:rgba(var(--bs-primary-rgb,13,110,253),.1);color:var(--bs-primary,#0d6efd);font-weight:600;font-size:0.7rem;letter-spacing:0.05em;text-transform:uppercase;">Primary Service</span>
+            <h2 class="h4 fw-bold mb-3">AI-Powered SaaS MVP Development</h2>
+            <p class="text-muted mb-4">I design and build multi-tenant SaaS products with AI features integrated from the start — not bolted on later. You get a scalable, subscription-ready platform that can handle real users on day one.</p>
+            <ul class="list-unstyled small mb-4">
+              <li class="mb-2"><span class="text-success me-2">✓</span>MVP delivered in weeks with a clear architecture</li>
+              <li class="mb-2"><span class="text-success me-2">✓</span>AI automation with Semantic Kernel &amp; MCP servers</li>
+              <li class="mb-2"><span class="text-success me-2">✓</span>Multi-tenant architecture &amp; subscription billing</li>
+              <li class="mb-2"><span class="text-success me-2">✓</span>Scales from your first user to millions</li>
+              <li class="mb-2"><span class="text-success me-2">✓</span>Full-stack: .NET / Angular / Blazor / MAUI</li>
+            </ul>
+            <a href="/contact" class="btn btn-primary">Start your MVP →</a>
+          </div>
+          <div class="col-16 col-md-8">
+            <div class="p-4 rounded" style="background:rgba(var(--bs-primary-rgb,13,110,253),0.04);">
+              <div class="fw-semibold small mb-3 text-muted" style="text-transform:uppercase;letter-spacing:.05em;font-size:.68rem;">What you get</div>
+              {{ $items := slice "Production-ready codebase" "Multi-tenant &amp; role-based access" "AI chat / automation layer" "Stripe or custom billing" "REST API &amp; frontend" "Deployment-ready setup" "Docs &amp; handover" }}
+              {{ range $items }}
+              <div class="d-flex align-items-center gap-2 mb-2" style="font-size:.84rem;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--bs-primary,#0d6efd)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                {{ . | safeHTML }}
+              </div>
+              {{ end }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Supporting services -->
+  <div class="row g-4 mb-5 justify-content-center">
+
+    <div class="col-16 col-md-8 col-lg-5">
+      <div class="card h-100 border shadow-sm p-4">
+        <h3 class="h5 fw-bold mb-3">Scale &amp; Optimize</h3>
+        <p class="text-muted small mb-3">Already have a product? I help you take it from MVP to enterprise — performance tuning, architecture review, and building the features your users actually need.</p>
+        <ul class="list-unstyled small mb-0">
+          <li class="mb-1"><span class="text-success me-2">✓</span>Performance &amp; query tuning</li>
+          <li class="mb-1"><span class="text-success me-2">✓</span>Architecture evolution</li>
+          <li class="mb-1"><span class="text-success me-2">✓</span>Feature development</li>
+          <li class="mb-1"><span class="text-success me-2">✓</span>Microservices migration</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="col-16 col-md-8 col-lg-5">
+      <div class="card h-100 border shadow-sm p-4">
+        <h3 class="h5 fw-bold mb-3">Legacy Rescue</h3>
+        <p class="text-muted small mb-3">Got a messy codebase or a system that's hard to change? I've rewritten legacy hospital systems and untangled multi-year technical debt — without breaking what works.</p>
+        <ul class="list-unstyled small mb-0">
+          <li class="mb-1"><span class="text-success me-2">✓</span>ABP / .NET modernisation</li>
+          <li class="mb-1"><span class="text-success me-2">✓</span>Security hardening</li>
+          <li class="mb-1"><span class="text-success me-2">✓</span>DDD refactoring</li>
+          <li class="mb-1"><span class="text-success me-2">✓</span>Integration &amp; API work</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="col-16 col-md-8 col-lg-5">
+      <div class="card h-100 border shadow-sm p-4">
+        <h3 class="h5 fw-bold mb-3">Guidance &amp; Reviews</h3>
+        <p class="text-muted small mb-3">Need a second opinion before committing to an architecture? Or a code review that actually explains the why? I do deep technical reviews backed by real production experience.</p>
+        <ul class="list-unstyled small mb-0">
+          <li class="mb-1"><span class="text-success me-2">✓</span>Architecture reviews</li>
+          <li class="mb-1"><span class="text-success me-2">✓</span>Codebase audits</li>
+          <li class="mb-1"><span class="text-success me-2">✓</span>Team workshops</li>
+          <li class="mb-1"><span class="text-success me-2">✓</span>Hiring technical advice</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Technologies -->
+  <div class="row justify-content-center mb-5">
+    <div class="col-lg-10">
+      <h2 class="h5 fw-bold text-center mb-4">Stack &amp; Technologies</h2>
+      <div class="d-flex flex-wrap gap-2 justify-content-center">
+        {{ $techs := slice "ABP Framework" ".NET / C#" "ASP.NET Core" "Semantic Kernel" "MCP Servers" "Angular" "Blazor" ".NET MAUI" "Entity Framework Core" "PostgreSQL" "RabbitMQ" "YARP" "Redis" "OpenIddict" "Stripe" "MediatR / CQRS" "DDD" "Modular Monolith" "Microservices" "Azure" "TypeScript" "RxJS" }}
+        {{ range $techs }}
+        <span class="badge rounded-pill border py-2 px-3" style="border-color:var(--bs-border-color)!important;color:inherit;font-weight:400;">{{ . }}</span>
+        {{ end }}
+      </div>
+    </div>
+  </div>
+
+  <!-- How we work -->
+  <div class="row justify-content-center mb-5">
+    <div class="col-lg-10">
+      <h2 class="h5 fw-bold text-center mb-4">How We Work Together</h2>
+      <div class="row g-3 text-center justify-content-center">
+        {{ $steps := slice (slice "01" "Discovery" "Understand your idea, users, and constraints") (slice "02" "Design" "Architecture, tech choices, and a clear roadmap") (slice "03" "Build" "Iterative delivery with regular updates") (slice "04" "Launch" "Handover with docs, deployment, and support") }}
+        {{ range $steps }}
+        <div class="col-8 col-md-4">
+          <div class="p-3 rounded" style="background:rgba(var(--bs-primary-rgb,13,110,253),0.05);">
+            <div class="fw-bold text-primary mb-1" style="font-size:1.4rem;">{{ index . 0 }}</div>
+            <div class="fw-semibold small mb-1">{{ index . 1 }}</div>
+            <div class="text-muted" style="font-size:0.75rem;">{{ index . 2 }}</div>
+          </div>
+        </div>
+        {{ end }}
+      </div>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div class="row justify-content-center">
+    <div class="col-lg-6 text-center">
+      <p class="text-muted mb-3">Based in Dhaka, Bangladesh — available for remote engagements worldwide.</p>
+      <a href="/contact" class="btn btn-primary btn-lg">Start a conversation →</a>
+    </div>
+  </div>
+
+</div>
+{{ end }}
