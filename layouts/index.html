@@ -19,6 +19,7 @@
   display: grid;
   align-items: center;
   min-height: 160px;
+  overflow: hidden;
 }
 .ha-card {
   grid-area: 1 / 1;
@@ -86,21 +87,117 @@
 }
 .ha-card-cta:hover { opacity: 0.82; }
 
+/* Manual slide navigation — pinned to the bottom-right corner of the ad */
+.ha-section .card.card-bar { position: relative; }
+.ha-nav {
+  position: absolute;
+  right: 1.25rem;
+  bottom: 1.1rem;
+  display: flex;
+  gap: 0.5rem;
+}
+@media (max-width: 576px) {
+  .ha-nav { right: 0.85rem; bottom: 0.85rem; }
+}
+.ha-nav-btn {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1px solid var(--bs-border-color, rgba(0,0,0,0.15));
+  background: var(--bs-body-bg, #fff);
+  color: inherit;
+  font-size: 1.1rem;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease, transform 0.1s ease;
+}
+.ha-nav-btn:hover {
+  background: rgba(var(--bs-primary-rgb, 13,110,253), 0.1);
+  color: var(--bs-primary, #0d6efd);
+}
+.ha-nav-btn:active { transform: scale(0.92); }
 
+/* Pipeline slide — simple cards with arrows, no animation */
+.ha-flow {
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  gap: 0.4rem;
+  margin: 0 0 0.65rem;
+}
+.ha-flow-card {
+  flex: 1 1 0;
+  max-width: 150px;
+  background: var(--bs-body-bg, #fff);
+  border: 1px solid var(--bs-border-color, rgba(0,0,0,0.1));
+  border-radius: 10px;
+  padding: 0.6rem 0.7rem;
+  text-align: left;
+}
+.ha-flow-title {
+  font-weight: 700;
+  font-size: 0.8rem;
+  margin-bottom: 0.2rem;
+}
+.ha-flow-desc {
+  font-size: 0.66rem;
+  color: var(--bs-secondary-color, #6c757d);
+  line-height: 1.35;
+}
+.ha-flow-card--accent {
+  border-color: var(--bs-primary, #0d6efd);
+  background: rgba(var(--bs-primary-rgb, 13,110,253), 0.06);
+}
+.ha-flow-card--accent .ha-flow-title { color: var(--bs-primary, #0d6efd); }
+.ha-flow-arrow {
+  display: flex;
+  align-items: center;
+  color: var(--bs-secondary-color, #6c757d);
+  font-weight: 700;
+}
 @media (max-width: 576px) {
   .ha-hl  { font-size: 1.2rem; }
   .ha-sub { font-size: 0.8rem; }
+  .ha-flow { flex-direction: column; align-items: stretch; }
+  .ha-flow-card { max-width: none; }
+  .ha-flow-arrow { justify-content: center; transform: rotate(90deg); }
 }
-/* Blur-to-sharp reveal on hook headline */
+/* Blur-to-sharp reveal on hook + closing headline */
 @keyframes haBlurReveal {
   from { opacity: 0; filter: blur(8px); }
   to   { opacity: 1; filter: blur(0);   }
 }
+/* Slide-up-and-fade reveal on the middle "message" slides */
+@keyframes haSlideFadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes haCtaPop {
+  from { opacity: 0; transform: scale(0.92); }
+  to   { opacity: 1; transform: scale(1); }
+}
+/* Slide-in-from-left — used on the "Scale" slide */
+@keyframes haSlideInX {
+  from { opacity: 0; transform: translateX(-22px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+/* Scale-pop — used on the pipeline card-row slide */
+@keyframes haScaleIn {
+  from { opacity: 0; transform: scale(0.9); }
+  to   { opacity: 1; transform: scale(1); }
+}
 .ha-hl-reveal      { animation: haBlurReveal 0.9s ease forwards; }
-.ha-hl-reveal-fast { animation: haBlurReveal 0.45s ease forwards; }
+.ha-hl-reveal-fast { animation: haSlideFadeIn 0.5s ease forwards; }
+.ha-hl-slide-x     { animation: haSlideInX 0.5s ease forwards; }
+.ha-hl-scale       { animation: haScaleIn 0.45s ease forwards; }
+.ha-card.is-active .ha-card-cta { animation: haCtaPop 0.4s ease 0.55s both; }
 @media (prefers-reduced-motion: reduce) {
   .ha-card { transition: none !important; }
-  .ha-hl-reveal, .ha-hl-reveal-fast { animation: none; opacity: 1; filter: none; }
+  .ha-hl-reveal, .ha-hl-reveal-fast, .ha-hl-slide-x, .ha-hl-scale { animation: none; opacity: 1; filter: none; transform: none; }
+  .ha-card.is-active .ha-card-cta { animation: none; opacity: 1; transform: none; }
 }
 </style>
 
@@ -129,17 +226,43 @@
                 <!-- 2: AI — how it's different -->
                 <div class="ha-card" data-idx="2">
                   <div class="ha-hl">With AI built in —<br>not bolted on later.</div>
-                  <div class="ha-sub">Semantic Kernel and MCP servers wired into your product from the start. Real AI features, not wrappers.</div>
+                  <div class="ha-sub">Real AI features working inside your product from day one — not a chatbot glued onto a contact form.</div>
                 </div>
 
                 <!-- 3: Scale — built to grow -->
                 <div class="ha-card" data-idx="3">
                   <div class="ha-hl">That scales to millions —<br>because I design for it upfront.</div>
-                  <div class="ha-sub">Multi-tenant SaaS with modular architecture. You grow into it — you don't outgrow it.</div>
+                  <div class="ha-sub">More customers, more data, more traffic — handled without a costly rewrite six months in.</div>
                 </div>
 
-                <!-- 4: Close — warm invite -->
+                <!-- 4: Process — AI at every stage -->
                 <div class="ha-card" data-idx="4">
+                  <div class="ha-flow">
+                    <div class="ha-flow-card ha-flow-card--accent">
+                      <div class="ha-flow-title">MCP-first</div>
+                      <div class="ha-flow-desc">AI writes the tests before the code, then keeps them updated.</div>
+                    </div>
+                    <div class="ha-flow-arrow">→</div>
+                    <div class="ha-flow-card">
+                      <div class="ha-flow-title">UI</div>
+                      <div class="ha-flow-desc">Screens scaffolded straight from the API contract, always in sync.</div>
+                    </div>
+                    <div class="ha-flow-arrow">→</div>
+                    <div class="ha-flow-card">
+                      <div class="ha-flow-title">Backend</div>
+                      <div class="ha-flow-desc">Each API gets exposed via MCP the moment it's built, so AI checks it against the user story right away.</div>
+                    </div>
+                    <div class="ha-flow-arrow">→</div>
+                    <div class="ha-flow-card">
+                      <div class="ha-flow-title">Production</div>
+                      <div class="ha-flow-desc">AI-assisted log analysis fixes bugs right after a client hits one.</div>
+                    </div>
+                  </div>
+                  <div class="ha-sub">Every stage of the build has AI in it — this is how it fits together.</div>
+                </div>
+
+                <!-- 5: Close — warm invite -->
+                <div class="ha-card" data-idx="5">
                   <div class="ha-hl">If this sounds like what you need,<br>I'd genuinely love to hear about it.</div>
                   <div class="ha-sub">No pitch decks, no pressure. Just drop me a message and let's figure out if we're a good fit — I usually reply within a day.</div>
                   <a href="mailto:100eunus@gmail.com" class="ha-card-cta">Let's talk →</a>
@@ -147,6 +270,10 @@
 
               </div>
 
+              <div class="ha-nav">
+                <button type="button" class="ha-nav-btn" id="ha-prev" aria-label="Previous slide">‹</button>
+                <button type="button" class="ha-nav-btn" id="ha-next" aria-label="Next slide">›</button>
+              </div>
 
             </div>
           </div>
@@ -164,7 +291,10 @@
   var cards   = Array.from(stage.querySelectorAll('.ha-card'));
   var active  = 0;
   var timer;
-  var DURATIONS = [5500, 3400, 3400, 3400, 5500];
+  var paused = false;
+  var DURATIONS = [2400, 4200, 4200, 4200, 4600, 6000];
+  var MID_ANIM = { 3: 'ha-hl-slide-x', 4: 'ha-hl-scale' };
+  var ALL_MID_CLASSES = ['ha-hl-reveal-fast', 'ha-hl-slide-x', 'ha-hl-scale'];
   var hookEl = cards[0] && cards[0].querySelector('.ha-hl');
 
   function revealHook() {
@@ -189,15 +319,33 @@
         hl.classList.add('ha-hl-reveal');
       }
     } else {
-      var hl = cards[active].querySelector('.ha-hl');
+      var hl = cards[active].querySelector('.ha-hl, .ha-flow');
+      var animClass = MID_ANIM[active] || 'ha-hl-reveal-fast';
       if (hl) {
-        hl.classList.remove('ha-hl-reveal-fast');
+        hl.classList.remove.apply(hl.classList, ALL_MID_CLASSES);
         void hl.offsetWidth;
-        hl.classList.add('ha-hl-reveal-fast');
+        hl.classList.add(animClass);
       }
     }
-    timer = setTimeout(function () { goTo(active + 1); }, DURATIONS[active]);
+    if (!paused) {
+      timer = setTimeout(function () { goTo(active + 1); }, DURATIONS[active]);
+    }
   }
+
+  var hoverTarget = stage.closest('.card') || stage;
+  hoverTarget.addEventListener('mouseenter', function () {
+    paused = true;
+    clearTimeout(timer);
+  });
+  hoverTarget.addEventListener('mouseleave', function () {
+    paused = false;
+    timer = setTimeout(function () { goTo(active + 1); }, DURATIONS[active]);
+  });
+
+  var prevBtn = document.getElementById('ha-prev');
+  var nextBtn = document.getElementById('ha-next');
+  if (prevBtn) prevBtn.addEventListener('click', function () { goTo(active - 1); });
+  if (nextBtn) nextBtn.addEventListener('click', function () { goTo(active + 1); });
 
   revealHook();
   timer = setTimeout(function () { goTo(1); }, DURATIONS[0]);
@@ -325,7 +473,7 @@
               <div class="col-12 col-sm">
                 <h2 class="h4 mb-1">Eunusur Rahaman</h2>
                 <p class="text-muted mb-2 small">
-                  Senior Software Engineer L1 — ABP/.NET · SaaS · Modular
+                  Software Engineer — AI-Powered Solutions — ABP/.NET · SaaS · Modular
                   Architecture
                 </p>
                 <p class="mb-3">

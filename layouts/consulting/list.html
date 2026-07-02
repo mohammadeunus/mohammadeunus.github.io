@@ -1,4 +1,56 @@
 {{ define "main" }}
+<style>
+/* ── AI-in-the-process cards ─────────────────────────── */
+.pw-row {
+  display: flex;
+  align-items: stretch;
+  gap: 0.5rem;
+}
+@media (max-width: 767.98px) {
+  .pw-row { flex-direction: column; }
+}
+.pw-card {
+  flex: 1 1 0;
+  background: var(--bs-body-bg, #fff);
+  border: 1px solid var(--bs-border-color, rgba(0,0,0,0.1));
+  border-radius: 12px;
+  box-shadow: 0 6px 18px -10px rgba(0,0,0,0.15);
+  padding: 1.1rem 1.1rem;
+  opacity: 0;
+  transform: translateX(70px);
+  transition: opacity 0.55s ease, transform 0.55s ease;
+}
+.pw-card--accent {
+  border-color: var(--bs-primary, #0d6efd);
+  background: rgba(var(--bs-primary-rgb, 13,110,253), 0.05);
+}
+.pw-card--accent .pw-title { color: var(--bs-primary, #0d6efd); }
+.pw-row.is-in .pw-card { opacity: 1; transform: translateX(0); }
+.pw-row.is-in .pw-card:nth-child(1) { transition-delay: 0s; }
+.pw-row.is-in .pw-card:nth-child(3) { transition-delay: 0.15s; }
+.pw-row.is-in .pw-card:nth-child(5) { transition-delay: 0.3s; }
+.pw-row.is-in .pw-card:nth-child(7) { transition-delay: 0.45s; }
+.pw-title { font-weight: 600; font-size: 0.85rem; margin-bottom: 0.25rem; }
+.pw-desc  { font-size: 0.78rem; color: var(--bs-secondary-color, #6c757d); margin: 0; }
+.pw-arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 28px;
+  color: var(--bs-primary, #0d6efd);
+  font-weight: 700;
+  opacity: 0;
+  transition: opacity 0.4s ease 0.5s;
+}
+.pw-row.is-in .pw-arrow { opacity: 1; }
+@media (max-width: 767.98px) {
+  .pw-arrow { width: auto; padding: 0.15rem 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pw-card, .pw-arrow { transition: none !important; opacity: 1 !important; transform: none !important; }
+}
+</style>
 <div class="container-xxl py-5">
 
   <!-- Hero -->
@@ -140,19 +192,34 @@
       <!-- AI in the workflow -->
       <div class="p-4 rounded" style="background:rgba(var(--bs-primary-rgb,13,110,253),0.04);border:1px solid rgba(var(--bs-primary-rgb,13,110,253),0.12);">
         <div class="fw-semibold small mb-3" style="color:var(--bs-primary,#0d6efd);text-transform:uppercase;letter-spacing:.06em;font-size:.68rem;">AI built into the process</div>
-        <div class="row g-3">
-          <div class="col-16 col-md-5">
-            <div class="fw-semibold small mb-1">Development</div>
-            <p class="text-muted mb-0" style="font-size:0.78rem;">AI-assisted scaffolding and code generation cut repetitive work, so more time goes into the architecture decisions that actually matter for your product.</p>
+        <div class="pw-row" id="pw-row">
+
+          <div class="pw-card pw-card--accent">
+            <div class="pw-title">MCP-first development</div>
+            <p class="pw-desc">AI writes the tests before the code, then keeps testing and updating them against the live API as things change. <a href="/blog/mcp-first-development-letting-ai-write-run-and-maintain-your-tests/">Read how it works →</a></p>
           </div>
-          <div class="col-16 col-md-5">
-            <div class="fw-semibold small mb-1">Testing</div>
-            <p class="text-muted mb-0" style="font-size:0.78rem;">AI-generated test coverage targets edge cases and regression paths that are easy to miss by hand — broader coverage without the manual grind.</p>
+
+          <div class="pw-arrow" aria-hidden="true">→</div>
+
+          <div class="pw-card">
+            <div class="pw-title">UI generation</div>
+            <p class="pw-desc">AI scaffolds screens and components straight from the API contract, so the frontend and backend stay in sync from the first commit.</p>
           </div>
-          <div class="col-16 col-md-5">
-            <div class="fw-semibold small mb-1">Auto bug fixes</div>
-            <p class="text-muted mb-0" style="font-size:0.78rem;">Static analysis paired with AI-suggested fixes catches common issues before they reach production, not after a user reports them.</p>
+
+          <div class="pw-arrow" aria-hidden="true">→</div>
+
+          <div class="pw-card">
+            <div class="pw-title">Backend</div>
+            <p class="pw-desc">The moment an API is built, it's exposed through MCP so AI can evaluate it against the user story right away — not after a manual QA pass catches the gap.</p>
           </div>
+
+          <div class="pw-arrow" aria-hidden="true">→</div>
+
+          <div class="pw-card">
+            <div class="pw-title">To production</div>
+            <p class="pw-desc">AI-assisted log analysis diagnoses and fixes bugs right after a client hits an issue — not days later after a support ticket works its way through the queue.</p>
+          </div>
+
         </div>
       </div>
 
@@ -168,4 +235,25 @@
   </div>
 
 </div>
+
+<script>
+(function () {
+  'use strict';
+  var row = document.getElementById('pw-row');
+  if (!row) return;
+  if (!('IntersectionObserver' in window)) {
+    row.classList.add('is-in');
+    return;
+  }
+  var observer = new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry) {
+      if (entry.isIntersecting) {
+        row.classList.add('is-in');
+        observer.disconnect();
+      }
+    });
+  }, { threshold: 0.3 });
+  observer.observe(row);
+}());
+</script>
 {{ end }}
