@@ -40,14 +40,14 @@ I built this for testing. The side benefit I didn't plan for is debugging. Once 
 
 ## What This Actually Looks Like
 
-A feature request comes in as a well-defined user story: arena owners should be able to block out maintenance slots, and any booking already in that window must be rejected.
+A feature request comes in as a well-defined user story: workspace owners should be able to block out maintenance slots, and any booking already in that window must be rejected.
 
 {{< figure src="mcp-first-flow.svg" alt="MCP-first development flow — user story to AI-drafted tests, API built and exposed via MCP, merge triggers Claude, Claude tests the live tool and reports on the PR, green signal starts UI work" >}}
 
 1. **AI reads the user story and drafts the test cases first** — before I write a line of the endpoint. These are real integration tests, written against the application service, not against the MCP tool — the tool is just a thin wrapper around it:
 
 ```csharp
-public class MaintenanceSlotAppService_Tests : ArenaApplicationTestBase
+public class MaintenanceSlotAppService_Tests : WorkspaceApplicationTestBase
 {
     private readonly IMaintenanceSlotAppService _maintenanceSlotAppService;
 
@@ -63,13 +63,13 @@ public class MaintenanceSlotAppService_Tests : ArenaApplicationTestBase
         {
             await _maintenanceSlotAppService.BlockAsync(new BlockMaintenanceSlotDto
             {
-                ArenaId = _testArena.Id,
+                WorkspaceId = _testWorkspace.Id,
                 Start = DateTime.Parse("2026-08-01T10:00:00Z"),
                 End = DateTime.Parse("2026-08-01T12:00:00Z")
             });
         });
 
-        exception.Code.ShouldBe("Arena:MaintenanceSlotOverlapsBooking");
+        exception.Code.ShouldBe("Workspace:MaintenanceSlotOverlapsBooking");
     }
 }
 ```
@@ -80,7 +80,7 @@ public class MaintenanceSlotAppService_Tests : ArenaApplicationTestBase
 
 ```
 ✅ block_maintenance_slot — 4/4 cases passed
-✅ get_arena_availability — 2/2 cases passed
+✅ get_workspace_availability — 2/2 cases passed
 ❌ update_maintenance_slot — 1/2 cases failed
    expected 409 Conflict on overlapping update, got 200 OK
 ```

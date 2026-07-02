@@ -262,17 +262,17 @@ In a multi-tenant ABP app, `"room-types"` alone is a bug: tenant A's write would
 ```csharp
 public static class ResourceKey
 {
-    public static string For(string resource, Guid? tenantId, Guid? arenaId = null)
+    public static string For(string resource, Guid? tenantId, Guid? workspaceId = null)
     {
         var key = $"{resource}:t:{tenantId}";
-        if (arenaId.HasValue)
-            key += $":a:{arenaId}";
+        if (workspaceId.HasValue)
+            key += $":a:{workspaceId}";
         return key;
     }
 }
 ```
 
-Every key the decorator reads and every key the invalidator bumps goes through the same builder. If your data is scoped further (per branch, per arena, per user), the scope belongs in the key too — that's what the optional third segment is: a tenant-wide list and an arena-filtered list of the same resource are different responses, so they get different version rows.
+Every key the decorator reads and every key the invalidator bumps goes through the same builder. If your data is scoped further (per branch, per workspace, per user), the scope belongs in the key too — that's what the optional third segment is: a tenant-wide list and an workspace-filtered list of the same resource are different responses, so they get different version rows.
 
 The entity is minimal — the resource key is the primary key, so the row is found by ID, never by scan:
 
@@ -359,7 +359,7 @@ Register it once in your app config and every GET request gets validation for fr
 
 A few practical notes from wiring this into a real app:
 
-- **Key by more than the URL when your data is.** If a header scopes the data (a branch id, an arena id, a tenant), the same URL returns different bodies — include that header value in the cache key, and register this interceptor *after* the one that sets the header.
+- **Key by more than the URL when your data is.** If a header scopes the data (a branch id, an workspace id, a tenant), the same URL returns different bodies — include that header value in the cache key, and register this interceptor *after* the one that sets the header.
 - **Clear the map on logout and tenant/scope switches.** A `Map.clear()` is cheap; a stale cross-tenant body is not.
 - **Let the server send `Cache-Control: no-store`** (as the decorator above does). Otherwise the browser's own HTTP cache can answer the conditional request before your interceptor ever sees the 304, and you end up with two caches disagreeing about ownership.
 - **Bound the map** (a simple LRU cap of ~100 entries) so a long-lived session doesn't grow it forever.
@@ -393,13 +393,13 @@ public class RoomTypeVersionInvalidator :
     {
         // Bump every key the decorator can read this entity under.
         await _versions.IncrementAsync(ResourceKey.For("room-types", entity.TenantId));
-        if (entity.ArenaId is not null)
-            await _versions.IncrementAsync(ResourceKey.For("room-types", entity.TenantId, entity.ArenaId));
+        if (entity.WorkspaceId is not null)
+            await _versions.IncrementAsync(ResourceKey.For("room-types", entity.TenantId, entity.WorkspaceId));
     }
 }
 ```
 
-Two details worth copying: the tenant id comes from **the entity on the event data**, not `ICurrentTenant` — the handler then works no matter what ambient context it runs in. And if a resource is served under more than one scope (a tenant-wide list *and* a per-arena list), the handler must bump **every** key the decorator reads — a key that is read but never bumped is a permanent 304.
+Two details worth copying: the tenant id comes from **the entity on the event data**, not `ICurrentTenant` — the handler then works no matter what ambient context it runs in. And if a resource is served under more than one scope (a tenant-wide list *and* a per-workspace list), the handler must bump **every** key the decorator reads — a key that is read but never bumped is a permanent 304.
 
 The application service now publishes **nothing**. It has no knowledge of versions, ETags, or cache infrastructure — it doesn't even know an event exists:
 
