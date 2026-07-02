@@ -1,6 +1,8 @@
 import hljs from 'highlight.js/lib/core';
 
 import javascript from 'highlight.js/lib/languages/javascript';
+import typescript from 'highlight.js/lib/languages/typescript';
+import csharp from 'highlight.js/lib/languages/csharp';
 import json from 'highlight.js/lib/languages/json';
 import bash from 'highlight.js/lib/languages/bash';
 import xml from 'highlight.js/lib/languages/xml';
@@ -10,6 +12,11 @@ import markdown from 'highlight.js/lib/languages/markdown';
 import python from 'highlight.js/lib/languages/python';
 
 hljs.registerLanguage('javascript', javascript);
+hljs.registerLanguage('js', javascript);
+hljs.registerLanguage('typescript', typescript);
+hljs.registerLanguage('ts', typescript);
+hljs.registerLanguage('csharp', csharp);
+hljs.registerLanguage('cs', csharp);
 hljs.registerLanguage('json', json);
 hljs.registerLanguage('bash', bash);
 hljs.registerLanguage('html', xml);

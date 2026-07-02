@@ -1,6 +1,7 @@
 /*
 
-Based on Ascetic by (c) Ivan Sagalaev <Maniac@SoftwareManiacs.Org>
+VS Code "Dark+" (vs2015) syntax highlighting for highlight.js, applied
+regardless of site theme — code blocks always render on a dark background.
 
 */
 
@@ -8,55 +9,105 @@ Based on Ascetic by (c) Ivan Sagalaev <Maniac@SoftwareManiacs.Org>
   display: block;
   overflow-x: auto;
   padding: 1.25rem 1.5rem;
-  background: $beige;
-  color: $body-color;
-}
-
-.hljs-string,
-.hljs-variable,
-.hljs-template-variable,
-.hljs-symbol,
-.hljs-bullet,
-.hljs-section,
-.hljs-addition,
-.hljs-attribute,
-.hljs-link {
-  color: $pink-500;
-}
-
-.hljs-comment,
-.hljs-quote,
-.hljs-meta,
-.hljs-deletion {
-  color: #888;
+  background: #1e1e1e;
+  color: #dcdcdc;
 }
 
 .hljs-keyword,
-.hljs-selector-tag,
-.hljs-section,
+.hljs-literal,
 .hljs-name,
-.hljs-type,
-.hljs-strong {
-  font-weight: bold;
+.hljs-symbol,
+.hljs-tag,
+.hljs-selector-tag {
+  color: #569cd6;
+}
+
+.hljs-link {
+  color: #569cd6;
+  text-decoration: underline;
+}
+
+.hljs-built_in,
+.hljs-type {
+  color: #4ec9b0;
+}
+
+.hljs-class,
+.hljs-number {
+  color: #b8d7a3;
+}
+
+.hljs-meta .hljs-string,
+.hljs-string {
+  color: #ce9178;
+}
+
+.hljs-regexp,
+.hljs-template-tag {
+  color: #d16969;
+}
+
+.hljs-formula,
+.hljs-function,
+.hljs-params,
+.hljs-subst,
+.hljs-title {
+  color: #dcdcaa;
+}
+
+.hljs-comment,
+.hljs-quote {
+  color: #6a9955;
+  font-style: italic;
+}
+
+.hljs-doctag {
+  color: #608b4e;
+}
+
+.hljs-meta,
+.hljs-meta .hljs-keyword,
+.hljs-attr {
+  color: #9cdcfe;
+}
+
+.hljs-template-variable,
+.hljs-variable {
+  color: #9cdcfe;
+}
+
+.hljs-attribute {
+  color: #9cdcfe;
+}
+
+.hljs-section {
+  color: #ffd700;
+}
+
+.hljs-bullet,
+.hljs-selector-attr,
+.hljs-selector-class,
+.hljs-selector-id,
+.hljs-selector-pseudo {
+  color: #d7ba7d;
 }
 
 .hljs-emphasis {
   font-style: italic;
 }
 
-[data-dark-mode] body .hljs {
-  background: $body-overlay-dark;
-  color: $body-color-dark;
+.hljs-strong {
+  font-weight: 700;
 }
 
-[data-dark-mode] body .hljs-string,
-[data-dark-mode] body .hljs-variable,
-[data-dark-mode] body .hljs-template-variable,
-[data-dark-mode] body .hljs-symbol,
-[data-dark-mode] body .hljs-bullet,
-[data-dark-mode] body .hljs-section,
-[data-dark-mode] body .hljs-addition,
-[data-dark-mode] body .hljs-attribute,
-[data-dark-mode] body .hljs-link {
-  color: $blue-300;
+.hljs-addition {
+  background-color: #144212;
+  display: inline-block;
+  width: 100%;
+}
+
+.hljs-deletion {
+  background-color: #660000;
+  display: inline-block;
+  width: 100%;
 }
