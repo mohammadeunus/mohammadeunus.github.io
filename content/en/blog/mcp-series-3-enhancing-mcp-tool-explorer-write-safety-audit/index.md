@@ -14,7 +14,7 @@ contributors: []
 pinned: false
 homepage: false
 series: "MCP Series"
-series_weight: 3
+series_weight: 4
 ---
 
 Series 1 and 2 shipped a working, secured server. Then we put it in front of real users.
@@ -226,8 +226,6 @@ Write safety makes AI-driven mutations production-worthy. The two-step confirmat
 The audit trail answers the question that comes up after every incident: "what did the AI do, exactly, and when?" The modification source header and Serilog enrichment give you that answer from existing backend logs with no extra instrumentation.
 
 None of these were complex to build. The tool explorer is a single HTML file. The confirmation and idempotency services are two interfaces and two in-memory implementations. The audit stamping is twelve lines in a handler that was already running on every request. The total investment was a few days of work. The return was a server the team trusts to run in production against real data.
-
-Everything so far has been tested against one AI client: Claude. The next post tackles the obvious follow-up question — can ChatGPT use the same server? The answer turns out to be one server, not two, and the hardest piece built for Claude isn't needed at all.
 
 {{< series-next
   title="Model Context Protocol Series 4 — Serving ChatGPT and Claude from One MCP Server"

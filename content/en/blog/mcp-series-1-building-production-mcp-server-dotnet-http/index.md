@@ -382,14 +382,8 @@ Ask: _"Give me a random number between 10 and 20"_ — Claude calls `GetRandomNu
 
 ---
 
-## What's Next
-
-No authentication yet — anyone who knows the URL can call your tools, and the API receives unauthenticated proxy calls. Series 2 adds OAuth 2.1 Bearer on the MCP endpoint and client credentials on the proxy side.
-
-**Series 2 →** Securing the MCP server with OAuth Bearer tokens, the `WWW-Authenticate` header flow, and how Claude Code handles authentication challenges automatically.
-
 {{< series-next
-  title="Model Context Protocol Series 2 — OAuth 2.1 for MCP: Connecting Claude to Your Real Users with OpenIddict"
-  description="The server works — but anyone who knows the URL can call your tools. Series 2 adds OAuth 2.1 with OpenIddict: two clients, discovery endpoints, and the bridge middleware that solves Claude's random localhost port problem."
-  url="/blog/model-context-protocol-series-2-oauth-2.1-for-mcp-connecting-claude-to-your-real-users-with-openiddict/"
+  title="Model Context Protocol Series 2A — OAuth 2.1 for MCP: Connecting Claude to Your Real Users with OpenIddict"
+  description="The server works — but anyone who knows the URL can call your tools. Series 2A adds OAuth 2.1 with OpenIddict: two clients, discovery endpoints, mock DCR, and bearer token forwarding."
+  url="/blog/model-context-protocol-series-2a-oauth-2.1-for-mcp-connecting-claude-to-your-real-users-with-openiddict/"
 >}}

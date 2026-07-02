@@ -14,7 +14,7 @@ contributors: []
 pinned: false
 homepage: false
 series: "MCP Series"
-series_weight: 4
+series_weight: 5
 ---
 
 After three posts building and securing an MCP server for Claude, a colleague asked the obvious question: can ChatGPT use it too? I assumed yes, eventually — after another week of OAuth plumbing, a forked server, and a pile of special-casing I didn't want to write.

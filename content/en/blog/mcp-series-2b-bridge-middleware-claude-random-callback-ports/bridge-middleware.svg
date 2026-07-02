@@ -1,0 +1,124 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="632" viewBox="0 0 1000 632" font-family="Segoe UI, Arial, sans-serif" font-size="13">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#94a3b8"/>
+    </marker>
+    <marker id="arr-purple" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#a855f7"/>
+    </marker>
+  </defs>
+
+  <rect width="1000" height="632" fill="#ffffff"/>
+
+  <!-- ══ HEADER ══ -->
+  <text x="24" y="32" font-size="17" font-weight="bold" fill="#0f172a">ClaudeLocalhostBridgeMiddleware — the 4-step flow</text>
+  <text x="24" y="52" font-size="12" font-style="italic" fill="#64748b">A mail-forwarding service: OAuth mails the code to one registered address — the bridge forwards it to wherever Claude lives today.</text>
+
+  <rect x="762" y="14" width="222" height="26" rx="13" fill="#fff4e8"/>
+  <text x="873" y="31" text-anchor="middle" font-size="11" font-weight="bold" fill="#c2540a">Development only — env.IsDevelopment()</text>
+
+  <!-- ══ STEP 1 — Authorize Request ══ -->
+  <rect x="24" y="72" width="460" height="138" rx="14" fill="#f0f6ff"/>
+  <circle cx="52" cy="96" r="13" fill="#2563eb"/>
+  <text x="52" y="101" text-anchor="middle" font-size="13" font-weight="bold" fill="#ffffff">1</text>
+  <text x="74" y="101" font-size="13" font-weight="bold" fill="#1e3a8a">Authorize request — rewrite on the way in</text>
+
+  <rect x="44" y="116" width="188" height="40" rx="9" fill="#dbeafe"/>
+  <text x="138" y="132" text-anchor="middle" font-size="10" font-weight="bold" fill="#2563eb">FROM CLAUDE</text>
+  <text x="138" y="148" text-anchor="middle" font-size="10.5" fill="#0f172a" font-family="Consolas, monospace">localhost:39616/callback</text>
+
+  <line x1="234" y1="136" x2="262" y2="136" stroke="#94a3b8" stroke-width="1.6" marker-end="url(#arr)"/>
+
+  <rect x="266" y="116" width="200" height="40" rx="9" fill="#dcfce7"/>
+  <text x="366" y="132" text-anchor="middle" font-size="10" font-weight="bold" fill="#15803d">TO OPENIDDICT</text>
+  <text x="366" y="148" text-anchor="middle" font-size="10.5" fill="#0f172a" font-family="Consolas, monospace">/claude-callback-bridge</text>
+
+  <text x="44" y="176" font-size="11" fill="#475569">•  Random port saved in an HttpOnly cookie (15-min TTL)</text>
+  <text x="44" y="194" font-size="11" fill="#475569">•  Redirect URI parsed and validated: loopback + /callback only → else 400</text>
+
+  <!-- ══ STEP 2 — User Login ══ -->
+  <rect x="516" y="72" width="460" height="138" rx="14" fill="#f0fdf4"/>
+  <circle cx="544" cy="96" r="13" fill="#16a34a"/>
+  <text x="544" y="101" text-anchor="middle" font-size="13" font-weight="bold" fill="#ffffff">2</text>
+  <text x="566" y="101" font-size="13" font-weight="bold" fill="#14532d">User logs in — OpenIddict sees nothing unusual</text>
+
+  <text x="536" y="128" font-size="11" fill="#475569">•  Standard OpenIddict authorization flow, untouched</text>
+  <text x="536" y="146" font-size="11" fill="#475569">•  /claude-callback-bridge matches the registered redirect URI  ✓</text>
+  <text x="536" y="164" font-size="11" fill="#475569">•  Login form served as usual; user enters credentials</text>
+  <text x="536" y="182" font-size="11" fill="#475569">•  Auth code issued → browser redirected to /claude-callback-bridge</text>
+
+  <!-- Step 1 → Step 2 arrow -->
+  <line x1="484" y1="136" x2="512" y2="136" stroke="#94a3b8" stroke-width="1.6" marker-end="url(#arr)"/>
+
+  <!-- Step 2 → Step 3 dashed elbow -->
+  <path d="M 746 210 L 746 230 L 254 230 L 254 248" fill="none" stroke="#94a3b8" stroke-width="1.4" stroke-dasharray="5 4" marker-end="url(#arr)"/>
+  <text x="500" y="226" text-anchor="middle" font-size="10.5" fill="#64748b" font-style="italic">browser follows the redirect</text>
+
+  <!-- ══ STEP 3 — Callback Bridge ══ -->
+  <rect x="24" y="252" width="460" height="140" rx="14" fill="#faf5ff"/>
+  <circle cx="52" cy="276" r="13" fill="#9333ea"/>
+  <text x="52" y="281" text-anchor="middle" font-size="13" font-weight="bold" fill="#ffffff">3</text>
+  <text x="74" y="281" font-size="13" font-weight="bold" fill="#581c87">Bridge forwards the code back to Claude</text>
+
+  <text x="44" y="308" font-size="11" fill="#475569">•  Middleware reads the original port from the cookie, re-validates it</text>
+  <text x="44" y="326" font-size="11" fill="#475569">•  Cookie deleted immediately — single use</text>
+
+  <rect x="44" y="340" width="192" height="34" rx="9" fill="#f3e8ff"/>
+  <text x="140" y="354" text-anchor="middle" font-size="10" font-weight="bold" fill="#9333ea">BRIDGE RECEIVES</text>
+  <text x="140" y="368" text-anchor="middle" font-size="10" fill="#0f172a" font-family="Consolas, monospace">…bridge?code=…&amp;state=…</text>
+
+  <line x1="240" y1="357" x2="266" y2="357" stroke="#a855f7" stroke-width="1.6" marker-end="url(#arr-purple)"/>
+
+  <rect x="270" y="340" width="196" height="34" rx="9" fill="#dbeafe"/>
+  <text x="368" y="354" text-anchor="middle" font-size="10" font-weight="bold" fill="#2563eb">302 → CLAUDE'S PORT</text>
+  <text x="368" y="368" text-anchor="middle" font-size="10" fill="#0f172a" font-family="Consolas, monospace">localhost:39616/callback?code=…</text>
+
+  <!-- ══ STEP 4 — Token Exchange ══ -->
+  <rect x="516" y="252" width="460" height="140" rx="14" fill="#fff8f0"/>
+  <circle cx="544" cy="276" r="13" fill="#ea580c"/>
+  <text x="544" y="281" text-anchor="middle" font-size="13" font-weight="bold" fill="#ffffff">4</text>
+  <text x="566" y="281" font-size="13" font-weight="bold" fill="#7c2d12">Token request — rewrite again</text>
+
+  <rect x="820" y="266" width="144" height="20" rx="10" fill="#fee2e2"/>
+  <text x="892" y="280" text-anchor="middle" font-size="10" font-weight="bold" fill="#dc2626">the step everyone misses</text>
+
+  <text x="536" y="306" font-size="11" fill="#475569">•  OpenIddict checks redirect_uri matches the authorize request exactly —</text>
+  <text x="536" y="322" font-size="11" fill="#475569">   like the bank double-checking the address on the receipt, not just the envelope</text>
+
+  <rect x="536" y="334" width="188" height="40" rx="9" fill="#ffedd5"/>
+  <text x="630" y="350" text-anchor="middle" font-size="10" font-weight="bold" fill="#c2540a">FROM CLAUDE (form body)</text>
+  <text x="630" y="366" text-anchor="middle" font-size="10.5" fill="#0f172a" font-family="Consolas, monospace">localhost:39616/callback</text>
+
+  <line x1="726" y1="354" x2="754" y2="354" stroke="#94a3b8" stroke-width="1.6" marker-end="url(#arr)"/>
+
+  <rect x="758" y="334" width="206" height="40" rx="9" fill="#dcfce7"/>
+  <text x="861" y="350" text-anchor="middle" font-size="10" font-weight="bold" fill="#15803d">TO OPENIDDICT — MATCH ✓</text>
+  <text x="861" y="366" text-anchor="middle" font-size="10.5" fill="#0f172a" font-family="Consolas, monospace">/claude-callback-bridge</text>
+
+  <!-- Step 3 → Step 4 arrow -->
+  <line x1="484" y1="320" x2="512" y2="320" stroke="#94a3b8" stroke-width="1.6" marker-end="url(#arr)"/>
+  <text x="498" y="308" text-anchor="middle" font-size="10" fill="#64748b" font-style="italic">Claude</text>
+  <text x="498" y="336" text-anchor="middle" font-size="10" fill="#64748b" font-style="italic">exchanges</text>
+
+  <!-- ══ RESULT STRIP ══ -->
+  <rect x="24" y="412" width="952" height="40" rx="14" fill="#f0fdf4"/>
+  <text x="500" y="437" text-anchor="middle" font-size="12.5" fill="#14532d"><tspan font-weight="bold">Result:</tspan>  OpenIddict sees one consistent, pre-registered redirect URI at both steps → issues a real user JWT  →  Claude is authenticated as the logged-in user</text>
+
+  <!-- ══ SECURITY STRIP ══ -->
+  <rect x="24" y="466" width="952" height="42" rx="14" fill="#fef2f2"/>
+  <text x="44" y="484" font-size="11.5" font-weight="bold" fill="#991b1b">Security properties</text>
+  <text x="44" y="501" font-size="11" fill="#475569">Parsed URI check — Uri.IsLoopback + /callback path, never Contains("localhost")   ·   HttpOnly cookie, 15-min TTL, single use   ·   registered only when env.IsDevelopment()</text>
+
+  <!-- ══ PROBLEM / SOLUTION ══ -->
+  <rect x="24" y="522" width="460" height="96" rx="14" fill="#fff8f0"/>
+  <text x="44" y="544" font-size="12" font-weight="bold" fill="#7c2d12">The problem</text>
+  <text x="44" y="564" font-size="11" fill="#475569">•  Claude picks a random callback port (39616 today, 52041 tomorrow)</text>
+  <text x="44" y="582" font-size="11" fill="#475569">•  OpenIddict requires exact-match, pre-registered redirect URIs</text>
+  <text x="44" y="600" font-size="11" fill="#475569">•  Can't register infinite ports · wildcards are a hole · can't patch Claude</text>
+
+  <rect x="516" y="522" width="460" height="96" rx="14" fill="#f0fdf4"/>
+  <text x="536" y="544" font-size="12" font-weight="bold" fill="#14532d">The solution</text>
+  <text x="536" y="564" font-size="11" fill="#475569">•  Register one fixed URI: /claude-callback-bridge</text>
+  <text x="536" y="582" font-size="11" fill="#475569">•  Remember the random port in a cookie; rewrite it out of both requests</text>
+  <text x="536" y="600" font-size="11" fill="#475569">•  Forward the code back to Claude's port — both sides none the wiser</text>
+</svg>

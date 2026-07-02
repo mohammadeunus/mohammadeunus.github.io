@@ -1,11 +1,10 @@
 ---
-title: "Model Context Protocol Series 2 — OAuth 2.1 for MCP: Connecting Claude to Your Real Users with OpenIddict"
+title: "Model Context Protocol Series 2A — OAuth 2.1 for MCP: Connecting Claude to Your Real Users with OpenIddict"
 slug: mcp-series-2-oauth-openiddict-connect-claude-to-real-users
-description: "How to wire OAuth 2.1 PKCE authentication into an ASP.NET Core MCP server so Claude authenticates as the real logged-in user — not a service account — using OpenIddict, discovery endpoints, mock DCR, and a bridge middleware that solves the random localhost port problem."
-excerpt: "A service account has admin access and no tenant context. This post shows the full OAuth 2.1 flow that makes Claude authenticate as the real user: discovery endpoints, mock Dynamic Client Registration, bearer token forwarding, and the bridge middleware that tames Claude's random callback ports."
-date: 2026-06-18T00:00:00+06:00
-lastmod: 2026-06-18T00:00:00+06:00
-draft: true
+description: "How to wire OAuth 2.1 PKCE authentication into an ASP.NET Core MCP server so Claude authenticates as the real logged-in user — not a service account — using OpenIddict, discovery endpoints, mock DCR, JWT validation, and bearer token forwarding."
+excerpt: "A service account has admin access and no tenant context. This post shows the OAuth 2.1 flow that makes Claude authenticate as the real user: discovery endpoints, mock Dynamic Client Registration, JWT validation, and bearer token forwarding. (Claude's random callback ports get their own post — Series 2B.)"
+date: 2026-07-02T00:00:00+06:00
+lastmod: 2026-07-02T00:00:00+06:00
 weight: 50
 images: []
 categories: ["Development", "AI", "MCP", ".NET", "Security"]
@@ -21,14 +20,12 @@ Series 1 ended with a working MCP server — but every tool call it made to the 
 
 That's not a security model. That's a liability.
 
-This post replaces the service account with OAuth 2.1 bearer token forwarding — so Claude authenticates as the real logged-in user, inherits their exact permissions, and every action it takes is stamped with their identity. Here's what it covers:
+This post replaces the service account with OAuth 2.1 bearer token forwarding — so Claude authenticates as the real logged-in user, inherits their exact permissions, and every action it takes is stamped with their identity. It is part A of a pair: everything here is the OAuth architecture itself; the local-machine setup — Claude's random callback ports, the bridge middleware, the Node.js certificate problem, and the full debugging field guide — is **Series 2B**. Here's what part A covers:
 
 - [Why a service account is the wrong design — and what bearer token forwarding gives you instead](#why-not-a-service-account)
 - [The two-client design: PKCE for Claude Code, client credentials for scripts and CI](#the-two-client-design)
 - [The OAuth discovery chain Claude follows automatically before it ever prompts you to log in](#oauth-discovery-endpoints)
 - [A mock DCR endpoint that returns your pre-registered client without touching the database](#the-mock-dcr-endpoint)
-- [Why Claude's random localhost ports break redirect URI validation — and what it forces you to build](#the-localhost-port-problem)
-- [The bridge middleware: four steps that map an unpredictable local port to a fixed registered URI](#the-bridge-middleware-solution)
 - [JWT Bearer validation on the MCP server and the one dev-only config that must not reach production](#jwt-bearer-authentication-on-the-mcp-server)
 - [The delegating handler that re-attaches the user JWT to every outgoing backend call](#bearer-token-forwarding)
 - [Disabling ABP's default service account so it does not silently overwrite your forwarded token](#disabling-the-service-account)
@@ -50,6 +47,25 @@ This is also the correct audit story. The change log, the activity stream, every
 ## The Two-Client Design
 
 Before wiring up OAuth, you need to decide which clients OpenIddict will know about. I settled on two distinct clients for different use cases.
+
+{{< details "What is PKCE?" >}}
+**In plain terms:** PKCE (say "pixy") is a way to prove that the app asking to exchange a login code for an access token is the *same* app that started the login in the first place — without needing a secret password baked into the app itself.
+
+That matters because Claude Code and Claude Desktop run on your own laptop. Anything embedded in that app — a password, a secret key — could be dug out of it. So instead of a fixed secret, PKCE has the app generate a *one-time* secret for each login attempt, keep half of it hidden, and show OpenIddict only a scrambled version up front. At the very end, it reveals the original — and only the app that started the flow could possibly have it.
+
+**Why use it:** the standard OAuth flow assumes the app has a secret only it knows, baked in at registration time, and shown once when exchanging the code for a token. That works fine for a server you control, where the secret sits in a config file nobody outside your team can read. It falls apart for an app installed on someone else's machine — decompile it, inspect its traffic, or read its config, and the "secret" is right there for anyone to reuse. Worse, the redirect step in OAuth (the browser bouncing back to the app with a `code` in the URL) is exposed to anything else on the same machine that's watching for it — another app, a malicious browser extension, a proxy. Without PKCE, whoever grabs that `code` first can trade it for a token themselves. PKCE closes that gap by making the `code` alone useless: it's only redeemable together with a one-time value that never left the device until the very last step, and only the app that generated it has that value.
+
+**With an example:**
+
+1. Claude is about to send you to the login page. First, it makes up a random string, e.g. `verifier = "x8fH2..."`. This never leaves your machine yet.
+2. It scrambles that string with a one-way hash: `challenge = SHA256(verifier)`. A hash can't be reversed — you can turn `verifier` into `challenge`, but not `challenge` back into `verifier`.
+3. Claude sends you to `/connect/authorize?...&code_challenge=challenge` — only the *scrambled* version travels over the network. You log in normally.
+4. OpenIddict redirects back with a short-lived `code`. It also remembers which `challenge` was paired with that code.
+5. Claude calls `/connect/token` with both the `code` **and** the original `verifier` (never sent before now).
+6. OpenIddict hashes the `verifier` it just received and checks: does it match the `challenge` from step 3? If yes, it's provably the same app that started the flow, so it hands back the access token.
+
+If an attacker intercepted the authorization `code` in step 4 (say, by snooping the redirect), it's useless to them — they don't have the `verifier`, and they can't fake it because they never saw it in the first place.
+{{< /details >}}
 
 **`MyApp_Claude`** is a public client — no secret, PKCE required. This is the client used by Claude Desktop and Claude Code. Because these are installed on a developer's local machine, there is no safe place to store a client secret. PKCE (Proof Key for Code Exchange) fills that role: each authorization request generates a random code verifier, which is hashed and sent with the initial request, then verified at token exchange. Even if someone intercepts the authorization code, they cannot exchange it without the original verifier.
 
@@ -80,7 +96,7 @@ await manager.CreateAsync(new OpenIddictApplicationDescriptor
 });
 ```
 
-Notice the `RedirectUri` is `/claude-callback-bridge` on the identity server — not a `localhost` port. That is the whole point of the bridge middleware, which I will explain shortly.
+Notice the `RedirectUri` is `/claude-callback-bridge` on the identity server — not a `localhost` port. That URI is the anchor for the bridge middleware that reconciles Claude's random callback ports with OpenIddict's exact-match rule — the subject of **Series 2B**.
 
 {{< figure src="oauth-full-flow.svg" alt="Complete OAuth 2.1 flow for MCP — from discovery through to authenticated API calls" >}}
 
@@ -88,18 +104,38 @@ Notice the `RedirectUri` is `/claude-callback-bridge` on the identity server —
 
 ## OAuth Discovery Endpoints
 
-Before Claude can start an OAuth flow, it needs to find your authorization server. It does this through a chain of well-known discovery documents, specified in RFC 8414 and RFC 9728. These endpoints live on the MCP server, not on the identity server itself.
+Claude arrives at your server knowing nothing — no login page URL, no client id, nothing. Discovery is the paper trail it follows to teach itself: each well-known document names the next stop, and every stop is validated, so one wrong field anywhere stops the chain cold. The documents are specified in RFC 8414 and RFC 9728, and they live on the MCP server, not on the identity server itself.
 
 The flow is:
 
-1. Claude calls the MCP server's `/mcp` endpoint without a token. The server returns `401`.
-2. Claude looks at the `WWW-Authenticate` header and hits `GET /.well-known/oauth-protected-resource`.
-3. That response tells Claude the `authorization_endpoint`, `token_endpoint`, and — critically — the `registration_endpoint`.
-4. Claude hits `GET /.well-known/openid-configuration` to get the full OIDC configuration.
-5. Claude registers as a client via `POST /connect/register`.
-6. Claude starts the PKCE authorization flow.
+{{< figure src="oauth-discovery-flow.svg" alt="OAuth discovery chain — from the unauthenticated 401 through protected resource metadata, OIDC configuration, dynamic client registration, to the start of the PKCE flow" >}}
 
-None of this is magic. It is spec-compliant auto-discovery. The MCP server exposes these endpoints, which point at the real identity server for all the actual OAuth work:
+Step 2 only works if the 401 actually carries the pointer. ASP.NET Core's JWT Bearer handler emits a bare `WWW-Authenticate: Bearer` — it does not know about RFC 9728 resource metadata. A small response middleware adds it:
+
+```csharp
+public class WwwAuthenticateMiddleware(RequestDelegate next, IConfiguration configuration)
+{
+    public async Task InvokeAsync(HttpContext context)
+    {
+        await next(context);
+
+        if (context.Response.StatusCode == 401 && !context.Response.Headers.ContainsKey("WWW-Authenticate"))
+        {
+            var selfUrl = configuration["App:SelfUrl"]?.TrimEnd('/')
+                ?? $"{context.Request.Scheme}://{context.Request.Host}";
+
+            context.Response.Headers["WWW-Authenticate"] =
+                $"Bearer realm=\"mcp\", resource_metadata=\"{selfUrl}/.well-known/oauth-protected-resource\"";
+        }
+    }
+}
+```
+
+Without this, the 401 is a dead end and Claude never finds your authorization server.
+
+Two wiring details that cost me a debugging round: register this middleware **before** `UseAuthentication()`/`UseAuthorization()` (authorization short-circuits on a failed challenge — anything after it never sees the 401), and check for `resource_metadata` rather than the header's absence (the JWT challenge always sets a bare `WWW-Authenticate: Bearer`, so "add if missing" never fires).
+
+The rest is spec-compliant auto-discovery, not magic. The MCP server exposes these endpoints, which point at the real identity server for all the actual OAuth work:
 
 ```csharp
 [HttpGet(".well-known/oauth-protected-resource")]
@@ -108,12 +144,19 @@ public ActionResult<object> OAuthProtectedResource()
 {
     var identityServer = _configuration["App:IdentityServerUrl"].TrimEnd('/');
 
+    var selfUrl = _configuration["App:SelfUrl"].TrimEnd('/');
+
     return Ok(new
     {
-        issuer = identityServer + "/",
+        // RFC 9728: `resource` identifies THIS protected resource — the MCP server.
+        // Claude validates it against the /mcp URL it connected to; returning the
+        // identity server here fails with:
+        //   "Protected resource http://... does not match expected .../mcp (or origin)"
+        resource = selfUrl + "/mcp",
+        authorization_servers = new[] { identityServer },
         authorization_endpoint = identityServer + "/connect/authorize",
         token_endpoint = identityServer + "/connect/token",
-        registration_endpoint = $"{Request.Scheme}://{Request.Host}/connect/register",
+        registration_endpoint = selfUrl + "/connect/register",
         jwks_uri = identityServer + "/.well-known/jwks",
         scopes_supported = new[] { "openid", "offline_access", "email", "profile", "api" },
         code_challenge_methods_supported = new[] { "S256" }
@@ -121,7 +164,7 @@ public ActionResult<object> OAuthProtectedResource()
 }
 ```
 
-The `registration_endpoint` intentionally points back to the MCP server, not to the identity server. That is where the mock DCR lives.
+Two fields deserve attention. `resource` must be the MCP server's own URL — recent Claude Code versions validate it strictly against the endpoint they connected to. And the `registration_endpoint` intentionally points back to the MCP server, not to the identity server. That is where the mock DCR lives.
 
 ---
 
@@ -156,119 +199,88 @@ public ActionResult<object> RegisterClient([FromBody] Dictionary<string, object>
 
 Claude gets back what it expects — a `client_id` and a confirmation of its redirect URIs — and proceeds with the authorization flow using `MyApp_Claude` as its client identity. We get a static, auditable client registration with no moving parts.
 
----
+One shape requirement: Claude's SDK schema-validates this response. `"client_secret": null` — the natural C# instinct for a public client — fails the whole flow:
 
-## The Localhost Port Problem
+```
+SDK auth failed: [{ "expected": "string", "code": "invalid_type",
+                    "path": ["client_secret"], "message": "Invalid input: expected string, received null" }]
+```
 
-This is where the real friction lives, and where I spent the most debugging time.
+**Omit the field entirely** for a public PKCE client.
 
-Claude CLI and Claude Code pick a **random local port** for their OAuth callback. The redirect URI they send in the authorization request looks like `http://localhost:39616/callback` — where `39616` is chosen at the moment the flow starts. Next time it might be `http://localhost:52041/callback`. There is no way to predict it.
+### The authorization server must advertise DCR too
 
-OpenIddict (and the OAuth spec itself) requires that every redirect URI be **pre-registered** for the client. If the redirect URI in the authorization request does not exactly match a registered one, OpenIddict rejects it with a `redirect_uri mismatch` error. This is a security requirement — it prevents an attacker from hijacking the authorization code by sending you to a URI you do not control.
+Older Claude clients read the `registration_endpoint` from the protected-resource metadata and moved on. Current Claude Code does strict RFC 8414 discovery: it fetches **the identity server's own** metadata and checks for DCR support *there*. OpenIddict does not implement DCR, so Claude fails with:
 
-The naive solutions all have problems:
+```
+SDK auth failed: Incompatible auth server: does not support dynamic client registration
+```
 
-- **Pre-register a long list of localhost ports** — impractical, and OpenIddict would need to support wildcard matching, which it intentionally does not.
-- **Use a wildcard redirect URI** — a direct security hole. Any process on the machine could claim to be the redirect target.
-- **Patch Claude's SDK** — not possible; it is Anthropic's code.
-
-The solution I built is a bridge middleware that sits in front of OpenIddict on the identity server.
-
----
-
-## The Bridge Middleware Solution
-
-`ClaudeLocalhostBridgeMiddleware` runs before OpenIddict processes any request. It transparently rewrites the redirect URI in both the authorization request and the subsequent token request, so OpenIddict sees a fixed, pre-registered URI at both steps. Claude never knows any rewriting happened.
-
-The flow has four steps:
-
-**Step 1 — Intercept the authorization request.** When Claude sends `GET /connect/authorize?client_id=MyApp_Claude&redirect_uri=http://localhost:39616/callback&...`, the middleware saves that random URI in an HttpOnly cookie with a 15-minute TTL, then rewrites the query string so OpenIddict sees `redirect_uri=https://identity-server/claude-callback-bridge` — a URI that is pre-registered.
+The fix: inject the field into OpenIddict's configuration document with an event handler, pointing at the mock DCR on the MCP server (the value is just a URL — it can live anywhere):
 
 ```csharp
-if (context.Request.Path.StartsWithSegments("/connect/authorize"))
+PreConfigure<OpenIddictServerBuilder>(serverBuilder =>
 {
-    var clientId = context.Request.Query["client_id"].ToString();
-    var redirectUri = context.Request.Query["redirect_uri"].ToString();
-
-    if (clientId == "MyApp_Claude" && redirectUri != bridgeUri)
-    {
-        // Validate: only localhost URIs allowed
-        if (!redirectUri.Contains("localhost", StringComparison.OrdinalIgnoreCase))
+    serverBuilder.AddEventHandler<OpenIddictServerEvents.HandleConfigurationRequestContext>(b =>
+        b.UseInlineHandler(context =>
         {
-            context.Response.StatusCode = 400;
-            await context.Response.WriteAsync("Only localhost callbacks allowed.");
-            return;
-        }
-
-        // Save the random port for later
-        context.Response.Cookies.Append("ClaudeOriginalRedirectUri", redirectUri, new CookieOptions
-        {
-            HttpOnly = true,
-            Secure = context.Request.IsHttps,
-            Expires = DateTimeOffset.UtcNow.AddMinutes(15),
-            Path = "/"
-        });
-
-        // Rewrite the query string
-        var items = QueryHelpers.ParseQuery(context.Request.QueryString.Value)
-                                .ToDictionary(k => k.Key, v => v.Value.ToString());
-        items["redirect_uri"] = bridgeUri;
-        context.Request.QueryString = new QueryString(QueryHelpers.AddQueryString("", items));
-    }
-}
+            context.Metadata["registration_endpoint"] =
+                "http://localhost:5010/connect/register";   // from configuration, dev-only
+            return default;
+        }));
+});
 ```
 
-**Step 2 — User logs in normally.** OpenIddict processes the authorization request, presents the login form, and issues an authorization code. The code is sent to `/claude-callback-bridge` — the registered URI.
+### OpenIddict server settings Claude needs
 
-**Step 3 — Bridge endpoint redirects back to Claude.** The middleware intercepts the request to `/claude-callback-bridge`, reads the original URI from the cookie, appends the `code` and `state` parameters, and redirects the browser to `http://localhost:39616/callback?code=...&state=...`. Claude's local listener receives the code exactly as if it had been sent directly.
+A few switches on the OpenIddict server itself round out the Claude support:
 
 ```csharp
-if (context.Request.Path.StartsWithSegments("/claude-callback-bridge"))
-{
-    if (context.Request.Cookies.TryGetValue("ClaudeOriginalRedirectUri", out var originalUri))
-    {
-        var uriBuilder = new UriBuilder(originalUri);
-        var qs = context.Request.QueryString.Value?.TrimStart('?') ?? "";
-        uriBuilder.Query = qs;
+// DCR requests arrive before a client_id exists — without this, OpenIddict
+// rejects them outright. Safe here: our /connect/register never creates
+// clients, it always maps back to the pre-registered MyApp_Claude.
+options.AcceptAnonymousClients();
 
-        context.Response.Cookies.Delete("ClaudeOriginalRedirectUri");
-        context.Response.Redirect(uriBuilder.Uri.AbsoluteUri);
-        return;
-    }
-
-    context.Response.StatusCode = 400;
-    await context.Response.WriteAsync("Session expired. Please try again.");
-    return;
-}
+// Stateless authorization codes. With storage enabled, a stale or replayed
+// code from Claude's retry behaviour surfaces as a confusing invalid_grant.
+options.DisableAuthorizationStorage();
 ```
 
-**Step 4 — Rewrite the token request.** This is the step I missed on the first pass, and it caused an hours-long debugging session. When Claude exchanges the authorization code for a token, it sends `POST /connect/token` with `redirect_uri=http://localhost:39616/callback` in the form body. OpenIddict validates that this `redirect_uri` **exactly matches** what was used in the authorization request. But in the authorization request, we rewrote it to `/claude-callback-bridge`. The middleware must rewrite the form data here too:
+And two configuration-level details: add `https://claude.ai` and `https://app.claude.ai` to the identity server's CORS origins, and pre-register Claude's hosted callback URIs (`https://claude.ai/api/mcp/auth_callback`, `https://app.claude.ai/api/mcp/auth_callback`) as redirect URIs on the client — that is what makes the same client work from claude.ai's web connectors, not just the local CLI.
+
+### Register the MCP server as an OpenIddict resource (RFC 8707)
+
+When Claude asks for a token, it also names the door the token should open — `&resource=http://localhost:5010/mcp` (RFC 8707, echoed from your protected-resource metadata) — so the token gets audience-scoped to your MCP server. Correct behaviour. But OpenIddict refuses to mint keys for doors it has never heard of, and the list of doors it knows lives in **code, not your database**. OpenIddict (7.x) rejects the request:
+
+```
+error: invalid_target
+error_description: One of the specified 'resource' parameters is invalid.
+error_uri: https://documentation.openiddict.com/errors/ID2190
+```
+
+<div style="background:#fff4e8;border-radius:10px;padding:0.25rem 1.25rem;margin:1.5rem 0;color:#1a2332;">
+
+**Real-world note — save yourself my detour.** My first theory was the database: OpenIddict scopes have a `Resources` collection, so I added the MCP URL there, reseeded, restarted — still `invalid_target`. DB scope resources only shape which audiences land in the token. Validation runs against **`Options.Resources`** plus per-client resource permissions, both registered in code.
+
+</div>
+
+The fix is two lines on the server builder:
 
 ```csharp
-if (context.Request.Path.StartsWithSegments("/connect/token") &&
-    context.Request.Method == "POST" && context.Request.HasFormContentType)
+PreConfigure<OpenIddictServerBuilder>(serverBuilder =>
 {
-    var clientId = context.Request.Form["client_id"].ToString();
-    var redirectUri = context.Request.Form["redirect_uri"].ToString();
+    // 1. Whitelist the MCP server as a valid RFC 8707 resource (server-wide).
+    //    Must be an absolute URI, and must match the metadata `resource` field verbatim.
+    serverBuilder.RegisterResources("http://localhost:5010/mcp");   // from configuration
 
-    if (clientId == "MyApp_Claude" && redirectUri != bridgeUri)
-    {
-        var formValues = context.Request.Form
-            .ToDictionary(k => k.Key,
-                v => v.Key == "redirect_uri"
-                    ? new StringValues(bridgeUri)
-                    : v.Value);
-
-        context.Request.Form = new FormCollection(formValues);
-    }
-}
+    // 2. OpenIddict ALSO enforces per-client resource permissions ("rsrc:..." entries
+    //    on the application). Pre-seeded clients don't have them, so either add the
+    //    permission to each client — or skip that layer. Scope permissions still apply.
+    serverBuilder.IgnoreResourcePermissions();
+});
 ```
 
-After this rewrite, OpenIddict validates successfully and issues the token. Claude now has a real JWT for the authenticated user.
-
-{{< figure src="bridge-middleware.svg" alt="ClaudeLocalhostBridgeMiddleware — the 4-step flow that maps Claude's random localhost port to a fixed registered redirect URI" >}}
-
-**Security considerations.** The middleware explicitly validates that every redirect URI contains `localhost` — it will not bridge to an arbitrary external URI. The cookie is HttpOnly (JavaScript cannot read it), has a 15-minute expiry, and is deleted immediately after use. This middleware is registered only in development environments. In production, clients use registered domains and do not need the bridge.
+Both switches matter: `RegisterResources` alone still fails, because the client application has no `rsrc:...` permission entry. `IgnoreResourcePermissions()` skips that per-client layer while keeping scope enforcement — the same approach the [ABP team's MCP authentication article](https://abp.io/community/articles/Enabling-MCP-Authentication-in-ABP-with-OpenIddict-t6l3cqbt) uses. Keep the scope-resource DB entry too if you want the API's audience in the token alongside the MCP URL (`aud` is a set — validation on both servers keeps passing). And if you do touch scope seeding in ABP: the base helper only creates **missing** scopes (call `ScopeManager.UpdateAsync` for existing ones), and OpenIddict caches scopes in memory, so reseeding needs a restart.
 
 ---
 
@@ -304,13 +316,36 @@ services.AddAuthentication("Bearer")
     });
 ```
 
-`ValidateAudience = false` is intentional here — our tokens do not include an `aud` claim scoped to the MCP server specifically. If yours do, set `ValidAudiences` accordingly.
+`ValidateAudience = false` is intentional here — our tokens do not include an `aud` claim scoped to the MCP server specifically. If yours do (ABP solutions typically stamp the API resource name, e.g. `aud: "YourApp"`), validate it: `ValidateAudience = true, ValidAudience = "YourApp"`.
+
+Registering the handler is not enough on its own — nothing is protected until the `/mcp` endpoint demands it. That takes a named policy plus `RequireAuthorization` on the mapped endpoint:
+
+```csharp
+services.AddAuthorization(options =>
+{
+    options.AddPolicy("Bearer", policy =>
+    {
+        policy.AddAuthenticationSchemes("Bearer");
+        policy.RequireAuthenticatedUser();
+    });
+});
+```
+
+```csharp
+app.UseAuthentication();
+app.UseAuthorization();
+
+app.MapMcp("/mcp")
+   .RequireAuthorization("Bearer");
+```
+
+Miss the `RequireAuthorization` call and everything appears to work — tokens validate when present — but anonymous requests sail straight through to your tools.
 
 ---
 
 ## Bearer Token Forwarding
 
-Once the MCP server has validated the incoming JWT, every outgoing HTTP call to the backend API needs to carry that same token. `BearerTokenForwardingHandler` is a `DelegatingHandler` that sits in the HTTP client pipeline:
+Think of the MCP server as a hotel concierge who never carries his own keycard: when you ask him to fetch something from your room, he swipes *your* card, so he can only open doors you could open yourself. That is bearer token forwarding — every outgoing call to the backend API carries the caller's own JWT. `BearerTokenForwardingHandler` is a `DelegatingHandler` that sits in the HTTP client pipeline:
 
 ```csharp
 internal class BearerTokenForwardingHandler : DelegatingHandler
@@ -349,13 +384,15 @@ services.ConfigureHttpClientDefaults(builder =>
 });
 ```
 
+One caveat that will bite you in stateful mode: when the MCP SDK runs stateful sessions (the `WithHttpTransport` default), tool calls execute inside async session continuations where `IHttpContextAccessor.HttpContext` is **null** — the handler above silently sends unauthenticated requests. The fix is an `AsyncLocal<string?>` holder (`McpBearerTokenContext`): a small middleware captures the bearer token on each `POST /mcp` before the SDK dispatches, and the handler falls back to it when `HttpContext` is null. `AsyncLocal` values set before dispatch propagate through the SDK's continuations even though the request context does not.
+
 There is also an `X-Modification-Source` header forwarded alongside the token. The backend API middleware reads that header to stamp any created or modified entities with `"MCP"` as the modification source. This gives you an audit trail that distinguishes changes made through Claude from changes made through the regular web UI — useful when you are debugging an unexpected mutation and want to know how it happened.
 
 ---
 
 ## Disabling the Service Account
 
-One important detail: ABP Framework's HTTP client module (`AbpHttpApiClientModule`) is configured by default to authenticate outgoing requests with a password-grant service account. If you are forwarding user tokens, that default has to be disabled — otherwise ABP will overwrite your forwarded Bearer header with its own service account token.
+One important detail: if your solution's `HttpApi.Client` module (or anything it depends on) wires up `AbpHttpClientIdentityModelModule` and configures an `IdentityClients.Default` — the common ABP pattern for console clients and background services — every outgoing proxy request authenticates with that password-grant service account. If you are forwarding user tokens, that configuration has to be disabled in the MCP server — otherwise ABP will overwrite your forwarded Bearer header with its own service account token. (If your client module never configures `IdentityClients`, there is nothing to disable — but the guard below is cheap insurance against someone adding it later.)
 
 ```csharp
 public override void PreConfigureServices(ServiceConfigurationContext context)
@@ -373,54 +410,29 @@ This must run in `PreConfigureServices` so it takes precedence over the module's
 
 ---
 
-## Testing the Full Flow
-
-When everything is wired up, the experience in Claude Code looks like this:
-
-```
-$ claude
-⠼ Connecting to MCP server...
-→ GET /mcp → 401 Unauthorized
-→ GET /.well-known/oauth-protected-resource
-→ GET /.well-known/openid-configuration
-→ POST /connect/register
-→ Opening browser for authentication...
-
-[Browser opens, user logs in to the identity server]
-
-→ GET /claude-callback-bridge?code=...&state=...
-→ Redirect to http://localhost:52041/callback?code=...&state=...
-→ POST /connect/token
-✓ Authenticated as user@example.com
-✓ Connected to the MCP server
-```
-
-Claude then has a JWT for the authenticated user. Every tool call Claude makes on that session runs with that user's exact permissions. If a tool queries reservations, it gets only that user's tenant's reservations. If a tool tries to create a record, the audit log shows the real user's ID. The service account is never involved.
-
----
-
 ## What This Unlocks
 
 A few things became immediately obvious once bearer token forwarding was working:
 
-**Multi-tenancy just works.** Every backend API call respects tenant isolation automatically, because the token carries the tenant claim. No extra plumbing needed.
+**Multi-tenancy just works.** The token carries the tenant claim, so every backend call respects tenant isolation with no extra plumbing.
 
-**Row-level security is free.** Any permission check that your API already enforces — field-level visibility, resource ownership, role guards — applies equally to Claude's calls. Claude cannot see anything the user cannot see.
+**Row-level security is free.** Every permission check your API already enforces applies equally to Claude's calls. Claude cannot see anything the user cannot see.
 
-**The audit log is honest.** When you look at the change history for an entity and it says "modified by sarah@example.com via MCP," that is accurate. Before this change, it would have said "modified by service-account," which told you nothing.
-
-**Debugging is tractable.** When something goes wrong, the request traces show a real user identity. You can reproduce the problem by logging in as that user and making the same call yourself.
+**The audit log is honest.** "Modified by sarah@example.com via MCP" instead of "modified by service-account" — and when something goes wrong, the traces show a real user you can log in as and reproduce with.
 
 ---
 
-## What Is Next
+## References
 
-Series 3 covers two-step confirmation for destructive tools. Some MCP tools — deleting a reservation, issuing a refund, changing a tenant's subscription — should not execute on the first request. They should pause, summarize what they are about to do, and require explicit confirmation before proceeding.
-
-The challenge is that MCP is stateless. There is no native "are you sure?" primitive. Series 3 shows how to build a confirmation token system on top of ASP.NET Core's `IMemoryCache` that gives Claude safe, auditable two-step execution for any tool you want to protect.
+- [Enabling MCP Authentication in ABP with OpenIddict](https://abp.io/community/articles/Enabling-MCP-Authentication-in-ABP-with-OpenIddict-t6l3cqbt) — the ABP team's take on the same problem; source of the `RegisterResources` + `IgnoreResourcePermissions()` fix for RFC 8707 resource validation
+- [RFC 9728 — OAuth 2.0 Protected Resource Metadata](https://www.rfc-editor.org/rfc/rfc9728) — the `/.well-known/oauth-protected-resource` document and `resource` field Claude validates
+- [RFC 8414 — OAuth 2.0 Authorization Server Metadata](https://www.rfc-editor.org/rfc/rfc8414) — the discovery document Claude fetches from the identity server
+- [RFC 7591 — OAuth 2.0 Dynamic Client Registration](https://www.rfc-editor.org/rfc/rfc7591) — the registration protocol the mock DCR endpoint implements
+- [RFC 8707 — Resource Indicators for OAuth 2.0](https://www.rfc-editor.org/rfc/rfc8707) — the `resource` parameter Claude sends with authorize and token requests
+- [OpenIddict documentation](https://documentation.openiddict.com/) — server events, resource validation, and error reference
 
 {{< series-next
-  title="Model Context Protocol Series 3 — Enhancing Your MCP Server: Tool Explorer UI, Grouping, and Write Safety"
-  description="Authentication is done. Series 3 adds a Swagger-like tool explorer, verb and domain grouping, two-step write confirmation, idempotency, and a full audit trail."
-  url="/blog/model-context-protocol-series-3-enhancing-your-mcp-server-tool-explorer-ui-grouping-and-write-safety/"
+  title="Model Context Protocol Series 2B — The Bridge Middleware That Lets Claude Debug and Fix Its Own Tools"
+  description="The architecture is in place — but Claude Code invents a new localhost callback port on every connection, and OpenIddict demands exact-match redirect URIs. Series 2B builds the bridge middleware that reconciles them, so the client that calls your tools can also read your code and debug them."
+  url="/blog/model-context-protocol-series-2b-the-bridge-middleware-that-lets-claude-debug-and-fix-its-own-tools/"
 >}}
