@@ -158,6 +158,18 @@
   color: var(--bs-secondary-color, #6c757d);
   font-weight: 700;
 }
+/* Cards arrive one at a time, right to left */
+.ha-card.is-active .ha-flow-card,
+.ha-card.is-active .ha-flow-arrow {
+  animation: haCardFromRight 0.45s ease forwards;
+}
+.ha-flow > *:nth-child(1) { animation-delay: 0s; }
+.ha-flow > *:nth-child(2) { animation-delay: 0.3s; }
+.ha-flow > *:nth-child(3) { animation-delay: 0.4s; }
+.ha-flow > *:nth-child(4) { animation-delay: 0.7s; }
+.ha-flow > *:nth-child(5) { animation-delay: 0.8s; }
+.ha-flow > *:nth-child(6) { animation-delay: 1.1s; }
+.ha-flow > *:nth-child(7) { animation-delay: 1.2s; }
 @media (max-width: 576px) {
   .ha-hl  { font-size: 1.2rem; }
   .ha-sub { font-size: 0.8rem; }
@@ -184,10 +196,15 @@
   from { opacity: 0; transform: translateX(-22px); }
   to   { opacity: 1; transform: translateX(0); }
 }
-/* Scale-pop — used on the pipeline card-row slide */
+/* Scale-pop — used on the pipeline card-row slide's own reveal */
 @keyframes haScaleIn {
   from { opacity: 0; transform: scale(0.9); }
   to   { opacity: 1; transform: scale(1); }
+}
+/* Right-to-left arrival — used per-card on the pipeline slide */
+@keyframes haCardFromRight {
+  from { opacity: 0; transform: translateX(60px); }
+  to   { opacity: 1; transform: translateX(0); }
 }
 .ha-hl-reveal      { animation: haBlurReveal 0.9s ease forwards; }
 .ha-hl-reveal-fast { animation: haSlideFadeIn 0.5s ease forwards; }
@@ -197,6 +214,7 @@
 @media (prefers-reduced-motion: reduce) {
   .ha-card { transition: none !important; }
   .ha-hl-reveal, .ha-hl-reveal-fast, .ha-hl-slide-x, .ha-hl-scale { animation: none; opacity: 1; filter: none; transform: none; }
+  .ha-card.is-active .ha-flow-card, .ha-card.is-active .ha-flow-arrow { animation: none !important; opacity: 1; transform: none; }
   .ha-card.is-active .ha-card-cta { animation: none; opacity: 1; transform: none; }
 }
 </style>
@@ -240,7 +258,7 @@
                   <div class="ha-flow">
                     <div class="ha-flow-card ha-flow-card--accent">
                       <div class="ha-flow-title">MCP-first</div>
-                      <div class="ha-flow-desc">AI writes the tests before the code, then keeps them updated.</div>
+                      <div class="ha-flow-desc">MCP is the API's first client, not the UI — AI checks it against the user story and writes the tests.</div>
                     </div>
                     <div class="ha-flow-arrow">→</div>
                     <div class="ha-flow-card">
@@ -293,7 +311,7 @@
   var timer;
   var paused = false;
   var DURATIONS = [2400, 4200, 4200, 4200, 4600, 6000];
-  var MID_ANIM = { 3: 'ha-hl-slide-x', 4: 'ha-hl-scale' };
+  var MID_ANIM = { 3: 'ha-hl-slide-x' };
   var ALL_MID_CLASSES = ['ha-hl-reveal-fast', 'ha-hl-slide-x', 'ha-hl-scale'];
   var hookEl = cards[0] && cards[0].querySelector('.ha-hl');
 
@@ -318,8 +336,8 @@
         void hl.offsetWidth;
         hl.classList.add('ha-hl-reveal');
       }
-    } else {
-      var hl = cards[active].querySelector('.ha-hl, .ha-flow');
+    } else if (active !== 4) {
+      var hl = cards[active].querySelector('.ha-hl');
       var animClass = MID_ANIM[active] || 'ha-hl-reveal-fast';
       if (hl) {
         hl.classList.remove.apply(hl.classList, ALL_MID_CLASSES);
@@ -327,6 +345,7 @@
         hl.classList.add(animClass);
       }
     }
+    /* slide 4 (pipeline cards) animates per-card via CSS on .ha-card.is-active — no class toggle needed */
     if (!paused) {
       timer = setTimeout(function () { goTo(active + 1); }, DURATIONS[active]);
     }

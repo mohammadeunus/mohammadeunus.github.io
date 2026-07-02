@@ -11,25 +11,8 @@
 }
 .pw-card {
   flex: 1 1 0;
-  background: var(--bs-body-bg, #fff);
-  border: 1px solid var(--bs-border-color, rgba(0,0,0,0.1));
-  border-radius: 12px;
-  box-shadow: 0 6px 18px -10px rgba(0,0,0,0.15);
-  padding: 1.1rem 1.1rem;
-  opacity: 0;
-  transform: translateX(70px);
-  transition: opacity 0.55s ease, transform 0.55s ease;
-}
-.pw-card--accent {
-  border-color: var(--bs-primary, #0d6efd);
-  background: rgba(var(--bs-primary-rgb, 13,110,253), 0.05);
 }
 .pw-card--accent .pw-title { color: var(--bs-primary, #0d6efd); }
-.pw-row.is-in .pw-card { opacity: 1; transform: translateX(0); }
-.pw-row.is-in .pw-card:nth-child(1) { transition-delay: 0s; }
-.pw-row.is-in .pw-card:nth-child(3) { transition-delay: 0.15s; }
-.pw-row.is-in .pw-card:nth-child(5) { transition-delay: 0.3s; }
-.pw-row.is-in .pw-card:nth-child(7) { transition-delay: 0.45s; }
 .pw-title { font-weight: 600; font-size: 0.85rem; margin-bottom: 0.25rem; }
 .pw-desc  { font-size: 0.78rem; color: var(--bs-secondary-color, #6c757d); margin: 0; }
 .pw-arrow {
@@ -40,15 +23,9 @@
   width: 28px;
   color: var(--bs-primary, #0d6efd);
   font-weight: 700;
-  opacity: 0;
-  transition: opacity 0.4s ease 0.5s;
 }
-.pw-row.is-in .pw-arrow { opacity: 1; }
 @media (max-width: 767.98px) {
   .pw-arrow { width: auto; padding: 0.15rem 0; }
-}
-@media (prefers-reduced-motion: reduce) {
-  .pw-card, .pw-arrow { transition: none !important; opacity: 1 !important; transform: none !important; }
 }
 </style>
 <div class="container-xxl py-5">
@@ -196,7 +173,7 @@
 
           <div class="pw-card pw-card--accent">
             <div class="pw-title">MCP-first development</div>
-            <p class="pw-desc">AI writes the tests before the code, then keeps testing and updating them against the live API as things change. <a href="/blog/mcp-first-development-letting-ai-write-run-and-maintain-your-tests/">Read how it works →</a></p>
+            <p class="pw-desc">Every API's first client is the MCP server, not the UI. AI checks it against the user story through that same interface and writes the tests from what it finds. <a href="/blog/mcp-first-development-letting-ai-write-run-and-maintain-your-tests/">Read how it works →</a></p>
           </div>
 
           <div class="pw-arrow" aria-hidden="true">→</div>
@@ -235,25 +212,4 @@
   </div>
 
 </div>
-
-<script>
-(function () {
-  'use strict';
-  var row = document.getElementById('pw-row');
-  if (!row) return;
-  if (!('IntersectionObserver' in window)) {
-    row.classList.add('is-in');
-    return;
-  }
-  var observer = new IntersectionObserver(function (entries) {
-    entries.forEach(function (entry) {
-      if (entry.isIntersecting) {
-        row.classList.add('is-in');
-        observer.disconnect();
-      }
-    });
-  }, { threshold: 0.3 });
-  observer.observe(row);
-}());
-</script>
 {{ end }}

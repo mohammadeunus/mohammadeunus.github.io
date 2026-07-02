@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="580" viewBox="0 0 1000 580" font-family="Segoe UI, Arial, sans-serif" font-size="13">
+  <defs>
+    <marker id="mf-arr-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#2563eb"/>
+    </marker>
+    <marker id="mf-arr-orange" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#ea580c"/>
+    </marker>
+    <marker id="mf-arr-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#16a34a"/>
+    </marker>
+  </defs>
+
+  <rect width="1000" height="580" fill="#ffffff"/>
+
+  <!-- ══ 1 — USER STORY ══ -->
+  <rect x="20" y="20" width="960" height="52" rx="12" fill="#eff6ff"/>
+  <text x="44" y="52" text-anchor="middle" font-size="20">📝</text>
+  <text x="70" y="42" font-size="11.5" font-weight="bold" fill="#1e3a8a">1 · USER STORY</text>
+  <text x="70" y="59" font-size="10.5" fill="#334155">"Arena owners can block maintenance slots — an overlapping booking must be rejected."</text>
+  <line x1="46" y1="72" x2="46" y2="92" stroke="#2563eb" stroke-width="1.6" marker-end="url(#mf-arr-blue)"/>
+
+  <!-- ══ 2 — AI DRAFTS TEST CASES ══ -->
+  <rect x="20" y="96" width="960" height="52" rx="12" fill="#eff6ff"/>
+  <text x="44" y="128" text-anchor="middle" font-size="20">🤖</text>
+  <text x="70" y="118" font-size="11.5" font-weight="bold" fill="#1e3a8a">2 · AI DRAFTS THE TEST CASES</text>
+  <text x="70" y="135" font-size="10.5" fill="#334155">Straight from the user story — before the endpoint has a single line of code.</text>
+  <line x1="46" y1="148" x2="46" y2="168" stroke="#0284c7" stroke-width="1.6" marker-end="url(#mf-arr-blue)"/>
+
+  <!-- ══ 3 — DEV BUILDS API + MCP TOOL ══ -->
+  <rect x="20" y="172" width="960" height="52" rx="12" fill="#f0f9ff"/>
+  <text x="44" y="204" text-anchor="middle" font-size="20">🛠️</text>
+  <text x="70" y="194" font-size="11.5" font-weight="bold" fill="#0c4a6e">3 · DEV BUILDS THE API, EXPOSES IT VIA MCP</text>
+  <text x="70" y="211" font-size="10.5" fill="#334155">No UI involved yet — the MCP tool is the only client that exists so far.</text>
+  <line x1="46" y1="224" x2="46" y2="244" stroke="#0284c7" stroke-width="1.6" marker-end="url(#mf-arr-blue)"/>
+
+  <!-- ══ 4 — MERGE TRIGGERS CLAUDE ══ -->
+  <rect x="20" y="248" width="960" height="52" rx="12" fill="#fff7ed"/>
+  <text x="44" y="280" text-anchor="middle" font-size="20">🔀</text>
+  <text x="70" y="270" font-size="11.5" font-weight="bold" fill="#7c2d12">4 · MERGE TO DEV TRIGGERS CLAUDE</text>
+  <text x="70" y="287" font-size="10.5" fill="#334155">The pull request toward production opens, and CI calls out: go test the real tool.</text>
+  <line x1="46" y1="300" x2="46" y2="320" stroke="#ea580c" stroke-width="1.6" marker-end="url(#mf-arr-orange)"/>
+
+  <!-- ══ 5 — CLAUDE CALLS THE LIVE TOOL ══ -->
+  <rect x="20" y="324" width="960" height="52" rx="12" fill="#fff7ed"/>
+  <text x="44" y="356" text-anchor="middle" font-size="20">🔌</text>
+  <text x="70" y="346" font-size="11.5" font-weight="bold" fill="#7c2d12">5 · CLAUDE CALLS THE LIVE MCP TOOL</text>
+  <text x="70" y="363" font-size="10.5" fill="#334155">Every test case from step 2 runs against the real endpoint — not a mock.</text>
+  <line x1="46" y1="376" x2="46" y2="396" stroke="#16a34a" stroke-width="1.6" marker-end="url(#mf-arr-green)"/>
+
+  <!-- ══ 6 — REPORT ON THE PR ══ -->
+  <rect x="20" y="400" width="960" height="106" rx="12" fill="#f0fdf4"/>
+  <text x="44" y="428" text-anchor="middle" font-size="20">📋</text>
+  <text x="70" y="418" font-size="11.5" font-weight="bold" fill="#14532d">6 · CLAUDE POSTS THE REPORT ON THE PR</text>
+  <text x="70" y="435" font-size="10.5" fill="#334155">Not "tests passed" — which user-story checks passed, and which didn't.</text>
+  <rect x="70" y="446" width="500" height="50" rx="8" fill="#0b1220"/>
+  <text x="86" y="464" font-family="Consolas, monospace" font-size="10.5" fill="#4ade80">✓ block_maintenance_slot — 4/4 passed</text>
+  <text x="86" y="480" font-family="Consolas, monospace" font-size="10.5" fill="#f87171">✗ update_maintenance_slot — 1/2 failed  (expected 409, got 200)</text>
+
+  <!-- ══ 7 — OUTCOME SPLIT ══ -->
+  <text x="500" y="530" text-anchor="middle" font-size="11" font-weight="bold" fill="#334155">green on every case?</text>
+  <line x1="500" y1="506" x2="500" y2="522" stroke="#94a3b8" stroke-width="1.4"/>
+  <line x1="330" y1="536" x2="670" y2="536" stroke="#94a3b8" stroke-width="1.4"/>
+  <line x1="330" y1="536" x2="330" y2="546" stroke="#94a3b8" stroke-width="1.4" marker-end="url(#mf-arr-green)"/>
+  <line x1="670" y1="536" x2="670" y2="546" stroke="#94a3b8" stroke-width="1.4" marker-end="url(#mf-arr-orange)"/>
+
+  <rect x="150" y="550" width="290" height="26" rx="13" fill="#f0fdf4" stroke="#16a34a" stroke-width="1.2"/>
+  <text x="295" y="568" text-anchor="middle" font-size="11" font-weight="bold" fill="#14532d">✅ Yes → UI work starts, same tool</text>
+
+  <rect x="560" y="550" width="290" height="26" rx="13" fill="#fef2f2" stroke="#dc2626" stroke-width="1.2"/>
+  <text x="705" y="568" text-anchor="middle" font-size="11" font-weight="bold" fill="#7f1d1d">🔁 No → PR blocked, fix the API first</text>
+</svg>
