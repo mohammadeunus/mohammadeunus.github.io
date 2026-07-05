@@ -1,0 +1,239 @@
+{{ define "main" }}
+<style>
+  .gal-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    grid-auto-flow: dense;
+    grid-auto-rows: 8px;
+    gap: 1rem;
+  }
+  .gal-card {
+    position: relative;
+    overflow: hidden;
+    border-radius: .75rem;
+    border: 1px solid var(--bs-border-color, #dee2e6);
+    display: block;
+    text-decoration: none;
+    padding: 0;
+    background: none;
+    width: 100%;
+    cursor: pointer;
+  }
+  .gal-card.gal-featured {
+    grid-column: span 2;
+  }
+  @media (max-width: 575.98px) {
+    .gal-card.gal-featured { grid-column: span 1; }
+  }
+  .gal-card img {
+    width: 100%;
+    height: auto;
+    display: block;
+    transition: transform .3s ease;
+  }
+  .gal-card:hover img { transform: scale(1.04); }
+  .gal-card .gal-overlay {
+    position: absolute;
+    inset: auto 0 0 0;
+    padding: .75rem .9rem;
+    background: linear-gradient(0deg, rgba(0,0,0,.72), rgba(0,0,0,0));
+    color: #fff;
+    text-align: left;
+  }
+  .gal-card .gal-title { font-weight: 600; font-size: .9rem; margin: 0; }
+  .gal-card .gal-badge {
+    display: inline-block;
+    font-size: .65rem;
+    font-weight: 600;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    padding: .15rem .5rem;
+    border-radius: 999px;
+    background: rgba(255,255,255,.18);
+    margin-bottom: .25rem;
+  }
+  .gal-card.gal-active {
+    outline: 2px solid var(--bs-primary, #5d2f86);
+    outline-offset: 2px;
+  }
+  .gal-filters .btn { font-size: .8rem; }
+
+  .gal-grid.gal-detail-open {
+    grid-auto-flow: row;
+  }
+  .gal-detail-inline {
+    grid-column: 1 / -1;
+    overflow: hidden;
+    border: 1px solid var(--bs-border-color, #dee2e6);
+    border-radius: .75rem;
+  }
+  .gal-detail-content {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+  }
+  .gal-detail-close {
+    align-self: flex-end;
+  }
+</style>
+<div class="container-xxl py-5">
+
+  {{ $items := where .Pages "Params.image" "!=" nil }}
+  {{ $items = $items.ByParam "date" }}
+  {{ $items = $items.Reverse }}
+
+  {{ $categories := slice }}
+  {{ range $items }}
+    {{ with .Params.category }}{{ $categories = $categories | append . }}{{ end }}
+  {{ end }}
+  {{ $categories = $categories | uniq | sort }}
+
+  {{ if gt (len $categories) 1 }}
+  <div class="d-flex flex-wrap gap-2 justify-content-center mb-4 gal-filters" id="gal-filters">
+    <button type="button" class="btn btn-sm btn-primary" data-gal-filter="all">All</button>
+    {{ range $categories }}
+    <button type="button" class="btn btn-sm btn-outline-secondary" data-gal-filter="{{ . }}">{{ . }}</button>
+    {{ end }}
+  </div>
+  {{ end }}
+
+  <div class="gal-grid" id="gal-grid">
+    {{ range $index, $page := $items }}
+    {{ $img := $page.Resources.GetMatch ($page.Params.image) }}
+    {{ if $page.Params.link }}
+    <a class="gal-card{{ if $page.Params.featured }} gal-featured{{ end }}" data-gal-category="{{ $page.Params.category }}" href="{{ $page.Params.link }}" target="_blank" rel="noopener">
+      {{ if $img }}<img src="{{ $img.RelPermalink }}" alt="{{ $page.Title }}" loading="lazy">{{ end }}
+      <div class="gal-overlay">
+        {{ with $page.Params.category }}<span class="gal-badge">{{ . }}</span><br>{{ end }}
+        <p class="gal-title">{{ $page.Title }}</p>
+      </div>
+    </a>
+    {{ else }}
+    <button type="button" class="gal-card{{ if $page.Params.featured }} gal-featured{{ end }}" data-gal-category="{{ $page.Params.category }}" data-gal-index="{{ $index }}">
+      {{ if $img }}<img src="{{ $img.RelPermalink }}" alt="{{ $page.Title }}" loading="lazy">{{ end }}
+      <div class="gal-overlay">
+        {{ with $page.Params.category }}<span class="gal-badge">{{ . }}</span><br>{{ end }}
+        <p class="gal-title">{{ $page.Title }}</p>
+      </div>
+    </button>
+    <template id="gal-story-{{ $index }}">
+      <div class="gal-detail-content">
+        <button type="button" class="btn btn-sm btn-outline-secondary gal-detail-close mb-3">Close ✕</button>
+        {{ with $page.Params.category }}<span class="gal-badge text-uppercase text-muted small mb-2" style="background:none;padding:0;">{{ . }}</span>{{ end }}
+        <h2 class="h4 fw-bold mb-3">{{ $page.Title }}</h2>
+        <div class="gal-story-text">{{ $page.Content }}</div>
+      </div>
+    </template>
+    {{ end }}
+    {{ end }}
+  </div>
+
+  {{ if eq (len $items) 0 }}
+  <p class="text-muted text-center">No gallery items yet.</p>
+  {{ end }}
+
+</div>
+<script>
+(function () {
+  var grid = document.getElementById('gal-grid');
+  if (!grid) return;
+
+  var rowHeight = 8;
+  var rowGap = 16;
+
+  function sizeEl(el) {
+    var measureTarget = el.querySelector('img') || el.querySelector('.gal-detail-content') || el;
+    var contentHeight = measureTarget.getBoundingClientRect().height;
+    var span = Math.ceil((contentHeight + rowGap) / (rowHeight + rowGap));
+    el.style.gridRowEnd = 'span ' + span;
+  }
+
+  function layout() {
+    grid.querySelectorAll('.gal-card, .gal-detail-inline').forEach(function (el) {
+      if (el.style.display === 'none') return;
+      var img = el.querySelector('img');
+      if (img && !img.complete) {
+        img.addEventListener('load', function () { sizeEl(el); }, { once: true });
+      } else {
+        sizeEl(el);
+      }
+    });
+  }
+
+  layout();
+  window.addEventListener('resize', (function () {
+    var t;
+    return function () {
+      clearTimeout(t);
+      t = setTimeout(layout, 150);
+    };
+  })());
+
+  var openIndex = null;
+  var openDetailEl = null;
+
+  function closeDetail() {
+    if (openDetailEl) {
+      openDetailEl.remove();
+      openDetailEl = null;
+    }
+    grid.classList.remove('gal-detail-open');
+    grid.querySelectorAll('.gal-card.gal-active').forEach(function (c) { c.classList.remove('gal-active'); });
+    openIndex = null;
+  }
+
+  function openDetail(index, card) {
+    var tpl = document.getElementById('gal-story-' + index);
+    if (!tpl) return;
+    closeDetail();
+
+    var detailEl = document.createElement('div');
+    detailEl.className = 'gal-detail-inline';
+    detailEl.appendChild(tpl.content.cloneNode(true));
+    card.insertAdjacentElement('afterend', detailEl);
+
+    grid.classList.add('gal-detail-open');
+    card.classList.add('gal-active');
+    openIndex = index;
+    openDetailEl = detailEl;
+
+    var closeBtn = detailEl.querySelector('.gal-detail-close');
+    if (closeBtn) closeBtn.addEventListener('click', closeDetail);
+
+    layout();
+    detailEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  grid.addEventListener('click', function (e) {
+    var card = e.target.closest('[data-gal-index]');
+    if (!card) return;
+    var index = card.getAttribute('data-gal-index');
+    if (openIndex === index) {
+      closeDetail();
+    } else {
+      openDetail(index, card);
+    }
+  });
+
+  var filters = document.getElementById('gal-filters');
+  if (!filters) return;
+  filters.addEventListener('click', function (e) {
+    var btn = e.target.closest('[data-gal-filter]');
+    if (!btn) return;
+    filters.querySelectorAll('.btn').forEach(function (b) {
+      b.classList.remove('btn-primary');
+      b.classList.add('btn-outline-secondary');
+    });
+    btn.classList.add('btn-primary');
+    btn.classList.remove('btn-outline-secondary');
+    var value = btn.getAttribute('data-gal-filter');
+    grid.querySelectorAll('.gal-card').forEach(function (card) {
+      var match = value === 'all' || card.getAttribute('data-gal-category') === value;
+      card.style.display = match ? '' : 'none';
+    });
+    closeDetail();
+    layout();
+  });
+})();
+</script>
+{{ end }}

@@ -9,6 +9,11 @@
   weight = 30
 
 [[main]]
+  name = "gallery"
+  url = "/gallery"
+  weight = 35
+
+[[main]]
   name = "contact"
   url = "/contact"
   weight = 40
