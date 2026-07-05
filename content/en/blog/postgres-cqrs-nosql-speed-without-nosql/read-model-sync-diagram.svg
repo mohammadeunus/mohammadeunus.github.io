@@ -1,0 +1,56 @@
+<svg viewBox="0 0 640 280" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Diagram: the write model feeds the read model through an event-driven outbox sync in real time, and a bulk reconciliation job as a safety net">
+  <style>
+    .eu-node-title { font: 700 14px/1 "Jost", sans-serif; fill: #212529; }
+    .eu-node-sub { font: 400 11.5px/1.4 "Jost", sans-serif; fill: #495057; }
+    .eu-node-write { fill: #f4effa; stroke: #5d2f86; stroke-width: 1.5; }
+    .eu-node-real { fill: #eaf6ff; stroke: #2f8fc0; stroke-width: 1.5; }
+    .eu-node-batch { fill: #f1f3f5; stroke: #868e96; stroke-width: 1.5; }
+    .eu-node-read { fill: #fdeef8; stroke: #d32e9d; stroke-width: 1.5; }
+    .eu-arrow { stroke: #6c757d; stroke-width: 1.75; fill: none; marker-end: url(#eu-arrowhead2); }
+    .eu-arrow-label { font: 600 11px/1 "Jost", sans-serif; fill: #6c757d; }
+    @media (prefers-color-scheme: dark) {
+      .eu-node-title { fill: #f1f1f1; }
+      .eu-node-sub { fill: #ced4da; }
+      .eu-node-write { fill: #2a2440; stroke: #8b6bb5; }
+      .eu-node-real { fill: #1f3542; stroke: #6ec3e8; }
+      .eu-node-batch { fill: #2b2d30; stroke: #adb5bd; }
+      .eu-node-read { fill: #3a2432; stroke: #e388c4; }
+      .eu-arrow { stroke: #adb5bd; }
+      .eu-arrow-label { fill: #adb5bd; }
+      marker path { fill: #adb5bd; }
+    }
+  </style>
+  <defs>
+    <marker id="eu-arrowhead2" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#6c757d" />
+    </marker>
+  </defs>
+
+  <rect x="0" y="0" width="640" height="280" fill="#ffffff" />
+
+  <rect class="eu-node-write" x="255" y="15" width="130" height="60" rx="10" />
+  <text class="eu-node-title" x="320" y="42" text-anchor="middle">Write Model</text>
+  <text class="eu-node-sub" x="320" y="60" text-anchor="middle">commits the change</text>
+
+  <rect class="eu-node-real" x="60" y="130" width="220" height="80" rx="10" />
+  <text class="eu-node-title" x="170" y="158" text-anchor="middle">Outbox event</text>
+  <text class="eu-node-sub" x="170" y="176" text-anchor="middle">same transaction as the write,</text>
+  <text class="eu-node-sub" x="170" y="192" text-anchor="middle">dispatched near real-time</text>
+
+  <rect class="eu-node-batch" x="360" y="130" width="220" height="80" rx="10" />
+  <text class="eu-node-title" x="470" y="158" text-anchor="middle">Bulk reconcile job</text>
+  <text class="eu-node-sub" x="470" y="176" text-anchor="middle">scheduled rebuild,</text>
+  <text class="eu-node-sub" x="470" y="192" text-anchor="middle">catches whatever drifted</text>
+
+  <path class="eu-arrow" d="M300,75 C260,95 200,105 175,128" />
+  <path class="eu-arrow" d="M345,75 C400,95 460,105 465,128" />
+
+  <rect class="eu-node-read" x="190" y="235" width="260" height="45" rx="10" />
+  <text class="eu-node-title" x="320" y="263" text-anchor="middle">Read Model</text>
+
+  <path class="eu-arrow" d="M180,210 C220,222 260,228 300,234" />
+  <path class="eu-arrow" d="M460,210 C420,222 380,228 340,234" />
+
+  <text class="eu-arrow-label" x="170" y="120" text-anchor="middle">freshness</text>
+  <text class="eu-arrow-label" x="470" y="120" text-anchor="middle">safety net</text>
+</svg>

@@ -1,0 +1,46 @@
+<svg viewBox="0 0 640 260" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Diagram: one Postgres database containing a normalized write model and a denormalized read model, kept in sync">
+  <style>
+    .eu-db-label { font: 600 13px/1 "Jost", sans-serif; fill: #5d2f86; letter-spacing: .04em; text-transform: uppercase; }
+    .eu-db-box { fill: none; stroke: #5d2f86; stroke-width: 1.5; stroke-dasharray: 6 5; }
+    .eu-box-write { fill: #f4effa; stroke: #5d2f86; stroke-width: 1.5; }
+    .eu-box-read { fill: #fdeef8; stroke: #d32e9d; stroke-width: 1.5; }
+    .eu-title { font: 700 16px/1 "Jost", sans-serif; fill: #212529; }
+    .eu-sub { font: 400 12.5px/1.4 "Jost", sans-serif; fill: #495057; }
+    .eu-arrow-label { font: 600 12px/1 "Jost", sans-serif; fill: #6c757d; }
+    .eu-arrow { stroke: #6c757d; stroke-width: 1.75; fill: none; marker-end: url(#eu-arrowhead); }
+    @media (prefers-color-scheme: dark) {
+      .eu-db-box { stroke: #8ed6fb; }
+      .eu-db-label { fill: #8ed6fb; }
+      .eu-box-write { fill: #2a2440; stroke: #8b6bb5; }
+      .eu-box-read { fill: #3a2432; stroke: #e388c4; }
+      .eu-title { fill: #f1f1f1; }
+      .eu-sub { fill: #ced4da; }
+      .eu-arrow-label { fill: #adb5bd; }
+      .eu-arrow { stroke: #adb5bd; }
+      marker path { fill: #adb5bd; }
+    }
+  </style>
+  <defs>
+    <marker id="eu-arrowhead" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#6c757d" />
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="640" height="260" fill="#ffffff" />
+  <rect class="eu-db-box" x="20" y="30" width="600" height="210" rx="16" />
+  <text class="eu-db-label" x="40" y="20">One Postgres Database</text>
+
+  <rect class="eu-box-write" x="55" y="70" width="220" height="130" rx="10" />
+  <text class="eu-title" x="165" y="105" text-anchor="middle">Write Model</text>
+  <text class="eu-sub" x="165" y="130" text-anchor="middle">normalized · relational</text>
+  <text class="eu-sub" x="165" y="150" text-anchor="middle">source of truth,</text>
+  <text class="eu-sub" x="165" y="168" text-anchor="middle">optimized for correctness</text>
+
+  <rect class="eu-box-read" x="365" y="70" width="220" height="130" rx="10" />
+  <text class="eu-title" x="475" y="105" text-anchor="middle">Read Model</text>
+  <text class="eu-sub" x="475" y="130" text-anchor="middle">denormalized · shaped</text>
+  <text class="eu-sub" x="475" y="150" text-anchor="middle">for the exact query</text>
+  <text class="eu-sub" x="475" y="168" text-anchor="middle">that hits it</text>
+
+  <path class="eu-arrow" d="M280,120 C310,120 330,120 358,120" />
+  <text class="eu-arrow-label" x="320" y="105" text-anchor="middle">sync</text>
+</svg>
