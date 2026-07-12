@@ -1,0 +1,10 @@
+<div class="services-cta border rounded p-4 mt-5">
+  <h3 class="h4 fw-bold mb-2">Building an MVP or SaaS?</h3>
+  <p class="mb-3">I help startups ship production-ready products with .NET, PostgreSQL, Angular/React, and AI integrations like Model Context Protocol (MCP).</p>
+  <div class="d-flex flex-wrap gap-2">
+    <a class="btn btn-primary" href="{{ "/contact/" | absURL }}">Get in touch</a>
+    {{ with .Site.Params.schemaAuthorLinkedIn }}
+    <a class="btn btn-outline-secondary" href="{{ . }}" target="_blank" rel="noopener">LinkedIn</a>
+    {{ end }}
+  </div>
+</div>
