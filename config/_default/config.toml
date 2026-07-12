@@ -58,6 +58,10 @@ notAlternative = false
 [uglyURLs]
   markdown = true
 
+[imaging]
+  quality = 90
+  resampleFilter = "Lanczos"
+
 [caches]
   [caches.getjson]
     dir = ":cacheDir/:project"

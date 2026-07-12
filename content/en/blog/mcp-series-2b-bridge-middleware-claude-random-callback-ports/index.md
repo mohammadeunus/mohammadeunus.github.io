@@ -6,7 +6,8 @@ excerpt: "The Inspector proves your protocol; only Claude proves your product. T
 date: 2026-07-02T00:00:00+06:00
 lastmod: 2026-07-02T00:00:00+06:00
 weight: 50
-images: []
+images: ["bridge-middleware-cover.jpg"]
+fillImage: "1270x846 Center"
 categories: ["Development", "AI", "MCP", ".NET", "Security"]
 tags: ["MCP", "Model Context Protocol", "OAuth", "OpenIddict", "ASP.NET Core", "PKCE", "Claude", "Authentication", "Redirect URI", "Middleware"]
 contributors: []
