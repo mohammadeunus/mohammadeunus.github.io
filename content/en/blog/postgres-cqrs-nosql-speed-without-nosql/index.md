@@ -20,7 +20,7 @@ If you're planning to build a system and a developer or a vendor has already tol
 **Short answer:** a monolith on a normal relational database is the right starting point for most businesses, and it can carry most of your traffic. When a page does get slow, there's a ladder of cheap fixes to climb first, and the heaviest tool at the top of that ladder is a read-optimized table inside your existing database, not NoSQL and not microservices. Skip to [A Simple Way to Decide](#a-simple-way-to-decide) if you just want the checklist.
 {{< /alert >}}
 
-## The Argument for NoSQL
+## The Blasphemy: Relational Databases Are Dying
 
 The case usually goes like this: most systems see a read-to-write ratio somewhere around 9 to 1. If 90% of your traffic is reads, why build a schema that makes every one of those reads pay the cost of a join, in service of write guarantees the other 10% cares about?
 
@@ -67,7 +67,13 @@ To be clear, this isn't a pro-monolith position. It's a sequencing position. A m
 
 So the pragmatic default is to start with a monolith (a modular one, if you want clean seams from day one) and change the architecture on demand when a real forcing function shows up: a module that genuinely needs to scale independently, a team that needs to own and deploy its own piece, a workload that's actively fighting the rest of the system for resources. A modular monolith with clean module boundaries also makes that later split cheap, because you're extracting a module that was already isolated, not untangling one that never had a boundary.
 
-It's also worth noting how far "don't abandon Postgres too early" actually goes. OpenAI [wrote about scaling PostgreSQL](https://openai.com/index/scaling-postgresql/) to power ChatGPT's 800 million users: nearly 50 read replicas, connection pooling, and workload isolation, deliberately choosing not to shard or move off Postgres because that cost wasn't worth paying while a read-heavy workload still had headroom left to optimize. That's the same underlying instinct this whole post is about: reach for a more exotic piece of infrastructure only when the simpler one has genuinely run out of road, not before.
+And if you want to know how far "don't abandon Postgres too early" actually goes, the biggest consumer app on the planet is the answer.
+
+{{< alert icon="🐘" context="success" >}}
+**Even ChatGPT runs on Postgres.** OpenAI [wrote about scaling PostgreSQL](https://openai.com/index/scaling-postgresql/) to power ChatGPT's 800 million users: nearly 50 read replicas, connection pooling, and workload isolation, deliberately choosing **not** to shard or move off Postgres, because that cost wasn't worth paying while a read-heavy workload still had headroom left to optimize. If Postgres hasn't run out of road at that scale, it won't run out at yours.
+{{< /alert >}}
+
+That's the same underlying instinct this whole post is about: reach for a more exotic piece of infrastructure only when the simpler one has genuinely run out of road, not before.
 
 ## The Ladder You Climb Before Touching the Architecture
 
