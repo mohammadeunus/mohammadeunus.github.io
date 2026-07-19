@@ -20,6 +20,12 @@ hire_for:
     url: "/consulting/enterprise-saas-platform-development/"
   - name: "Existing .NET modernization"
     url: "/consulting/abp-dotnet-consulting/"
+  - name: "Build SaaS"
+    url: "/consulting/"
+  - name: "AI integration"
+    url: "/consulting/"
+  - name: "Subscription system"
+    url: "/consulting/"
 places_title: "Where My Work Has Shipped"
 places:
   - place: "Saudi Arabia"

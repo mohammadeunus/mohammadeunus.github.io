@@ -139,32 +139,18 @@
           <h2>How We Work Together</h2>
         </div>
         {{/* TEMP: stacked-card prototype. Cards pin on scroll; each card
-             behind peeks at the top showing its number + title. */}}
+             behind peeks at the top showing its title. */}}
         <style>
-          /* NTouch-style stack: every card is sticky at the SAME top; the
-             cascade comes from transparent padding-top per card, so a later
-             card can never ride above the earlier titles. The grid gap paces
-             the arrivals; padding-bottom lets the finished stack rest. */
           .cx-stack {
-            position: relative;
-          }
-          .cx-stack-cards {
-            display: grid;
-            grid-template-columns: 1fr;
-            /* equal fixed rows: every sticky slot is the same height, so all
-               pinned bottoms align and the pile releases as one (the NTouch
-               trick: grid-template-rows: repeat(n, 40vw)) */
-            grid-auto-rows: 33rem;
-            gap: 12rem;
-          }
-          .cx-stack-slot {
-            position: sticky;
-            top: var(--stack-top, 78px);
-            height: 33rem;
-            padding-top: calc(var(--stack-i, 0) * 3.4rem);
+            display: flex;
+            flex-direction: column;
           }
           .cx-stack-card {
+            position: sticky;
+            top: calc(78px + var(--stack-i, 0) * 3.4rem);
+            z-index: calc(10 + var(--stack-i, 0));
             min-height: 17rem;
+            margin-bottom: 1.5rem;
             display: flex;
             flex-direction: column;
             background: var(--cx-card-bg);
@@ -228,14 +214,13 @@
             pointer-events: none;
             user-select: none;
           }
+          .cx-stack-spacer {
+            height: 0;
+            pointer-events: none;
+          }
           @media (max-width: 767.98px) {
-            .cx-stack-cards {
-              grid-auto-rows: 44rem;
-              gap: 10rem;
-            }
-            .cx-stack-slot {
-              --stack-top: 70px;
-              height: 44rem;
+            .cx-stack-card {
+              top: calc(70px + var(--stack-i, 0) * 3.4rem);
             }
           }
         </style>
@@ -262,11 +247,9 @@
             "tags" (slice "Deployment" "Docs & handover" "AI log analysis"))
         }}
         <div class="cx-stack">
-          <div class="cx-stack-cards">
           {{ $total := len $steps }}
           {{ range $i, $s := $steps }}
-          <div class="cx-stack-slot" style="--stack-i: {{ $i }};">
-          <div class="cx-stack-card">
+          <div class="cx-stack-card" style="--stack-i: {{ $i }};">
             <div class="cx-stack-head">
               <h3>{{ $s.title }}</h3>
               <span class="cx-stack-count">{{ add $i 1 }} / {{ $total }}</span>
@@ -276,9 +259,8 @@
               <span class="cx-stack-ghost" aria-hidden="true">{{ $s.num }}</span>
             </div>
           </div>
-          </div>
           {{ end }}
-          </div>
+          <div class="cx-stack-spacer" aria-hidden="true"></div>
         </div>
 
       </div>
