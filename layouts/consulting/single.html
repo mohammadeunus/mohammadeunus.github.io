@@ -1,0 +1,192 @@
+{{ define "main" }}
+{{ $check := `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>` }}
+
+<div class="cx container-xxl py-5">
+
+  <!-- Hero -->
+  <section class="cx-hero">
+    <div class="row justify-content-center">
+      <div class="col-16 col-lg-12">
+        <span class="cx-avail">Available for new projects</span>
+        <h1>{{ .Params.hero_title | default .Title }}</h1>
+        {{ with .Params.hero_lead }}<p class="cx-muted">{{ . }}</p>{{ end }}
+        {{ with .Params.hero_trust }}<p class="cx-hero-trust cx-muted">{{ . }}</p>{{ end }}
+        <div class="cx-cta-row">
+          <a href="/contact" class="btn btn-primary btn-lg">Let's build together →</a>
+          <a href="https://portfolio.eunus.dev" target="_blank" rel="noopener" class="btn btn-outline-primary btn-lg">View portfolio →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {{ partial "consulting/tabs.html" . }}
+
+  <!-- Featured -->
+  {{ if or .Params.checklist .Params.deliverables }}
+  <section>
+    <div class="row justify-content-center">
+      <div class="col-16 col-lg-14">
+        <div class="cx-card cx-card--featured">
+          <div class="row align-items-start g-4 g-md-5">
+            <div class="col-16 col-md-8">
+              {{ with .Params.badge }}<span class="cx-badge">{{ . }}</span>{{ end }}
+              <h2 class="h4 fw-bold mb-3">{{ .Params.intro_title | default .Title }}</h2>
+              {{ with .Params.intro }}<p class="cx-muted mb-4">{{ . }}</p>{{ end }}
+              {{ with .Params.checklist }}
+              <ul class="cx-check-list mb-4">
+                {{ range . }}<li>{{ $check | safeHTML }}{{ . | safeHTML }}</li>{{ end }}
+              </ul>
+              {{ end }}
+              <a href="/contact" class="btn btn-primary">{{ .Params.primary_cta | default "Start a project →" }}</a>
+            </div>
+            {{ with .Params.deliverables }}
+            <div class="col-16 col-md-8">
+              <div class="cx-deliverables">
+                <div class="cx-kicker">What you get</div>
+                <ul class="cx-check-list mb-0">
+                  {{ range . }}<li>{{ $check | safeHTML }}{{ . | safeHTML }}</li>{{ end }}
+                </ul>
+              </div>
+            </div>
+            {{ end }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  {{ end }}
+
+  <!-- Typical features -->
+  {{ with .Params.typical_features }}
+  <section>
+    <div class="row justify-content-center">
+      <div class="col-16 col-lg-12">
+        <div class="cx-sec-head">
+          <span class="cx-kicker">What's included</span>
+          <h2>{{ $.Params.typical_features_title | default "Typical Modules & Features" }}</h2>
+        </div>
+        <div class="cx-pills">
+          {{ range . }}<span class="cx-pill">{{ . }}</span>{{ end }}
+        </div>
+      </div>
+    </div>
+  </section>
+  {{ end }}
+
+  <!-- Who it's for -->
+  {{ with .Params.who_its_for }}
+  <section>
+    <div class="row justify-content-center">
+      <div class="col-16 col-lg-10">
+        <div class="cx-sec-head">
+          <span class="cx-kicker">Good fit</span>
+          <h2>{{ $.Params.who_its_for_title | default "Who This Is For" }}</h2>
+        </div>
+        <ul class="cx-check-list">
+          {{ range . }}<li>{{ $check | safeHTML }}{{ . | safeHTML }}</li>{{ end }}
+        </ul>
+      </div>
+    </div>
+  </section>
+  {{ end }}
+
+  <!-- Case studies -->
+  {{ with .Params.case_studies }}
+  {{ $single := eq (len .) 1 }}
+  <section>
+    <div class="cx-sec-head">
+      <span class="cx-kicker">Real work</span>
+      <h2>Case Studies</h2>
+    </div>
+    <div class="row g-4 justify-content-center">
+      {{ range . }}
+      <div class="{{ if $single }}col-16 col-lg-10{{ else }}col-16 col-lg-7{{ end }}">
+        <div class="cx-card cx-svc">
+          <h3>{{ .name }}</h3>
+          {{ with .meta }}<div class="cx-svc-meta">{{ . }}</div>{{ end }}
+          {{ with .story }}<p class="cx-muted">{{ . | safeHTML }}</p>{{ end }}
+          {{ with .points }}
+          <ul class="cx-check-list mb-0">
+            {{ range . }}<li>{{ $check | safeHTML }}{{ . | safeHTML }}</li>{{ end }}
+          </ul>
+          {{ end }}
+          {{ with .tags }}
+          <div class="cx-pills mt-auto justify-content-start">
+            {{ range . }}<span class="cx-pill">{{ . }}</span>{{ end }}
+          </div>
+          {{ end }}
+        </div>
+      </div>
+      {{ end }}
+    </div>
+  </section>
+  {{ end }}
+
+  <!-- Why work with me -->
+  {{ with .Params.why_work_with_me }}
+  <section>
+    <div class="row justify-content-center">
+      <div class="col-16 col-lg-10 text-center">
+        <div class="cx-sec-head">
+          <span class="cx-kicker">Why work with me</span>
+        </div>
+        <p class="cx-muted">{{ . }}</p>
+      </div>
+    </div>
+  </section>
+  {{ end }}
+
+  <!-- How I work -->
+  {{ with .Params.how_i_work }}
+  <section>
+    <div class="row justify-content-center">
+      <div class="col-16 col-lg-10">
+        <div class="cx-sec-head">
+          <span class="cx-kicker">Process</span>
+          <h2>How I Work</h2>
+        </div>
+        <ul class="cx-check-list">
+          {{ range . }}<li>{{ $check | safeHTML }}{{ . | safeHTML }}</li>{{ end }}
+        </ul>
+      </div>
+    </div>
+  </section>
+  {{ end }}
+
+  <!-- Tech stack -->
+  {{ with .Params.tech_stack }}
+  <section>
+    <div class="row justify-content-center">
+      <div class="col-16 col-lg-12">
+        <div class="cx-sec-head">
+          <span class="cx-kicker">Toolbox</span>
+          <h2>Stack &amp; Technologies</h2>
+        </div>
+        <div class="cx-pills">
+          {{ range . }}<span class="cx-pill">{{ . }}</span>{{ end }}
+        </div>
+      </div>
+    </div>
+  </section>
+  {{ end }}
+
+  <!-- FAQ -->
+  {{ with .Params.faqs }}
+  {{ partial "consulting/faq.html" . }}
+  {{ end }}
+
+  <!-- CTA -->
+  <section class="mb-0">
+    <div class="row justify-content-center">
+      <div class="col-16 col-lg-12">
+        <div class="cx-final">
+          <h2>{{ .Params.cta_title | default "Have an idea worth building?" }}</h2>
+          <p class="cx-muted">{{ .Params.cta_lead | default "Based in Dhaka, Bangladesh — available for remote engagements worldwide. Tell me what you're building and I'll tell you honestly how I can help." }}</p>
+          <a href="/contact" class="btn btn-primary btn-lg">Start a conversation →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+{{ end }}

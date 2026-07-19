@@ -4,18 +4,28 @@
 
 ## Services
 
-- [AI-Powered SaaS MVP Development](https://eunus.dev/consulting/): Multi-tenant SaaS products built with AI automation (Semantic Kernel, MCP servers) integrated from day one, not bolted on later. Full-stack delivery: .NET, Angular, Blazor, .NET MAUI, subscription billing, deployment.
-- [Legacy System Modernization](https://eunus.dev/consulting/): ABP Framework / .NET modernization, security hardening, and DDD refactoring for aging or high-risk codebases — including rewriting a legacy hospital scheduling system.
+- [AI-Powered SaaS MVP Development](https://eunus.dev/consulting/ai-mvp-development/): Multi-tenant SaaS products built with AI automation (Semantic Kernel, MCP servers) integrated from day one, not bolted on later. Full-stack delivery: .NET, Angular, Blazor, .NET MAUI, subscription billing, deployment.
+- [Hotel SaaS Development](https://eunus.dev/consulting/hotel-saas-development/): Multi-tenant hotel management SaaS — booking engines, recurring billing, and per-tenant timezone handling. Shipped in production for a Saudi Arabia enterprise client.
+- [Hospital SaaS Development](https://eunus.dev/consulting/hospital-saas-development/): Healthcare SaaS with modular monolith architecture, clean DDD boundaries, and concurrency-safe scheduling. Greenfield build for a Greece-based client.
+- [SaaS Subscription & Billing Systems](https://eunus.dev/consulting/subscription-billing-systems/): Dynamic subscription plan builders, prorated billing, and payment gateway integration (Stripe, Tap).
+- [ERP Development](https://eunus.dev/consulting/erp-development/): Multi-tenant ERP platforms — sales, inventory, CRM, and finance modules — as both a live modular system and a 17-service ABP microservices platform.
+- [Enterprise SaaS Platform Development](https://eunus.dev/consulting/enterprise-saas-platform-development/): Multi-tenant enterprise SaaS hubs unifying CRM, ERP, product information, logistics, payments, and identity, with Quote-to-Cash workflow automation and integrations (HubSpot, Shippit, Stripe, Azure AD/SCIM, SendGrid, Twilio).
+- [ABP Framework / .NET Consulting](https://eunus.dev/consulting/abp-dotnet-consulting/): Architecture reviews, DDD refactoring, legacy modernization, and full security-assessment remediation across 10+ production ABP systems.
+- [Visit MVP Development](https://eunus.dev/consulting/visit-mvp-development/): Field visit and site-visit tracking SaaS MVPs — scheduling, check-ins, and reporting for field sales, service, and inspection teams.
+- [Task Management MVP Development](https://eunus.dev/consulting/task-management-mvp-development/): Task and project management SaaS MVPs with custom workflows, approval steps, and reporting for teams that have outgrown generic board tools.
+- [LMS MVP Development](https://eunus.dev/consulting/lms-mvp-development/): Learning management system SaaS MVPs — courses, progress tracking, assessments, and certification.
+- [Campaign Management MVP Development](https://eunus.dev/consulting/campaign-management-mvp-development/): Marketing campaign management SaaS MVPs — audience segmentation, multi-channel delivery, and performance reporting.
 - [Scale & Optimize](https://eunus.dev/consulting/): Performance and query tuning, architecture evolution, and microservices migration for products moving from MVP to enterprise scale.
-- [Architecture & Code Reviews](https://eunus.dev/consulting/): Independent architecture reviews, codebase audits, team workshops, and technical hiring advice.
 - [Contact](https://eunus.dev/contact/)
 
 ## Background
 
-- 3+ years professional experience, 12+ systems shipped, 9 SaaS products delivered across 6 countries.
-- Primary stack: ABP Framework, .NET/C#, ASP.NET Core, Angular, Blazor, .NET MAUI, PostgreSQL, Redis, RabbitMQ, Entity Framework Core, OpenIddict, Semantic Kernel, MCP servers, Stripe.
-- Applied domain experience: healthcare/hospital scheduling systems, multi-tenant booking and reservation platforms, and subscription-based SaaS billing.
+- 3+ years professional experience, 12+ systems shipped, 9 SaaS products delivered across 6 countries (Saudi Arabia, Greece, USA, and more).
+- Primary stack: ABP Framework, .NET/C#, ASP.NET Core, Angular, Blazor, .NET MAUI, PostgreSQL, Redis, RabbitMQ, YARP, Entity Framework Core, OpenIddict, Semantic Kernel, MCP servers, Stripe, Tap Payment.
+- Applied domain experience: hotel management SaaS (Saudi Arabia), hospital management SaaS (Greece), multi-tenant ERP platforms (live system + 17-service microservices platform), and subscription/billing systems.
+- Led full remediation of a third-party penetration test (4 critical + 6 high findings) on a production ABP + Angular system.
 - Development process integrates AI throughout: MCP-first API development, AI-assisted UI scaffolding, and AI-assisted log analysis in production.
+- Full career detail: https://portfolio.eunus.dev/resume.md
 
 ## Writing
 

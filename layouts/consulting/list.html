@@ -1,352 +1,4 @@
 {{ define "main" }}
-<style>
-/* ── Consulting page (scoped: .cx) ─────────────────────── */
-.cx {
-  --cx-accent: var(--bs-primary, #5d2f86);
-  --cx-accent-rgb: var(--bs-primary-rgb, 93, 47, 134);
-  --cx-ink: var(--bs-body-color, #1d2d35);
-  --cx-muted: #6c757d;
-  --cx-card-bg: #fff;
-  --cx-card-border: #e9ecef;
-  --cx-tint: rgba(var(--cx-accent-rgb), 0.05);
-  --cx-tint-border: rgba(var(--cx-accent-rgb), 0.14);
-  --cx-shadow: 0 1px 2px rgba(29, 45, 53, 0.04), 0 8px 24px rgba(29, 45, 53, 0.06);
-  color: var(--cx-ink);
-}
-[data-dark-mode] .cx {
-  --cx-accent: #8ed6fb;
-  --cx-accent-rgb: 142, 214, 251;
-  --cx-ink: #dee2e6;
-  --cx-muted: #9aa5ae;
-  --cx-card-bg: #272c31;
-  --cx-card-border: #343a40;
-  --cx-tint: rgba(142, 214, 251, 0.06);
-  --cx-tint-border: rgba(142, 214, 251, 0.16);
-  --cx-shadow: 0 1px 2px rgba(0, 0, 0, 0.2), 0 8px 24px rgba(0, 0, 0, 0.25);
-}
-
-.cx section { margin-bottom: 4.5rem; }
-@media (max-width: 767.98px) {
-  .cx section { margin-bottom: 3.25rem; }
-}
-
-.cx .cx-muted { color: var(--cx-muted); }
-.cx .cx-accent { color: var(--cx-accent); }
-
-/* Hero */
-.cx-hero { text-align: center; padding-top: 1.5rem; }
-.cx-hero h1 {
-  font-size: clamp(1.75rem, 1.2rem + 2.6vw, 2.75rem);
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  line-height: 1.2;
-  margin-bottom: 1rem;
-}
-.cx-hero h1 .cx-hl {
-  color: var(--cx-accent);
-  white-space: nowrap;
-}
-.cx-hero p {
-  font-size: clamp(1rem, 0.95rem + 0.3vw, 1.15rem);
-  max-width: 42rem;
-  margin: 0 auto 1.75rem;
-}
-.cx-avail {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 0.78rem;
-  font-weight: 600;
-  padding: 0.35rem 0.9rem;
-  border-radius: 2rem;
-  border: 1px solid var(--cx-tint-border);
-  background: var(--cx-tint);
-  color: var(--cx-accent);
-  margin-bottom: 1.25rem;
-}
-.cx-avail::before {
-  content: "";
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: #2fb344;
-  box-shadow: 0 0 0 3px rgba(47, 179, 68, 0.2);
-}
-.cx-hero .cx-cta-row {
-  display: flex;
-  gap: 0.75rem;
-  justify-content: center;
-  flex-wrap: wrap;
-}
-@media (max-width: 575.98px) {
-  .cx-hero .cx-cta-row { flex-direction: column; align-items: stretch; max-width: 22rem; margin: 0 auto; }
-}
-
-/* Stats strip */
-.cx-stats {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  border: 1px solid var(--cx-card-border);
-  border-radius: 0.75rem;
-  background: var(--cx-card-bg);
-  box-shadow: var(--cx-shadow);
-  overflow: hidden;
-}
-.cx-stat {
-  padding: 1.4rem 0.75rem;
-  text-align: center;
-}
-.cx-stat + .cx-stat { border-left: 1px solid var(--cx-card-border); }
-.cx-stat .cx-stat-num {
-  font-size: clamp(1.5rem, 1.2rem + 1.2vw, 2rem);
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  color: var(--cx-accent);
-  line-height: 1.1;
-}
-.cx-stat .cx-stat-label { font-size: 0.8rem; color: var(--cx-muted); margin-top: 0.25rem; }
-@media (max-width: 575.98px) {
-  .cx-stats { grid-template-columns: repeat(2, 1fr); }
-  .cx-stat:nth-child(3) { border-left: none; }
-  .cx-stat:nth-child(n + 3) { border-top: 1px solid var(--cx-card-border); }
-}
-
-/* Section headings */
-.cx-sec-head { text-align: center; margin-bottom: 2rem; }
-.cx-sec-head .cx-kicker {
-  display: block;
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.09em;
-  text-transform: uppercase;
-  color: var(--cx-accent);
-  margin-bottom: 0.4rem;
-}
-.cx-sec-head h2 { font-size: 1.4rem; font-weight: 700; letter-spacing: -0.01em; margin: 0; }
-
-/* Cards */
-.cx-card {
-  background: var(--cx-card-bg);
-  border: 1px solid var(--cx-card-border);
-  border-radius: 0.75rem;
-  box-shadow: var(--cx-shadow);
-}
-.cx-card--featured {
-  border-color: var(--cx-tint-border);
-  padding: 2rem;
-}
-@media (min-width: 768px) {
-  .cx-card--featured { padding: 2.75rem; }
-}
-.cx-badge {
-  display: inline-block;
-  font-size: 0.68rem;
-  font-weight: 700;
-  letter-spacing: 0.07em;
-  text-transform: uppercase;
-  padding: 0.3rem 0.7rem;
-  border-radius: 2rem;
-  background: var(--cx-tint);
-  color: var(--cx-accent);
-  margin-bottom: 1rem;
-}
-.cx-check-list { list-style: none; padding: 0; margin: 0; }
-.cx-check-list li {
-  position: relative;
-  padding-left: 1.6rem;
-  margin-bottom: 0.6rem;
-  font-size: 0.9rem;
-}
-.cx-check-list li svg {
-  position: absolute;
-  left: 0;
-  top: 0.22em;
-  color: var(--cx-accent);
-}
-.cx-deliverables {
-  background: var(--cx-tint);
-  border: 1px solid var(--cx-tint-border);
-  border-radius: 0.6rem;
-  padding: 1.5rem;
-  height: 100%;
-}
-.cx-deliverables .cx-kicker {
-  font-size: 0.68rem;
-  font-weight: 700;
-  letter-spacing: 0.07em;
-  text-transform: uppercase;
-  color: var(--cx-muted);
-  margin-bottom: 1rem;
-}
-
-/* Supporting service cards */
-.cx-svc {
-  padding: 1.75rem;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-}
-.cx-svc .cx-svc-icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 42px;
-  height: 42px;
-  border-radius: 0.6rem;
-  background: var(--cx-tint);
-  color: var(--cx-accent);
-  margin-bottom: 1rem;
-}
-.cx-svc h3 { font-size: 1.05rem; font-weight: 700; margin-bottom: 0.6rem; }
-.cx-svc p { font-size: 0.87rem; margin-bottom: 1rem; }
-.cx-svc .cx-check-list li { font-size: 0.84rem; margin-bottom: 0.45rem; }
-
-/* Tech pills */
-.cx-pills { display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center; }
-.cx-pill {
-  font-size: 0.8rem;
-  padding: 0.4rem 0.85rem;
-  border-radius: 2rem;
-  border: 1px solid var(--cx-card-border);
-  background: var(--cx-card-bg);
-  color: var(--cx-ink);
-  white-space: nowrap;
-}
-
-/* Process steps */
-.cx-steps {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 1rem;
-}
-@media (max-width: 767.98px) {
-  .cx-steps { grid-template-columns: repeat(2, 1fr); }
-}
-@media (max-width: 419.98px) {
-  .cx-steps { grid-template-columns: 1fr; }
-}
-.cx-step {
-  background: var(--cx-card-bg);
-  border: 1px solid var(--cx-card-border);
-  border-radius: 0.75rem;
-  padding: 1.4rem 1.1rem;
-  text-align: center;
-}
-.cx-step .cx-step-num {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 2.2rem;
-  height: 2.2rem;
-  border-radius: 50%;
-  background: var(--cx-tint);
-  color: var(--cx-accent);
-  font-weight: 700;
-  font-size: 0.9rem;
-  margin-bottom: 0.7rem;
-}
-.cx-step .cx-step-title { font-weight: 600; font-size: 0.92rem; margin-bottom: 0.3rem; }
-.cx-step .cx-step-desc { font-size: 0.78rem; color: var(--cx-muted); }
-
-/* AI workflow */
-.cx-flow .cx-kicker {
-  display: block;
-  text-align: center;
-  font-size: 0.7rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--cx-accent);
-  margin-bottom: 1.25rem;
-}
-.cx-flow-row { display: flex; align-items: stretch; gap: 0.75rem; }
-@media (max-width: 767.98px) {
-  .cx-flow-row { flex-direction: column; gap: 0.5rem; }
-}
-.cx-flow-card {
-  flex: 1 1 0;
-  background: var(--cx-card-bg);
-  border: 1px solid var(--cx-card-border);
-  border-radius: 0.75rem;
-  box-shadow: var(--cx-shadow);
-  padding: 1.25rem 1.1rem;
-}
-.cx-flow-card .cx-flow-title { font-weight: 600; font-size: 0.86rem; margin-bottom: 0.3rem; }
-.cx-flow-card .cx-flow-desc { font-size: 0.78rem; color: var(--cx-muted); margin: 0; }
-.cx-flow-arrow {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex: 0 0 auto;
-  color: var(--cx-accent);
-  font-weight: 700;
-}
-@media (max-width: 767.98px) {
-  .cx-flow-arrow { transform: rotate(90deg); padding: 0; line-height: 1; }
-}
-
-/* FAQ */
-.cx-faq {
-  max-width: 44rem;
-  margin: 0 auto;
-}
-.cx-faq details {
-  background: var(--cx-card-bg);
-  border: 1px solid var(--cx-card-border);
-  border-radius: 0.6rem;
-  padding: 0;
-  margin-bottom: 0.6rem;
-}
-.cx-faq summary {
-  list-style: none;
-  cursor: pointer;
-  width: auto;
-  padding: 1rem 1.1rem;
-  margin: 0;
-  font-weight: 600;
-  font-size: 0.92rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-}
-.cx-faq summary:hover { background: transparent; }
-.cx-faq details[open] > summary { border-bottom: none; margin-bottom: 0; }
-.cx-faq details[open] { padding: 0; }
-.cx-faq summary::-webkit-details-marker { display: none; }
-.cx-faq summary::marker { display: none; content: ""; }
-.cx-faq details summary::before { content: none !important; margin-right: 0; }
-.cx-faq summary::after {
-  content: "+";
-  color: var(--cx-accent);
-  font-weight: 700;
-  font-size: 1.1rem;
-  flex-shrink: 0;
-}
-.cx-faq details[open] summary::after { content: "\2212"; }
-.cx-faq .cx-faq-a {
-  padding: 0 1.1rem 1.1rem;
-  font-size: 0.87rem;
-  color: var(--cx-muted);
-}
-
-/* Final CTA */
-.cx-final {
-  text-align: center;
-  background: linear-gradient(180deg, var(--cx-tint), transparent);
-  border: 1px solid var(--cx-tint-border);
-  border-radius: 1rem;
-  padding: 3rem 1.5rem;
-}
-.cx-final h2 { font-size: clamp(1.3rem, 1.1rem + 1vw, 1.7rem); font-weight: 700; margin-bottom: 0.75rem; }
-.cx-final p { max-width: 34rem; margin: 0 auto 1.5rem; }
-
-/* Buttons — larger touch targets on mobile */
-@media (max-width: 575.98px) {
-  .cx .btn { padding-top: 0.6rem; padding-bottom: 0.6rem; }
-}
-</style>
-
 {{ $check := `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>` }}
 
 <div class="cx container-xxl py-5">
@@ -365,6 +17,8 @@
       </div>
     </div>
   </section>
+
+  {{ partial "consulting/tabs.html" . }}
 
   <!-- Track record -->
   <section>
@@ -419,62 +73,42 @@
     </div>
   </section>
 
-  <!-- Supporting services -->
+  <!-- Specialties -->
+  {{ $projects := slice
+    (dict "name" "Hotel SaaS Development" "meta" "Saudi Arabia — Booking, billing, timezones" "url" "/consulting/hotel-saas-development/")
+    (dict "name" "Hospital SaaS Development" "meta" "Greece — Modular monolith, DDD" "url" "/consulting/hospital-saas-development/")
+    (dict "name" "Subscription & Billing Systems" "meta" "Stripe, Tap, dynamic plan builder" "url" "/consulting/subscription-billing-systems/")
+    (dict "name" "ERP Development" "meta" "17-service ABP microservices platform" "url" "/consulting/erp-development/")
+    (dict "name" "Enterprise SaaS Platform Development" "meta" "CRM, ERP, PIM, logistics — unified hub" "url" "/consulting/enterprise-saas-platform-development/")
+    (dict "name" "ABP/.NET Consulting" "meta" "10+ production systems, security hardening" "url" "/consulting/abp-dotnet-consulting/")
+    (dict "name" "AI MVP Development" "meta" "Semantic Kernel, MCP servers" "url" "/consulting/ai-mvp-development/")
+    (dict "name" "Visit MVP Development" "meta" "Field visit scheduling & tracking" "url" "/consulting/visit-mvp-development/")
+    (dict "name" "Task Management MVP Development" "meta" "Custom workflows & reporting" "url" "/consulting/task-management-mvp-development/")
+    (dict "name" "LMS MVP Development" "meta" "Courses, progress tracking, certification" "url" "/consulting/lms-mvp-development/")
+    (dict "name" "Campaign Management MVP Development" "meta" "Segmentation, multi-channel, reporting" "url" "/consulting/campaign-management-mvp-development/")
+  }}
   <section>
     <div class="cx-sec-head">
-      <span class="cx-kicker">More ways I can help</span>
-      <h2>Beyond the MVP</h2>
+      <span class="cx-kicker">Explore by specialty</span>
+      <h2>What I Build</h2>
     </div>
-    <div class="row g-4 justify-content-center">
-
-      <div class="col-16 col-md-8 col-lg-5">
-        <div class="cx-card cx-svc">
-          <span class="cx-svc-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>
-          </span>
-          <h3>Scale &amp; Optimize</h3>
-          <p class="cx-muted">Already have a product? I help you take it from MVP to enterprise — performance tuning, architecture review, and building the features your users actually need.</p>
-          <ul class="cx-check-list mb-0 mt-auto">
-            <li>{{ $check | safeHTML }}Performance &amp; query tuning</li>
-            <li>{{ $check | safeHTML }}Architecture evolution</li>
-            <li>{{ $check | safeHTML }}Feature development</li>
-            <li>{{ $check | safeHTML }}Microservices migration</li>
-          </ul>
-        </div>
+    <div class="cx-marquee">
+      <div class="cx-marquee-track">
+        {{ range $projects }}
+        <a href="{{ .url }}" class="cx-proj-card">
+          <div class="cx-proj-name">{{ .name }}</div>
+          <div class="cx-proj-meta">{{ .meta }}</div>
+          <div class="cx-proj-cta">See case study →</div>
+        </a>
+        {{ end }}
+        {{ range $projects }}
+        <a href="{{ .url }}" class="cx-proj-card" aria-hidden="true" tabindex="-1">
+          <div class="cx-proj-name">{{ .name }}</div>
+          <div class="cx-proj-meta">{{ .meta }}</div>
+          <div class="cx-proj-cta">See case study →</div>
+        </a>
+        {{ end }}
       </div>
-
-      <div class="col-16 col-md-8 col-lg-5">
-        <div class="cx-card cx-svc">
-          <span class="cx-svc-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path></svg>
-          </span>
-          <h3>Legacy Rescue</h3>
-          <p class="cx-muted">Got a messy codebase or a system that's hard to change? I've rewritten legacy hospital systems and untangled multi-year technical debt — without breaking what works.</p>
-          <ul class="cx-check-list mb-0 mt-auto">
-            <li>{{ $check | safeHTML }}ABP / .NET modernisation</li>
-            <li>{{ $check | safeHTML }}Security hardening</li>
-            <li>{{ $check | safeHTML }}DDD refactoring</li>
-            <li>{{ $check | safeHTML }}Integration &amp; API work</li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="col-16 col-md-8 col-lg-5">
-        <div class="cx-card cx-svc">
-          <span class="cx-svc-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>
-          </span>
-          <h3>Guidance &amp; Reviews</h3>
-          <p class="cx-muted">Need a second opinion before committing to an architecture? Or a code review that actually explains the why? I do deep technical reviews backed by real production experience.</p>
-          <ul class="cx-check-list mb-0 mt-auto">
-            <li>{{ $check | safeHTML }}Architecture reviews</li>
-            <li>{{ $check | safeHTML }}Codebase audits</li>
-            <li>{{ $check | safeHTML }}Team workshops</li>
-            <li>{{ $check | safeHTML }}Hiring technical advice</li>
-          </ul>
-        </div>
-      </div>
-
     </div>
   </section>
 
@@ -552,11 +186,10 @@
     </div>
   </section>
 
-  <!-- FAQ -->
   {{ $faqs := slice
     (dict
       "q" "Do you only build SaaS MVPs for a specific industry?"
-      "a" "No — I work across domains. Past projects include healthcare and hospital scheduling systems, multi-tenant booking and reservation platforms, and subscription-based SaaS billing. If your product needs multi-tenant architecture, AI features, or a scalable .NET/Angular/Blazor stack, the industry itself is secondary to those requirements."
+      "a" "No — I work across domains, with production experience in hotel and hospital management SaaS, ERP platforms, and subscription billing systems. If your product needs multi-tenant architecture, AI features, or a scalable .NET/Angular/Blazor stack, the industry itself is secondary to those requirements."
     )
     (dict
       "q" "How long does it take to build a SaaS MVP?"
@@ -568,7 +201,7 @@
     )
     (dict
       "q" "Do you handle subscription billing and payments?"
-      "a" "Yes, including Stripe integration and custom subscription and billing systems for multi-tenant SaaS products."
+      "a" "Yes, including Stripe and Tap payment gateway integration, plus custom subscription and billing systems for multi-tenant SaaS products."
     )
     (dict
       "q" "I already have a product — can you help scale it instead of building from scratch?"
@@ -576,27 +209,14 @@
     )
     (dict
       "q" "Do you work with clients outside Bangladesh?"
-      "a" "Yes — I'm based in Dhaka, Bangladesh, and work remotely with clients across 6+ countries."
+      "a" "Yes — I'm based in Dhaka, Bangladesh, and work remotely with clients across 6+ countries, including Saudi Arabia, Greece, and the US."
     )
     (dict
       "q" "What's your tech stack?"
       "a" "ABP Framework, .NET/C#, ASP.NET Core, Angular, Blazor, .NET MAUI, PostgreSQL, Redis, RabbitMQ, and more — see the full stack listed above."
     )
   }}
-  <section>
-    <div class="cx-sec-head">
-      <span class="cx-kicker">Common questions</span>
-      <h2>FAQ</h2>
-    </div>
-    <div class="cx-faq">
-      {{ range $faqs }}
-      <details>
-        <summary>{{ .q }}</summary>
-        <p class="cx-faq-a">{{ .a }}</p>
-      </details>
-      {{ end }}
-    </div>
-  </section>
+  {{ partial "consulting/faq.html" $faqs }}
 
   <!-- CTA -->
   <section class="mb-0">
@@ -612,11 +232,4 @@
   </section>
 
 </div>
-
-{{ $faqSc := newScratch }}
-{{ range $faqs }}
-{{ $faqSc.Add "questions" (slice (dict "@type" "Question" "name" .q "acceptedAnswer" (dict "@type" "Answer" "text" .a))) }}
-{{ end }}
-{{ $faqSchema := dict "@context" "https://schema.org" "@type" "FAQPage" "mainEntity" ($faqSc.Get "questions") }}
-<script type="application/ld+json">{{ $faqSchema | jsonify | safeJS }}</script>
 {{ end }}

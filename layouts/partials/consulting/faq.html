@@ -1,0 +1,22 @@
+{{ $faqs := . }}
+<section>
+  <div class="cx-sec-head">
+    <span class="cx-kicker">Common questions</span>
+    <h2>FAQ</h2>
+  </div>
+  <div class="cx-faq">
+    {{ range $faqs }}
+    <details>
+      <summary>{{ .q }}</summary>
+      <p class="cx-faq-a">{{ .a }}</p>
+    </details>
+    {{ end }}
+  </div>
+</section>
+
+{{ $faqSc := newScratch }}
+{{ range $faqs }}
+{{ $faqSc.Add "questions" (slice (dict "@type" "Question" "name" .q "acceptedAnswer" (dict "@type" "Answer" "text" .a))) }}
+{{ end }}
+{{ $faqSchema := dict "@context" "https://schema.org" "@type" "FAQPage" "mainEntity" ($faqSc.Get "questions") }}
+<script type="application/ld+json">{{ $faqSchema | jsonify | safeJS }}</script>

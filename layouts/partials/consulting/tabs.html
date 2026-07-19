@@ -1,0 +1,22 @@
+{{ $page := . }}
+{{ $tabs := slice
+  (dict "name" "Overview" "slug" "")
+  (dict "name" "AI MVP Development" "slug" "ai-mvp-development")
+  (dict "name" "Hotel SaaS Development" "slug" "hotel-saas-development")
+  (dict "name" "Hospital SaaS Development" "slug" "hospital-saas-development")
+  (dict "name" "Subscription & Billing" "slug" "subscription-billing-systems")
+  (dict "name" "ERP Development" "slug" "erp-development")
+  (dict "name" "Enterprise SaaS Platform Development" "slug" "enterprise-saas-platform-development")
+  (dict "name" "ABP/.NET Consulting" "slug" "abp-dotnet-consulting")
+  (dict "name" "Visit MVP Development" "slug" "visit-mvp-development")
+  (dict "name" "Task Management MVP Development" "slug" "task-management-mvp-development")
+  (dict "name" "LMS MVP Development" "slug" "lms-mvp-development")
+  (dict "name" "Campaign Management MVP Development" "slug" "campaign-management-mvp-development")
+}}
+<nav class="cx-tabs" aria-label="Consulting specialties">
+  {{ range $tabs }}
+  {{ $url := cond (eq .slug "") "/consulting/" (printf "/consulting/%s/" .slug) }}
+  {{ $isActive := eq $page.RelPermalink $url }}
+  <a class="cx-tab{{ if $isActive }} is-active{{ end }}" href="{{ $url }}"{{ if $isActive }} aria-current="page"{{ end }}>{{ .name }}</a>
+  {{ end }}
+</nav>
