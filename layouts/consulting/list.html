@@ -285,6 +285,51 @@
   .cx-flow-arrow { transform: rotate(90deg); padding: 0; line-height: 1; }
 }
 
+/* FAQ */
+.cx-faq {
+  max-width: 44rem;
+  margin: 0 auto;
+}
+.cx-faq details {
+  background: var(--cx-card-bg);
+  border: 1px solid var(--cx-card-border);
+  border-radius: 0.6rem;
+  padding: 0;
+  margin-bottom: 0.6rem;
+}
+.cx-faq summary {
+  list-style: none;
+  cursor: pointer;
+  width: auto;
+  padding: 1rem 1.1rem;
+  margin: 0;
+  font-weight: 600;
+  font-size: 0.92rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.cx-faq summary:hover { background: transparent; }
+.cx-faq details[open] > summary { border-bottom: none; margin-bottom: 0; }
+.cx-faq details[open] { padding: 0; }
+.cx-faq summary::-webkit-details-marker { display: none; }
+.cx-faq summary::marker { display: none; content: ""; }
+.cx-faq details summary::before { content: none !important; margin-right: 0; }
+.cx-faq summary::after {
+  content: "+";
+  color: var(--cx-accent);
+  font-weight: 700;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+.cx-faq details[open] summary::after { content: "\2212"; }
+.cx-faq .cx-faq-a {
+  padding: 0 1.1rem 1.1rem;
+  font-size: 0.87rem;
+  color: var(--cx-muted);
+}
+
 /* Final CTA */
 .cx-final {
   text-align: center;
@@ -507,6 +552,52 @@
     </div>
   </section>
 
+  <!-- FAQ -->
+  {{ $faqs := slice
+    (dict
+      "q" "Do you only build SaaS MVPs for a specific industry?"
+      "a" "No — I work across domains. Past projects include healthcare and hospital scheduling systems, multi-tenant booking and reservation platforms, and subscription-based SaaS billing. If your product needs multi-tenant architecture, AI features, or a scalable .NET/Angular/Blazor stack, the industry itself is secondary to those requirements."
+    )
+    (dict
+      "q" "How long does it take to build a SaaS MVP?"
+      "a" "Most MVPs ship in weeks once scope and architecture are agreed, not months. Exact timelines depend on scope, but the process is Discovery, Design, Build, then Launch — see \"How We Work Together\" above."
+    )
+    (dict
+      "q" "Can you integrate AI features like chat or automation into my product?"
+      "a" "Yes — AI automation with Semantic Kernel and MCP servers is built into the MVP from day one, not bolted on afterward."
+    )
+    (dict
+      "q" "Do you handle subscription billing and payments?"
+      "a" "Yes, including Stripe integration and custom subscription and billing systems for multi-tenant SaaS products."
+    )
+    (dict
+      "q" "I already have a product — can you help scale it instead of building from scratch?"
+      "a" "Yes. I take existing MVPs to enterprise scale: performance and query tuning, architecture evolution, and microservices migration."
+    )
+    (dict
+      "q" "Do you work with clients outside Bangladesh?"
+      "a" "Yes — I'm based in Dhaka, Bangladesh, and work remotely with clients across 6+ countries."
+    )
+    (dict
+      "q" "What's your tech stack?"
+      "a" "ABP Framework, .NET/C#, ASP.NET Core, Angular, Blazor, .NET MAUI, PostgreSQL, Redis, RabbitMQ, and more — see the full stack listed above."
+    )
+  }}
+  <section>
+    <div class="cx-sec-head">
+      <span class="cx-kicker">Common questions</span>
+      <h2>FAQ</h2>
+    </div>
+    <div class="cx-faq">
+      {{ range $faqs }}
+      <details>
+        <summary>{{ .q }}</summary>
+        <p class="cx-faq-a">{{ .a }}</p>
+      </details>
+      {{ end }}
+    </div>
+  </section>
+
   <!-- CTA -->
   <section class="mb-0">
     <div class="row justify-content-center">
@@ -521,4 +612,11 @@
   </section>
 
 </div>
+
+{{ $faqSc := newScratch }}
+{{ range $faqs }}
+{{ $faqSc.Add "questions" (slice (dict "@type" "Question" "name" .q "acceptedAnswer" (dict "@type" "Answer" "text" .a))) }}
+{{ end }}
+{{ $faqSchema := dict "@context" "https://schema.org" "@type" "FAQPage" "mainEntity" ($faqSc.Get "questions") }}
+<script type="application/ld+json">{{ $faqSchema | jsonify | safeJS }}</script>
 {{ end }}

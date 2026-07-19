@@ -1,0 +1,26 @@
+# eunus.dev — Mohammad Eunus (Eunusur Rahaman)
+
+> Software engineer specializing in AI-powered SaaS MVP development, ABP Framework/.NET modernization, and multi-tenant architecture. Based in Dhaka, Bangladesh; available for remote consulting engagements worldwide.
+
+## Services
+
+- [AI-Powered SaaS MVP Development](https://eunus.dev/consulting/): Multi-tenant SaaS products built with AI automation (Semantic Kernel, MCP servers) integrated from day one, not bolted on later. Full-stack delivery: .NET, Angular, Blazor, .NET MAUI, subscription billing, deployment.
+- [Legacy System Modernization](https://eunus.dev/consulting/): ABP Framework / .NET modernization, security hardening, and DDD refactoring for aging or high-risk codebases — including rewriting a legacy hospital scheduling system.
+- [Scale & Optimize](https://eunus.dev/consulting/): Performance and query tuning, architecture evolution, and microservices migration for products moving from MVP to enterprise scale.
+- [Architecture & Code Reviews](https://eunus.dev/consulting/): Independent architecture reviews, codebase audits, team workshops, and technical hiring advice.
+- [Contact](https://eunus.dev/contact/)
+
+## Background
+
+- 3+ years professional experience, 12+ systems shipped, 9 SaaS products delivered across 6 countries.
+- Primary stack: ABP Framework, .NET/C#, ASP.NET Core, Angular, Blazor, .NET MAUI, PostgreSQL, Redis, RabbitMQ, Entity Framework Core, OpenIddict, Semantic Kernel, MCP servers, Stripe.
+- Applied domain experience: healthcare/hospital scheduling systems, multi-tenant booking and reservation platforms, and subscription-based SaaS billing.
+- Development process integrates AI throughout: MCP-first API development, AI-assisted UI scaffolding, and AI-assisted log analysis in production.
+
+## Writing
+
+Technical blog on ABP Framework, the Model Context Protocol (MCP), Claude/AI-assisted development, and .NET/DDD architecture: https://eunus.dev/blog/
+
+## Portfolio
+
+https://portfolio.eunus.dev
