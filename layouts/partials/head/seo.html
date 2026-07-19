@@ -26,6 +26,10 @@
   {{ end -}}
 {{ end -}}
 
+{{ with .Params.keywords -}}
+  <meta name="keywords" content="{{ delimit . ", " }}">
+{{ end -}}
+
 {{ if $.Scratch.Get "paginator" }}
   <link rel="canonical" href="{{ .Paginator.URL | absURL }}">
   {{ if .Paginator.HasPrev -}}

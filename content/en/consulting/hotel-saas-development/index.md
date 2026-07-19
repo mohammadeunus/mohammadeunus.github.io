@@ -1,12 +1,13 @@
 ---
 title: "Hotel SaaS Development"
-description: "Secure, scalable hotel and hospitality SaaS platforms — bookings, billing, and multi-property support that stay reliable as you scale. Built for a Saudi Arabia enterprise client."
+description: "Hotel and hospitality SaaS development: bookings, recurring billing, and multi-property support that stays reliable across tenants and timezones."
+keywords: ["hotel SaaS development", "hotel management software", "booking engine development", "multi-property SaaS", "hospitality software"]
 hero_title: "Hotel SaaS Development"
-hero_lead: "I build secure, scalable hotel and hospitality SaaS platforms that help hotel teams manage bookings, rooms, billing, and guests reliably across multiple properties and timezones. Whether you're building a new hotel SaaS product or extending an existing one, I focus on software that's maintainable, reliable, and ready to scale."
+hero_lead: "Bookings, rooms, billing, and guests across multiple properties and timezones: hotel SaaS lives or dies on those details. I build multi-tenant hotel and hospitality platforms that get them right and stay reliable as you scale."
 hero_trust: "Experience building a multi-tenant hotel management SaaS for a Saudi Arabia enterprise client using .NET, ABP Framework, Angular, and PostgreSQL."
 badge: "Specialty"
 intro_title: "Hotel software has to get the small things right"
-intro: "Hotel platforms fail quietly — a booking double-books because a timezone was off by a few hours, a guest gets billed on the wrong day, or a hotel's subscription plan doesn't match what they actually use. I build hotel and hospitality SaaS platforms that stay reliable as you add more properties, more tenants, and more billing complexity."
+intro: "Hotel platforms fail quietly: a booking double-books because a timezone was off by a few hours, a guest gets billed on the wrong day, or a hotel's subscription plan doesn't match what they actually use. I build hotel and hospitality SaaS platforms that stay reliable as you add more properties, more tenants, and more billing complexity."
 checklist:
   - "Reliable booking engine with no double-bookings"
   - "Billing that works correctly across hotels, tenants, and timezones"
@@ -33,27 +34,27 @@ typical_features:
 case_studies:
   - name: "Hotel Management SaaS for a Saudi Arabia Enterprise Client"
     meta: "Multi-tenant hotel management platform"
-    story: "I built core booking workflows and payment integration for a multi-tenant hotel management SaaS, including a custom recurring billing system. The platform had to work correctly across hotels, tenants, and guests that could each be in a different timezone — getting that wrong meant double-booked rooms or billing customers on the wrong day. I also built a dynamic subscription system where hotel customers configure their own plan (features, rooms, hotels) from a public portal, with prorated billing and full admin control."
+    story: "I built core booking workflows and payment integration for a multi-tenant hotel management SaaS, including a custom recurring billing system. The platform had to work correctly across hotels, tenants, and guests that could each be in a different timezone; getting that wrong meant double-booked rooms or billing customers on the wrong day. I also built a dynamic subscription system where hotel customers configure their own plan (features, rooms, hotels) from a public portal, with prorated billing and full admin control. <a href=\"/blog/custom-saas-subscription-system-abp-framework/\">Read how the subscription system works →</a>"
     tags: ["Multi-Tenant SaaS", "Booking Engine", "Recurring Billing", "ABP Framework", "Angular", "PostgreSQL"]
-why_work_with_me: "I don't just wire up a booking form — I think about what happens when a hotel adds a second property, when a guest books across a timezone boundary, or when a customer wants to change their plan mid-cycle. My goal is software your team can run with confidence as you grow, not just a demo that works on day one."
+why_work_with_me: "Wiring up a booking form is the easy part. I think about what happens when a hotel adds a second property, when a guest books across a timezone boundary, or when a customer changes their plan mid-cycle. The goal is software your team can run with confidence as you grow, not a demo that works on day one."
 how_i_work:
   - "Understand how your hotels, tenants, and guests actually operate."
   - "Get timezone and billing edge cases right the first time, not after a support ticket."
   - "Plan the data model before writing booking logic."
-  - "Use AI-assisted engineering (Claude Code, MCP workflows) to move faster without cutting corners."
-  - "Review and test every change before delivery."
+  - "Lean on AI tooling (Claude Code, MCP workflows) for speed, with every change human-reviewed."
+  - "Verify booking and billing flows against edge cases before they ship."
 tech_stack: ["ABP Framework", ".NET / C#", "ASP.NET Core", "Angular", "PostgreSQL", "Stripe", "Multi-Tenancy", "DDD", "Modular Monolith"]
 faqs:
   - q: "Can you build a hotel booking MVP from scratch?"
-    a: "Yes — I've built core booking workflows, payment integration, and billing for a multi-tenant hotel management SaaS from the ground up for a Saudi Arabia enterprise client."
+    a: "Yes. I've built core booking workflows, payment integration, and billing for a multi-tenant hotel management SaaS from the ground up for a Saudi Arabia enterprise client."
   - q: "Can you fix timezone or double-booking issues in an existing system?"
-    a: "Yes. Timezone handling across hotels, tenants, and guests is exactly the kind of problem I've solved in production — it's usually a data-model issue, not a UI issue."
-  - q: "Can customers configure their own subscription plan, not just pick a fixed tier?"
-    a: "Yes — I built a dynamic plan builder where customers assemble their own plan (features, rooms, hotels) from a public portal, with prorated billing handled automatically."
+    a: "Yes. Timezone handling across hotels, tenants, and guests is exactly the kind of problem I've solved in production; it's usually a data-model issue, not a UI issue."
+  - q: "Can customers configure their own subscription plan instead of picking a fixed tier?"
+    a: "Yes. I built a dynamic plan builder where customers assemble their own plan (features, rooms, hotels) from a public portal, with prorated billing handled automatically."
   - q: "Do you handle payments and recurring billing?"
     a: "Yes, including Stripe integration and custom recurring billing on top of ABP Framework's feature and edition management."
-  - q: "Do you work with hotel groups managing multiple properties, not just single hotels?"
-    a: "Yes — the platform I built handles multiple hotels under multiple tenants, each with independent timezone and billing behavior."
+  - q: "Do you work with hotel groups managing multiple properties?"
+    a: "The platform I built handles multiple hotels under multiple tenants, each with independent timezone and billing behavior, so hotel groups are exactly the target case."
 cta_title: "Building or improving a hotel or hospitality SaaS product?"
-cta_lead: "Tell me about your properties, bookings, and billing model — I'll tell you honestly how to get there reliably."
+cta_lead: "Tell me about your properties, bookings, and billing model, and I'll come back with a concrete plan."
 ---

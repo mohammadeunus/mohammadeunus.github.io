@@ -725,3 +725,119 @@ button#doks-versions {
     background: $gray-700;
   }
 }
+
+// Navbar "Let's Talk" CTA
+.nav-cta {
+  white-space: nowrap;
+  font-weight: 600;
+  padding: 0.4rem 1.1rem;
+  border-radius: 2rem;
+  align-self: center;
+}
+
+@include media-breakpoint-down(lg) {
+  .nav-cta {
+    display: block;
+    text-align: center;
+  }
+}
+
+// ── Floating pill nav (dynamic-island style, appears on scroll) ──
+.pill-nav {
+  position: fixed;
+  top: 12px;
+  left: 1rem;
+  right: 1rem;
+  margin: 0 auto;
+  max-width: 640px;
+  height: 48px;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0 0.5rem 0 1.25rem;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.06), 0 4px 16px rgba(0, 0, 0, 0.08);
+  z-index: 1600;
+  opacity: 0;
+  pointer-events: none;
+}
+
+[data-dark-mode] .pill-nav {
+  background: rgba(20, 20, 25, 0.92);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.08), 0 4px 16px rgba(0, 0, 0, 0.4);
+}
+
+.pill-nav-brand {
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: inherit;
+  text-decoration: none;
+  white-space: nowrap;
+  flex-shrink: 0;
+
+  &:hover {
+    color: var(--bs-primary);
+  }
+}
+
+[data-dark-mode] .pill-nav-brand:hover {
+  color: #8ed6fb;
+}
+
+.pill-nav-links {
+  display: flex;
+  justify-content: center;
+  gap: 1.1rem;
+  flex: 1;
+  min-width: 0;
+
+  a {
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: inherit;
+    text-decoration: none;
+    white-space: nowrap;
+
+    &:hover {
+      color: var(--bs-primary);
+    }
+  }
+}
+
+[data-dark-mode] .pill-nav-links a:hover {
+  color: #8ed6fb;
+}
+
+.pill-nav-cta {
+  white-space: nowrap;
+  font-weight: 600;
+  border-radius: 999px;
+  padding: 0.3rem 0.9rem;
+  flex-shrink: 0;
+}
+
+// main navbar fades away while the pill is active.
+// NOTE: do not use transform here - a transformed ancestor becomes the
+// containing block for the fixed-position offcanvas menu inside it, which
+// sits off-screen right and would then create horizontal overflow.
+body > .sticky-top {
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+body.pill-scrolled > .sticky-top {
+  opacity: 0;
+  visibility: hidden;
+}
+
+@media (max-width: 575.98px) {
+  .pill-nav-brand {
+    display: none;
+  }
+
+  .pill-nav {
+    padding-left: 1rem;
+  }
+}

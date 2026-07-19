@@ -72,33 +72,76 @@
   }
 }
 
-// Blog list card
-.modern-blog-card {
-  display: flex;
-  flex-direction: column;
-  border-radius: 0.75rem;
-  transition: box-shadow 0.2s ease, transform 0.2s ease;
+// ── Blog post entries (shared by list and grid views) ──────
+.blog-view-list,
+.blog-view-grid {
+  --bp-muted: #6c757d;
+  --bp-border: #e9ecef;
+  --bp-accent: #{$primary};
+}
 
-  &:hover {
-    box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.1) !important;
-    transform: translateY(-2px);
+[data-dark-mode] .blog-view-list,
+[data-dark-mode] .blog-view-grid {
+  --bp-muted: #9aa5ae;
+  --bp-border: #343a40;
+  --bp-accent: #8ed6fb;
+}
+
+.bp-meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  color: var(--bp-muted);
+  margin-bottom: 0.4rem;
+}
+
+.bp-title {
+  font-size: 1.4rem;
+  font-weight: 700;
+  line-height: 1.3;
+  margin-bottom: 0.5rem;
+
+  a {
+    color: inherit;
+    text-decoration: none;
+
+    &:hover {
+      color: var(--bp-accent);
+    }
   }
 }
 
-.blog-card-image-wrapper {
-  width: 100%;
-  height: 180px;
+.bp-excerpt {
+  color: var(--bp-muted);
+  font-size: 0.98rem;
+  line-height: 1.6;
+  margin-bottom: 0.6rem;
 }
 
-.blog-card-image {
-  width: 100%;
-  height: 100%;
+.bp-tags a {
+  font-size: 0.82rem;
+  color: var(--bp-muted);
+  text-decoration: none;
+  margin-right: 0.9rem;
 
-  img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
+  &:hover {
+    color: var(--bp-accent);
+  }
+}
+
+// List view: editorial list with hairline separators
+.blog-view-list .bp-entry {
+  padding: 1.75rem 0;
+  border-bottom: 1px solid var(--bp-border);
+
+  &:first-child {
+    padding-top: 0.5rem;
+  }
+
+  &:last-child {
+    border-bottom: 0;
   }
 }
 
@@ -119,22 +162,106 @@
   line-height: 1.35;
 }
 
-.blog-post-excerpt {
-  font-size: 0.95rem;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
+// ── List / grid view toggle ─────────────────────────────────
+.blog-view-toggle {
+  display: inline-flex;
+  border: 1px solid var(--bs-gray-300);
+  border-radius: 0.5rem;
   overflow: hidden;
 }
 
-@include media-breakpoint-up(md) {
-  .modern-blog-card.flex-md-row {
-    flex-direction: row;
+.blog-view-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2rem;
+  border: 0;
+  background: transparent;
+  color: var(--bs-gray-600);
+  cursor: pointer;
+
+  + .blog-view-btn {
+    border-left: 1px solid var(--bs-gray-300);
   }
 
-  .blog-card-image-wrapper {
-    width: 260px;
-    height: auto;
+  &.is-active {
+    background: var(--bs-light);
+    color: var(--bs-body-color);
+  }
+}
+
+[data-dark-mode] .blog-view-toggle {
+  border-color: $gray-700;
+}
+
+[data-dark-mode] .blog-view-btn {
+  color: $gray-500;
+
+  + .blog-view-btn {
+    border-left-color: $gray-700;
+  }
+
+  &.is-active {
+    background: $gray-800;
+    color: $body-color-dark;
+  }
+}
+
+// Grid view: 2 square typographic tiles per row
+@include media-breakpoint-up(md) {
+  .blog-view-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+
+    .bp-entry {
+      display: flex;
+      flex-direction: column;
+      aspect-ratio: 1 / 1;
+      border: 1px solid var(--bp-border);
+      border-radius: 0.75rem;
+      padding: 1.5rem;
+      overflow: hidden;
+
+      &:hover {
+        border-color: var(--bp-accent);
+      }
+    }
+
+    .bp-title {
+      font-size: 1.25rem;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .bp-excerpt {
+      display: -webkit-box;
+      -webkit-line-clamp: 4;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .bp-tags {
+      margin-top: auto;
+      padding-top: 0.75rem;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+  }
+}
+
+// Below md the grid collapses to the list layout
+@include media-breakpoint-down(md) {
+  .blog-view-grid .bp-entry {
+    padding: 1.4rem 0;
+    border-bottom: 1px solid var(--bp-border);
+
+    &:last-child {
+      border-bottom: 0;
+    }
   }
 }
 
@@ -225,6 +352,10 @@
 @include media-breakpoint-down(md) {
   .blog-title {
     font-size: 1.75rem;
+  }
+
+  .bp-title {
+    font-size: 1.2rem;
   }
 
   .blog-post-content {

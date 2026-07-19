@@ -28,19 +28,13 @@
         "@type": "Person",
         "@id": {{ print $baseURL "#/schema/person/1" }},
       {{ end -}}
-      "name": "{{ .Site.Params.schemaName }}",
+      "name": {{ .Site.Params.schemaName }},
       "url": {{ print $baseURL }},
-      "sameAs": [
-        {{ with .Site.Params.schemaTwitter -}}
-        {{ . }}
-        {{ end -}}
-        {{ with .Site.Params.schemaLinkedIn -}}
-        , {{ . }}
-        {{ end -}}
-        {{ with .Site.Params.schemaGitHub -}}
-        , {{ . }}
-        {{ end -}}
-      ],
+      {{ $sameAs := slice -}}
+      {{ with .Site.Params.schemaTwitter }}{{ $sameAs = $sameAs | append . }}{{ end -}}
+      {{ with .Site.Params.schemaLinkedIn }}{{ $sameAs = $sameAs | append . }}{{ end -}}
+      {{ with .Site.Params.schemaGitHub }}{{ $sameAs = $sameAs | append . }}{{ end -}}
+      "sameAs": {{ $sameAs | jsonify | safeJS }},
       {{ if eq .Site.Params.schemaType "Organization" -}}
         "logo": {
           "@type": "ImageObject",
@@ -48,7 +42,7 @@
           "url": {{ print $baseURL .Site.Params.schemaLogo }},
           "width": {{ .Site.Params.schemaLogoWidth }},
           "height": {{ .Site.Params.schemaLogoHeight }},
-          "caption": "{{ .Site.Params.schemaName }}"
+          "caption": {{ .Site.Params.schemaName }}
         },
         "image": {
           "@id": {{ print $baseURL "#/schema/image/1" }}
@@ -60,7 +54,7 @@
           "url": {{ print $baseURL .Site.Params.schemaImage }},
           "width": {{ .Site.Params.schemaImageWidth }},
           "height": {{ .Site.Params.schemaImageHeight }},
-          "caption": "{{ .Site.Params.schemaName }}"
+          "caption": {{ .Site.Params.schemaName }}
         }
       {{ end -}}
     },
@@ -68,8 +62,8 @@
       "@type": "WebSite",
       "@id": {{ print $baseURL "#/schema/website/1" }},
       "url": {{ print $baseURL }},
-      "name": "{{ .Site.Params.title }}",
-      "description": "{{ .Site.Params.description }}",
+      "name": {{ .Site.Params.title }},
+      "description": {{ .Site.Params.description }},
       {{ if eq .Site.Params.schemaType "Organization" -}}
         "publisher": {
           "@id": {{ print $baseURL "#/schema/organization/1" }}
@@ -88,8 +82,8 @@
       {{ end -}}
       "@id": {{ .Permalink }},
       "url": {{ .Permalink }},
-      "name": "{{ .Title }}",
-      "description": "{{ .Description }}",
+      "name": {{ .Title }},
+      "description": {{ .Description }},
       "isPartOf": {
         "@id": {{ print $baseURL "#/schema/website/1" }}
       },
@@ -127,7 +121,7 @@
           "@type": "WebPage",
           "@id": {{ .url }},
           "url": {{ .url }},
-          "name": "{{ .name | humanize | title }}"
+          "name": {{ .name | humanize | title }}
           {{ else -}}
           "@id": {{ .url }}
           {{ end -}}
@@ -142,8 +136,8 @@
         {
           "@type": "Article",
           "@id": {{ print .Permalink "#/schema/article/1" }},
-          "headline": "{{ .Title }}",
-          "description": "{{ .Description }}",
+          "headline": {{ .Title }},
+          "description": {{ .Description }},
           "isPartOf": {
             "@id": {{ .Permalink }}
           },
@@ -177,17 +171,11 @@
           "@type": "Person",
           "@id": {{ print $baseURL "#/schema/person/2" }},
           "name": {{ .Site.Params.schemaAuthor }},
-          "sameAs": [
-            {{ with .Site.Params.schemaAuthorTwitter -}}
-            {{ . }}
-            {{ end -}}
-            {{ with .Site.Params.schemaAuthorLinkedIn -}}
-            , {{ . }}
-            {{ end -}}
-            {{ with .Site.Params.schemaAuthorGitHub -}}
-            , {{ . }}
-            {{ end -}}
-          ]
+          {{ $authorSameAs := slice -}}
+          {{ with .Site.Params.schemaAuthorTwitter }}{{ $authorSameAs = $authorSameAs | append . }}{{ end -}}
+          {{ with .Site.Params.schemaAuthorLinkedIn }}{{ $authorSameAs = $authorSameAs | append . }}{{ end -}}
+          {{ with .Site.Params.schemaAuthorGitHub }}{{ $authorSameAs = $authorSameAs | append . }}{{ end -}}
+          "sameAs": {{ $authorSameAs | jsonify | safeJS }}
         }
       ]
     },
@@ -200,7 +188,7 @@
           "@id": {{ print .Permalink "#/schema/image/2" }},
           "url": {{ $.Scratch.Get "primaryImage" }},
           "contentUrl": {{ $.Scratch.Get "primaryImage" }},
-          "caption": "{{ .Title }}"
+          "caption": {{ .Title }}
         }
       ]
     }

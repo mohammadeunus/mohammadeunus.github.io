@@ -272,7 +272,8 @@
   100% { transform: translateX(calc(-50% - 0.375rem)); }
 }
 @media (prefers-reduced-motion: reduce) {
-  .cx-marquee-track { animation: none; overflow-x: auto; }
+  .cx-marquee { overflow-x: auto; }
+  .cx-marquee-track { animation: none; }
 }
 
 .cx-proj-card {

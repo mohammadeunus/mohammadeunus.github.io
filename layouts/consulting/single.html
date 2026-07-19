@@ -1,6 +1,19 @@
 {{ define "main" }}
 {{ $check := `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>` }}
 
+{{ $serviceSchema := dict
+  "@context" "https://schema.org"
+  "@type" "Service"
+  "@id" (print .Permalink "#/schema/service/1")
+  "name" .Title
+  "serviceType" .Title
+  "description" .Description
+  "url" .Permalink
+  "areaServed" "Worldwide"
+  "provider" (dict "@type" "Person" "name" (.Site.Params.schemaName | default .Site.Params.schemaAuthor) "url" ("/" | absURL))
+}}
+<script type="application/ld+json">{{ $serviceSchema | jsonify | safeJS }}</script>
+
 <div class="cx container-xxl py-5">
 
   <!-- Hero -->
@@ -181,7 +194,7 @@
       <div class="col-16 col-lg-12">
         <div class="cx-final">
           <h2>{{ .Params.cta_title | default "Have an idea worth building?" }}</h2>
-          <p class="cx-muted">{{ .Params.cta_lead | default "Based in Dhaka, Bangladesh — available for remote engagements worldwide. Tell me what you're building and I'll tell you honestly how I can help." }}</p>
+          <p class="cx-muted">{{ .Params.cta_lead | default "Based in Dhaka, Bangladesh, and available for remote engagements worldwide. Tell me what you're building and I'll tell you how I can help." }}</p>
           <a href="/contact" class="btn btn-primary btn-lg">Start a conversation →</a>
         </div>
       </div>

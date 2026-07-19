@@ -1,4 +1,4 @@
 ---
 title: "Consulting"
-description: "Transform your ABP projects with professional guidance and technical expertise."
+description: "SaaS MVP development, ABP Framework and .NET consulting, subscription billing, and AI integration for startups and SMEs, delivered remotely worldwide."
 ---

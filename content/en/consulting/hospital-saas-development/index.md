@@ -1,8 +1,9 @@
 ---
 title: "Hospital SaaS Development"
-description: "Secure, scalable hospital and healthcare SaaS platforms — patient management, appointment scheduling, staff management, and reliable operations. Built for a Greece-based client."
+description: "Hospital and healthcare SaaS development: patient management, appointment scheduling, staff management, and reliable multi-user operations."
+keywords: ["hospital SaaS development", "healthcare SaaS", "hospital management software", "patient scheduling system", "healthcare MVP"]
 hero_title: "Hospital SaaS Development"
-hero_lead: "I build secure, scalable hospital and healthcare SaaS platforms that help healthcare teams manage patients, appointments, staff, and operations reliably. Whether you're building a new healthcare product or extending an existing system, I focus on software that's maintainable, reliable, and ready to grow."
+hero_lead: "I build hospital and healthcare SaaS platforms that help teams manage patients, appointments, staff, and operations without data conflicts or broken workflows. New product or existing system, the focus is software that stays maintainable and reliable as you grow."
 hero_trust: "Experience building a healthcare SaaS platform for a Greece-based client using .NET, ABP Framework, Blazor, and PostgreSQL."
 badge: "Specialty"
 intro_title: "Healthcare software is different"
@@ -11,7 +12,7 @@ checklist:
   - "Reliable, conflict-safe scheduling and records"
   - "Secure, role-based access for staff and admins"
   - "Modular architecture that grows without technical debt"
-  - "Built for long-term maintainability, not just launch day"
+  - "Built for long-term maintainability, well past launch day"
 deliverables:
   - "Scalable .NET architecture"
   - "Reliable appointment scheduling"
@@ -35,7 +36,7 @@ case_studies:
     meta: "Greenfield hospital management platform"
     story: "I worked on a greenfield hospital management platform, developing core business modules alongside the client's lead engineer. The project was designed for long-term growth using a modular architecture, so new features could be added without creating technical debt. Scheduling workflows were protected against conflicting updates, so multiple staff members could safely work on the same records at the same time."
     tags: ["Greenfield SaaS", "Hospital Management", "Multi-User Scheduling", "ABP Framework", "Blazor", "PostgreSQL"]
-why_work_with_me: "I don't just build features — I learn how your business operates before making changes. Whether it's a new MVP or an established healthcare platform, my goal is to deliver production-ready software that your team can confidently maintain and expand."
+why_work_with_me: "I learn how your business operates before making changes. Whether it's a new MVP or an established healthcare platform, the goal is production-ready software that your team can confidently maintain and expand."
 how_i_work:
   - "Understand your business workflows first."
   - "Learn the existing system before changing it."
@@ -45,15 +46,15 @@ how_i_work:
 tech_stack: ["ABP Framework", ".NET / C#", "Blazor", "PostgreSQL", "DDD", "Modular Monolith", "Entity Framework Core"]
 faqs:
   - q: "Can you build a healthcare MVP from scratch?"
-    a: "Yes — I've done greenfield healthcare SaaS builds, including full ownership of core business modules on a hospital management platform for a Greece-based client."
+    a: "Yes. I've done greenfield healthcare SaaS builds, including full ownership of core business modules on a hospital management platform for a Greece-based client."
   - q: "Can you modernize or extend an existing hospital system?"
     a: "Yes. I learn how the existing system and business workflows work before changing anything, so improvements don't break what your team already depends on."
   - q: "Do you work with startups as well as established healthcare companies?"
-    a: "Yes — from early-stage MVPs to established platforms that need new features or a more reliable architecture as they scale."
+    a: "Both, from early-stage MVPs to established platforms that need new features or a more reliable architecture as they scale."
   - q: "Can you integrate third-party healthcare services or systems?"
-    a: "Yes, through clean API design intended for integration from the start — the same approach used for the Greece-based hospital platform's module boundaries."
+    a: "Yes, through clean API design intended for integration from the start; it's the same approach behind the hospital platform's module boundaries."
   - q: "How do you make sure changes don't break existing functionality?"
-    a: "Every change is reviewed and tested before delivery, and I learn the existing workflows first so I understand what's actually load-bearing before I touch it."
+    a: "Every change is reviewed and tested before delivery, and I learn the existing workflows first so I understand what's load-bearing before I touch it."
 cta_title: "Building or improving a hospital or healthcare SaaS product?"
-cta_lead: "Tell me about your patients, staff, and workflows — I'll tell you honestly how to get there reliably."
+cta_lead: "Tell me about your patients, staff, and workflows, and I'll map out a reliable way to get there."
 ---

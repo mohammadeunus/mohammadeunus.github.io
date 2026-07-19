@@ -1,0 +1,313 @@
+{{ define "main" }}
+<style>
+  /* About page additions on top of the shared .cx system */
+  .ab-story p {
+    max-width: 44rem;
+    margin: 0 auto 1rem;
+  }
+  .ab-philosophy {
+    font-size: 1.15rem;
+    font-weight: 600;
+    font-style: italic;
+    line-height: 1.5;
+    color: var(--cx-accent);
+    max-width: 44rem;
+    /* fixed height: room for exactly 5 lines, so rotating quotes never shift the page */
+    height: calc(1.15rem * 1.5 * 5 + 1.5rem);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    opacity: 1;
+    transition: opacity 0.5s ease;
+  }
+  .ab-philosophy .ab-quote-text {
+    border-left: 0;
+    padding-left: 0;
+    font-size: inherit;
+    display: -webkit-box;
+    -webkit-line-clamp: 5;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    margin: 0;
+  }
+  .ab-quote-author {
+    font-size: 0.85rem;
+    font-weight: 600;
+    font-style: normal;
+    color: var(--cx-muted);
+    margin-top: 0.5rem;
+  }
+  .ab-philosophy.is-fading {
+    opacity: 0;
+  }
+  .ab-gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+  }
+  @media (max-width: 767.98px) {
+    .ab-gallery-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  .ab-gallery-card {
+    position: relative;
+    display: block;
+    overflow: hidden;
+    border-radius: 0.75rem;
+    border: 1px solid var(--cx-card-border);
+    aspect-ratio: 4 / 3;
+  }
+  .ab-gallery-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .ab-reach {
+    position: relative;
+    display: block;
+    overflow: hidden;
+    color: var(--cx-ink);
+    text-decoration: none;
+    cursor: pointer;
+    height: 4rem;
+    padding: 0 2.25rem;
+    border: 1px solid var(--cx-card-border);
+    border-radius: 50rem;
+    background: var(--cx-card-bg);
+    box-shadow: var(--cx-shadow);
+    font-size: 1.05rem;
+    transition: background-color 0.4s ease-in-out, border-color 0.4s ease-in-out;
+  }
+  .ab-reach-msg {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+    opacity: 0;
+    transform: translateY(110%);
+    transition: transform 0.4s ease-in-out, opacity 0.4s ease-in-out;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .ab-reach-msg.is-active {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .ab-reach-msg.is-leaving {
+    opacity: 0;
+    transform: translateY(-110%);
+  }
+  .ab-accent {
+    color: var(--cx-accent);
+    font-weight: 700;
+  }
+  .ab-reach-back {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    color: #fff;
+    opacity: 0;
+    transform: translateY(110%);
+    transition: transform 0.4s ease-in-out, opacity 0.4s ease-in-out;
+  }
+  [data-dark-mode] .ab-reach-back {
+    color: #1d2d35;
+  }
+  .ab-reach:hover {
+    background: var(--cx-accent);
+    border-color: var(--cx-accent);
+  }
+  .ab-reach:hover .ab-reach-msg {
+    transform: translateY(-110%);
+    opacity: 0;
+  }
+  .ab-reach:hover .ab-reach-back {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .ab-reach,
+    .ab-reach-msg,
+    .ab-reach-back {
+      transition: none;
+    }
+  }
+  .ab-gallery-card .ab-gallery-title {
+    position: absolute;
+    inset: auto 0 0 0;
+    padding: 0.6rem 0.8rem;
+    background: linear-gradient(0deg, rgba(0, 0, 0, 0.72), rgba(0, 0, 0, 0));
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin: 0;
+  }
+</style>
+
+<div class="cx container-xxl py-5">
+
+  <!-- Story -->
+  <section class="cx-hero">
+    <div class="row justify-content-center">
+      <div class="col-16 col-lg-11">
+        <h1>{{ .Title }}</h1>
+        <div class="ab-story cx-muted mt-3">
+          {{ range .Params.story }}
+          <p>{{ . }}</p>
+          {{ end }}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- What clients hire me for -->
+  {{ with .Params.hire_for }}
+  <section>
+    <div class="row justify-content-center">
+      <div class="col-16 col-lg-12">
+        <div class="cx-sec-head">
+          <span class="cx-kicker">Good fit</span>
+          <h2>What Clients Hire Me For</h2>
+        </div>
+        {{ with $.Params.hire_for_lead }}<p class="cx-muted text-center mb-3">{{ . }}</p>{{ end }}
+        <div class="cx-tabs">
+          {{ range . }}
+          <a class="cx-tab" href="{{ .url }}">{{ .name }}</a>
+          {{ end }}
+        </div>
+      </div>
+    </div>
+  </section>
+  {{ end }}
+
+  <!-- Where my work has shipped -->
+  {{ with .Params.places }}
+  <section>
+    <div class="cx-sec-head">
+      <span class="cx-kicker">Track record</span>
+      <h2>{{ $.Params.places_title | default "Where My Work Has Shipped" }}</h2>
+    </div>
+    <div class="cx-marquee">
+      <div class="cx-marquee-track">
+        {{ range . }}
+        <a href="{{ .url }}" class="cx-proj-card">
+          <div class="cx-proj-name">{{ .place }}</div>
+          <div class="cx-proj-meta">{{ .work }}</div>
+          <div class="cx-proj-cta">{{ .cta }}</div>
+        </a>
+        {{ end }}
+        {{ range . }}
+        <a href="{{ .url }}" class="cx-proj-card" aria-hidden="true" tabindex="-1">
+          <div class="cx-proj-name">{{ .place }}</div>
+          <div class="cx-proj-meta">{{ .work }}</div>
+          <div class="cx-proj-cta">{{ .cta }}</div>
+        </a>
+        {{ end }}
+      </div>
+    </div>
+  </section>
+  {{ end }}
+
+  <!-- Gallery preview -->
+  {{ $gal := where (where site.RegularPages "Section" "gallery") "Params.image" "!=" nil }}
+  {{ if $gal }}
+  {{ $gal = sort $gal "Date" "desc" }}
+  {{ $feat := where $gal "Params.featured" true }}
+  {{ $strip := first 6 (union $feat $gal) }}
+  <section>
+    <div class="row justify-content-center">
+      <div class="col-16 col-lg-12">
+        <div class="cx-sec-head">
+          <span class="cx-kicker">Outside of work</span>
+          <h2>Life Beyond Software</h2>
+        </div>
+        <div class="ab-gallery-grid">
+          {{ range $strip }}
+          {{ $img := .Resources.GetMatch .Params.image }}
+          {{ if $img }}
+          <a href="/gallery/" class="ab-gallery-card" aria-label="{{ .Title }}">
+            <img src="{{ $img.RelPermalink }}" alt="{{ .Title }}" loading="lazy">
+            <p class="ab-gallery-title">{{ .Title }}</p>
+          </a>
+          {{ end }}
+          {{ end }}
+        </div>
+        <p class="text-center mt-4 mb-0"><a href="/gallery/">See all photos →</a></p>
+      </div>
+    </div>
+  </section>
+  {{ end }}
+
+  <!-- Contact pointer -->
+  <section class="mb-0">
+    <div class="row justify-content-center">
+      <div class="col-16 col-lg-12">
+        <div class="cx-sec-head">
+          <h2>Have a project in mind?</h2>
+        </div>
+        <a class="ab-reach" href="/contact/" id="abReach">
+          <span class="ab-reach-msg is-active">Connect with me on <span class="ab-accent">LinkedIn</span></span>
+          <span class="ab-reach-msg">Send me an <span class="ab-accent">Email</span></span>
+          <span class="ab-reach-msg">Check my work on <span class="ab-accent">GitHub</span></span>
+          <span class="ab-reach-back">Take me to the contact page →</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Quote -->
+  {{ with site.Data.quotes }}
+  <section class="mb-0 mt-5">
+    <div class="row justify-content-center">
+      <div class="col-16 col-lg-11 text-center">
+        <figure class="ab-philosophy" aria-live="polite">
+          <blockquote class="ab-quote-text" id="abQuote">&ldquo;{{ index . 0 }}&rdquo;</blockquote>
+          <figcaption class="ab-quote-author">&mdash; Mohammad Eunus</figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+  {{ end }}
+
+  <script>
+    (function () {
+      var el = document.getElementById('abQuote');
+      if (!el) return;
+      var box = el.parentElement;
+      var quotes = {{ site.Data.quotes | jsonify | safeJS }};
+      var i = 0;
+      setInterval(function () {
+        box.classList.add('is-fading');
+        setTimeout(function () {
+          i = (i + 1) % quotes.length;
+          el.textContent = '“' + quotes[i] + '”';
+          box.classList.remove('is-fading');
+        }, 500);
+      }, 7000);
+    })();
+    (function () {
+      var card = document.getElementById('abReach');
+      if (!card) return;
+      var msgs = card.querySelectorAll('.ab-reach-msg');
+      var i = 0;
+      setInterval(function () {
+        if (card.matches(':hover')) return;
+        var prev = msgs[i];
+        prev.classList.remove('is-active');
+        prev.classList.add('is-leaving');
+        setTimeout(function () { prev.classList.remove('is-leaving'); }, 450);
+        i = (i + 1) % msgs.length;
+        msgs[i].classList.add('is-active');
+      }, 3000);
+    })();
+  </script>
+
+</div>
+{{ end }}

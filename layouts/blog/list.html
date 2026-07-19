@@ -2,53 +2,64 @@
 <div class="py-5">
     <div class="row">
         <div class="col-md-11">
+            <div class="d-none d-md-flex justify-content-end mb-3">
+                <div class="blog-view-toggle" role="group" aria-label="Switch between list and grid view">
+                    <button type="button" class="blog-view-btn" data-view="list" aria-label="List view" title="List view">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+                    </button>
+                    <button type="button" class="blog-view-btn" data-view="grid" aria-label="Grid view" title="Grid view">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"></rect><rect x="14" y="3" width="7" height="7" rx="1"></rect><rect x="3" y="14" width="7" height="7" rx="1"></rect><rect x="14" y="14" width="7" height="7" rx="1"></rect></svg>
+                    </button>
+                </div>
+            </div>
             {{ $sortedPages := sort .Data.Pages ".Date.Unix" "desc" }}
             {{ $paginator := .Paginate $sortedPages }}
+            <div id="blogPosts" class="blog-view-list">
             {{ range $paginator.Pages }}
-            <article class="blog-post mb-4">
-                <div class="card border-0 shadow-sm modern-blog-card overflow-hidden position-relative flex-md-row">
-                    {{ if .Params.images }}
-                    <div class="blog-card-image-wrapper flex-shrink-0">
-                        <div class="blog-card-image">
-                            {{- .Scratch.Set "fillImageCard" "680x420 Center" -}}
-                            {{ partial "content/card-image.html" . }}
-                        </div>
-                    </div>
-                    {{ end }}
-                    <div class="card-body p-3 p-md-4 d-flex flex-column">
-                        <div class="d-flex align-items-center mb-2">
-                            <p class="blog-post-meta text-muted small mb-0 me-3">
-                                <time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "January 2, 2006" }}</time>
-                            </p>
-                            {{ if .Params.authors }}
-                            <span class="text-muted small">•</span>
-                            <p class="blog-post-meta text-muted small mb-0 ms-3">
-                                {{ range $index, $author := .Params.authors }}
-                                {{- if gt $index 0 }}, {{ end -}}
-                                <span>{{ $author }}</span>
-                                {{ end }}
-                            </p>
-                            {{ end }}
-                        </div>
-                        <h2 class="blog-post-title h5 mb-2 fw-bold">
-                            <a class="text-decoration-none text-dark stretched-link" href="{{ .RelPermalink }}">
-                                {{ .Params.title }}
-                            </a>
-                        </h2>
-                        <p class="card-text text-muted mb-3 lh-base blog-post-excerpt">{{ .Params.excerpt | safeHTML }}</p>
-                        {{ if .Params.tags }}
-                        <div class="mt-auto pt-2">
-                            {{ range first 3 .Params.tags }}
-                            <a class="badge bg-light text-dark text-decoration-none me-2 mb-2 px-3 py-2 modern-tag" href="{{ "/tags/" | absURL }}{{ . | urlize }}/" role="button">
-                                #{{ . }}
-                            </a>
-                            {{ end }}
-                        </div>
-                        {{ end }}
-                    </div>
+            <article class="bp-entry">
+                <div class="bp-meta">
+                    <time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "January 2, 2006" }}</time>
+                    <span aria-hidden="true">·</span>
+                    <span>{{ .ReadingTime }} min read</span>
                 </div>
+                <h2 class="bp-title">
+                    <a href="{{ .RelPermalink }}">{{ .Params.title }}</a>
+                </h2>
+                {{ $excerpt := .Params.excerpt }}
+                {{ if not $excerpt }}{{ $excerpt = .Summary | plainify | truncate 180 }}{{ end }}
+                {{ with $excerpt }}<p class="bp-excerpt">{{ . | safeHTML }}</p>{{ end }}
+                {{ with .Params.tags }}
+                <div class="bp-tags">
+                    {{ range first 3 . }}
+                    <a href="{{ (print "/tags/" (. | urlize) "/") | relURL }}">#{{ . }}</a>
+                    {{ end }}
+                </div>
+                {{ end }}
             </article>
             {{ end }}
+            </div>
+
+            <script>
+              (function () {
+                var posts = document.getElementById('blogPosts');
+                var buttons = document.querySelectorAll('.blog-view-btn');
+                function setView(view) {
+                  posts.classList.toggle('blog-view-grid', view === 'grid');
+                  posts.classList.toggle('blog-view-list', view !== 'grid');
+                  buttons.forEach(function (btn) {
+                    btn.classList.toggle('is-active', btn.dataset.view === view);
+                    btn.setAttribute('aria-pressed', btn.dataset.view === view);
+                  });
+                  try { localStorage.setItem('blogView', view); } catch (e) {}
+                }
+                buttons.forEach(function (btn) {
+                  btn.addEventListener('click', function () { setView(btn.dataset.view); });
+                });
+                var saved = 'list';
+                try { saved = localStorage.getItem('blogView') || 'list'; } catch (e) {}
+                setView(saved);
+              })();
+            </script>
 
             {{ if gt $paginator.TotalPages 1 }}
             <nav class="blog-pagination my-5" aria-label="Pagination">
@@ -74,12 +85,7 @@
                 <h4 class="h5">Quote Corner</h4>
                 <div id="random-quote"></div>
                 <script>
-                  const quotes = [
-                    "Your backend should never know your frontend exists.",
-                    "Approach software as a builder, not a tenant. Study every layer the way a builder studies stone and steel—not to admire the structure, but to understand why it stands",
-                    "Abstraction is the art of hiding complexity, not avoiding it.",
-                    "If you truly love software development, you'll find value in almost any task. Every task has something to teach you — if you're curious enough to look for it.",
-                  ];
+                  const quotes = {{ site.Data.quotes | jsonify | safeJS }};
                   const idx = Math.floor(Math.random() * quotes.length);
                   document.getElementById('random-quote').innerHTML = `<p class=\"mb-0 fst-italic\">"${quotes[idx]}"</p>`;
                 </script>

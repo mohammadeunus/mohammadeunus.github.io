@@ -1,8 +1,9 @@
 ---
 title: "AI-Powered SaaS MVP Development"
-description: "AI-powered SaaS MVPs designed around real business workflows — customer support, document search, workflow automation, and secure AI agents — not just a chatbot."
+description: "AI-powered SaaS MVPs designed around real business workflows: customer support, document search, workflow automation, and secure AI agents."
+keywords: ["AI SaaS MVP development", "Semantic Kernel consultant", "MCP server development", "AI integration .NET", "AI agents OAuth"]
 hero_title: "AI-Powered SaaS MVP Development"
-hero_lead: "Build an AI-powered SaaS MVP that's designed for real business workflows — not just a chatbot. I help startups build SaaS products where AI can answer questions, automate repetitive tasks, and interact with your system securely from day one."
+hero_lead: "Build an AI-powered SaaS MVP designed for real business workflows, rather than one more chatbot. I help startups build SaaS products where AI can answer questions, automate repetitive tasks, and interact with your system securely from day one."
 hero_trust: "Experience building AI features with Semantic Kernel and MCP for production .NET SaaS platforms."
 badge: "Specialty"
 intro_title: "AI should solve real work"
@@ -14,12 +15,12 @@ checklist:
   - "An MVP delivered in weeks with a clear architecture"
 deliverables:
   - "AI-ready SaaS architecture"
-  - "Secure authentication &amp; role-based access"
+  - "Secure authentication & role-based access"
   - "AI assistants integrated with your data"
   - "Automation-ready backend"
   - "Multi-tenant SaaS foundation"
   - "Production deployment"
-  - "Documentation &amp; handover"
+  - "Documentation & handover"
 primary_cta: "Start your AI MVP →"
 typical_features_title: "AI Features I Can Build"
 typical_features:
@@ -41,36 +42,36 @@ who_its_for:
   - "Enterprise software modernization"
 case_studies:
   - name: "MCP Server for Claude & ChatGPT"
-    meta: "External AI agent access — US client"
-    story: "Built an MCP server on a production microservices platform so external AI agents — including Claude and ChatGPT — could query and act on real business data through one interface, authenticating as real logged-in users via OAuth 2.1/PKCE, not a shared service account. One server, not two: the same MCP endpoint serves both agents. Implementing it surfaced several API design issues that would have affected developers and AI agents alike, fixed before new features were even built."
+    meta: "External AI agent access · US client"
+    story: "Built an MCP server on a live production platform so external AI agents, including Claude and ChatGPT, could query and act on real business data through one interface, authenticating as real logged-in users via OAuth 2.1/PKCE rather than a shared service account. One server, not two: the same MCP endpoint serves both agents. Implementing it surfaced several API design issues that would have affected developers and AI agents alike, fixed before new features were even built."
     tags: ["MCP Servers", "Claude", "ChatGPT", "OAuth 2.1 / OpenIddict"]
   - name: "AI Built Into the Product"
-    meta: "In-app AI assistant — US client"
+    meta: "In-app AI assistant · US client"
     story: "Built an in-app AI assistant with Semantic Kernel that lets users query live production data in natural language instead of navigating complex reports. Result: faster access to information, less manual searching, and an assistant wired directly into existing business data rather than a static knowledge base."
     tags: ["Semantic Kernel", "Live-Data Chat", "Enterprise Reporting"]
   - name: "MCP-First Development"
     meta: "A methodology born from that work"
-    story: "That experience shaped an approach I call <strong>MCP-first development</strong>: validate every API through its MCP interface — the same one AI agents use — before the UI is even built. AI checks the API against the real user story through that interface and writes the tests from what it finds, catching design gaps a UI would otherwise quietly work around. I use this on every new API I build now. <a href=\"/blog/mcp-first-development-letting-ai-write-run-and-maintain-your-tests/\">Read how it works →</a>"
+    story: "That experience shaped an approach I call <strong>MCP-first development</strong>: validate every API through its MCP interface, the same one AI agents use, before the UI is even built. AI checks the API against the real user story through that interface and writes the tests from what it finds, catching design gaps a UI would otherwise quietly work around. I use this on every new API I build now. <a href=\"/blog/mcp-first-development-letting-ai-write-run-and-maintain-your-tests/\">Read how it works →</a>"
     tags: ["MCP-First Development", "AI-Assisted Testing", "API-First Design"]
-why_work_with_me: "I don't start with the technology — I start by figuring out whether AI belongs in your MVP at all, and where it actually creates value. When it does, I build it as a real part of your architecture, not a bolted-on feature you'll have to rebuild later."
+why_work_with_me: "I start by figuring out whether AI belongs in your MVP at all, and where it creates value, before touching the technology. When it does belong, I build it as a real part of your architecture rather than a bolted-on feature you'll have to rebuild later."
 how_i_work:
   - "Understand your business before suggesting AI."
   - "Decide whether AI belongs in v1 or later."
   - "Build the core product first."
   - "Integrate AI where it creates measurable value."
-  - "Review and test AI-generated code before delivery."
+  - "Ship AI features only after their output holds up against real data."
 tech_stack: ["Semantic Kernel", "MCP Servers", "OpenIddict", "ABP Framework", ".NET / C#", "ASP.NET Core", "Angular", "Blazor", ".NET MAUI", "PostgreSQL", "Redis", "RabbitMQ", "Stripe"]
 faqs:
   - q: "Should my MVP include AI on day one?"
-    a: "Not always — it depends on whether AI creates measurable value for your specific product yet. I'll tell you honestly whether it belongs in v1 or can wait, rather than adding it just because it's expected."
+    a: "Not always. It depends on whether AI creates measurable value for your specific product yet; I'll say plainly whether it belongs in v1 or can wait, rather than adding it because it's expected."
   - q: "What AI features deliver the fastest ROI?"
-    a: "Usually the ones that remove manual work your team already does — document search, natural language reporting, and internal assistants tend to pay off faster than a customer-facing chatbot."
+    a: "Usually the ones that remove manual work your team already does. Document search, natural language reporting, and internal assistants tend to pay off faster than a customer-facing chatbot."
   - q: "Can AI work with my existing database, or does it need to be greenfield?"
-    a: "It can work with an existing system. The MCP server work described above was built on top of a live production system, not a new one — the same approach applies to adding AI to what you already have."
+    a: "It can work with an existing system. The MCP server work described above was built on top of a live production system, not a new one; the same approach applies to adding AI to what you already have."
   - q: "Can you add AI later instead of building it into the MVP now?"
     a: "Yes. If AI doesn't clearly belong in v1, I'll say so and design the architecture so it can be added cleanly later, rather than forcing it in early."
   - q: "How do you keep AI features secure?"
-    a: "AI agents authenticate through the same OAuth 2.1/PKCE flow as real users, via OpenIddict — not a shared service account with broad access. Access follows the same role-based permissions as the rest of your system."
+    a: "AI agents authenticate through the same OAuth 2.1/PKCE flow as real users, via OpenIddict, rather than a shared service account with broad access. Access follows the same role-based permissions as the rest of your system."
 cta_title: "Not sure if AI belongs in your MVP yet?"
-cta_lead: "Tell me what you're building — I'll tell you honestly whether AI creates real value here, and how to build it in properly if it does."
+cta_lead: "Tell me what you're building. If AI creates real value there, I'll show you how to build it in properly; if it doesn't yet, I'll say that too."
 ---
