@@ -138,50 +138,149 @@
           <span class="cx-kicker">Process</span>
           <h2>How We Work Together</h2>
         </div>
-        <div class="cx-steps mb-4">
-          {{ $steps := slice (slice "01" "Discovery" "Understand your idea, users, and constraints") (slice "02" "Design" "Architecture, tech choices, and a clear roadmap") (slice "03" "Build" "Iterative delivery with regular updates") (slice "04" "Launch" "Handover with docs, deployment, and support") }}
-          {{ range $steps }}
-          <div class="cx-step">
-            <span class="cx-step-num">{{ index . 0 }}</span>
-            <div class="cx-step-title">{{ index . 1 }}</div>
-            <div class="cx-step-desc">{{ index . 2 }}</div>
+        {{/* TEMP: stacked-card prototype. Cards pin on scroll; each card
+             behind peeks at the top showing its number + title. */}}
+        <style>
+          /* NTouch-style stack: every card is sticky at the SAME top; the
+             cascade comes from transparent padding-top per card, so a later
+             card can never ride above the earlier titles. The grid gap paces
+             the arrivals; padding-bottom lets the finished stack rest. */
+          .cx-stack {
+            position: relative;
+          }
+          .cx-stack-cards {
+            display: grid;
+            grid-template-columns: 1fr;
+            /* equal fixed rows: every sticky slot is the same height, so all
+               pinned bottoms align and the pile releases as one (the NTouch
+               trick: grid-template-rows: repeat(n, 40vw)) */
+            grid-auto-rows: 33rem;
+            gap: 12rem;
+          }
+          .cx-stack-slot {
+            position: sticky;
+            top: var(--stack-top, 78px);
+            height: 33rem;
+            padding-top: calc(var(--stack-i, 0) * 3.4rem);
+          }
+          .cx-stack-card {
+            min-height: 17rem;
+            display: flex;
+            flex-direction: column;
+            background: var(--cx-card-bg);
+            border: 1px solid var(--cx-card-border);
+            border-radius: 1rem;
+            box-shadow: 0 -10px 24px rgba(29, 45, 53, 0.08);
+            overflow: hidden;
+          }
+          [data-dark-mode] .cx-stack-card {
+            box-shadow: 0 -10px 24px rgba(0, 0, 0, 0.45);
+          }
+          .cx-stack-head {
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+            height: 3.4rem;
+            padding: 0 1.5rem;
+            flex-shrink: 0;
+          }
+          .cx-stack-head h3 {
+            font-size: 1.05rem;
+            font-weight: 700;
+            margin: 0;
+            color: var(--cx-accent);
+          }
+          .cx-stack-count {
+            margin-left: auto;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--cx-muted);
+            letter-spacing: 0.05em;
+          }
+          .cx-stack-body {
+            position: relative;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 1.5rem 1.5rem 1.25rem;
+          }
+          .cx-stack-text {
+            max-width: 44rem;
+            color: var(--cx-muted);
+            position: relative;
+            z-index: 1;
+          }
+          .cx-stack-text p {
+            margin-bottom: 0.75rem;
+          }
+          .cx-stack-text p:first-child {
+            color: var(--cx-ink);
+            font-size: 1.02rem;
+          }
+          .cx-stack-ghost {
+            position: absolute;
+            right: 1.25rem;
+            bottom: -1.5rem;
+            font-size: 7rem;
+            font-weight: 800;
+            line-height: 1;
+            color: rgba(var(--cx-accent-rgb), 0.07);
+            pointer-events: none;
+            user-select: none;
+          }
+          @media (max-width: 767.98px) {
+            .cx-stack-cards {
+              grid-auto-rows: 44rem;
+              gap: 10rem;
+            }
+            .cx-stack-slot {
+              --stack-top: 70px;
+              height: 44rem;
+            }
+          }
+        </style>
+        {{ $steps := slice
+          (dict
+            "num" "01" "title" "Discovery"
+            "body" "<p>Understand your idea, users, and constraints.</p><p>I map the core workflows, the data behind them, and the limits that will shape the architecture, so we agree on what the MVP must prove before any code is written. The user stories we capture here become the contract AI later checks every API against.</p>"
+            "tags" (slice "User stories" "Core workflows" "Constraints" "MVP scope"))
+          (dict
+            "num" "02" "title" "MCP-First Development"
+            "body" "<p>Every API's first client is the MCP server, not the UI.</p><p>AI checks the API against the user story through that same interface and writes the tests from what it finds, catching design gaps a UI would quietly work around. <a href=\"/blog/mcp-first-development-letting-ai-write-run-and-maintain-your-tests/\">Read how it works &rarr;</a></p>"
+            "tags" (slice "MCP server first" "AI-written tests" "Design gaps caught early"))
+          (dict
+            "num" "03" "title" "UI Generation"
+            "body" "<p>Screens are scaffolded straight from the requirement and the API contract.</p><p>Design intent and data shape stay in sync from the first commit, and every screen is still reviewed and refined by hand before it ships.</p>"
+            "tags" (slice "From API contract" "In sync by design" "Hand-reviewed"))
+          (dict
+            "num" "04" "title" "Backend"
+            "body" "<p>The moment an API is built, it's exposed through MCP so AI can evaluate it against the user story right away.</p><p>Not after a manual QA pass catches the gap. Short cycles, working software you can click every week, with every change human-reviewed and tested.</p>"
+            "tags" (slice "Exposed via MCP" "Weekly builds" "Human-reviewed"))
+          (dict
+            "num" "05" "title" "To Production"
+            "body" "<p>Your product goes live with deployment set up, documentation written, and a handover your team can work with.</p><p>AI-assisted log analysis diagnoses and fixes bugs right after a client hits an issue, not days later once a support ticket works its way through the queue.</p>"
+            "tags" (slice "Deployment" "Docs & handover" "AI log analysis"))
+        }}
+        <div class="cx-stack">
+          <div class="cx-stack-cards">
+          {{ $total := len $steps }}
+          {{ range $i, $s := $steps }}
+          <div class="cx-stack-slot" style="--stack-i: {{ $i }};">
+          <div class="cx-stack-card">
+            <div class="cx-stack-head">
+              <h3>{{ $s.title }}</h3>
+              <span class="cx-stack-count">{{ add $i 1 }} / {{ $total }}</span>
+            </div>
+            <div class="cx-stack-body">
+              <div class="cx-stack-text">{{ $s.body | safeHTML }}</div>
+              <span class="cx-stack-ghost" aria-hidden="true">{{ $s.num }}</span>
+            </div>
+          </div>
           </div>
           {{ end }}
-        </div>
-
-        <!-- AI in the workflow -->
-        <div class="cx-flow mt-5">
-          <span class="cx-kicker">AI built into the process</span>
-          <div class="cx-flow-row">
-
-            <div class="cx-flow-card">
-              <div class="cx-flow-title cx-accent">MCP-first development</div>
-              <p class="cx-flow-desc">Every API's first client is the MCP server, not the UI. AI checks it against the user story through that same interface and writes the tests from what it finds. <a href="/blog/mcp-first-development-letting-ai-write-run-and-maintain-your-tests/">Read how it works →</a></p>
-            </div>
-
-            <div class="cx-flow-arrow" aria-hidden="true">→</div>
-
-            <div class="cx-flow-card">
-              <div class="cx-flow-title">UI generation</div>
-              <p class="cx-flow-desc">AI scaffolds screens and components straight from the client's requirement and the API contract, so design intent and data shape stay in sync from the first commit.</p>
-            </div>
-
-            <div class="cx-flow-arrow" aria-hidden="true">→</div>
-
-            <div class="cx-flow-card">
-              <div class="cx-flow-title">Backend</div>
-              <p class="cx-flow-desc">The moment an API is built, it's exposed through MCP so AI can evaluate it against the user story right away, not after a manual QA pass catches the gap.</p>
-            </div>
-
-            <div class="cx-flow-arrow" aria-hidden="true">→</div>
-
-            <div class="cx-flow-card">
-              <div class="cx-flow-title">To production</div>
-              <p class="cx-flow-desc">AI-assisted log analysis diagnoses and fixes bugs right after a client hits an issue, not days later once a support ticket works its way through the queue.</p>
-            </div>
-
           </div>
         </div>
+
       </div>
     </div>
   </section>
