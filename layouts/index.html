@@ -471,6 +471,48 @@
 </section>
 
 <!-- Portfolio Card -->
+<style>
+.pf-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+@media (min-width: 576px) {
+  .pf-card-body { flex-direction: row; align-items: center; }
+}
+.pf-photo-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.pf-photo {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+@media (min-width: 576px) {
+  .pf-photo { width: 140px; height: 200px; border-radius: 0.5rem; }
+}
+.pf-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1rem;
+}
+.pf-meta li {
+  font-size: 0.78rem;
+  padding: 0.25rem 0.65rem;
+  border-radius: 2rem;
+  background: rgba(var(--bs-primary-rgb, 93, 47, 134), 0.06);
+  color: var(--bs-secondary-color, #6c757d);
+  white-space: nowrap;
+}
+[data-dark-mode] .pf-meta li { background: rgba(142, 214, 251, 0.08); }
+</style>
 <section class="section section-md">
   <div class="container-xxl">
     <div class="row justify-content-center">
@@ -480,18 +522,21 @@
         </div>
         <div class="card card-bar shadow-sm">
           <div class="card-body p-4">
-            <div class="row align-items-center g-4 text-center text-sm-start">
-              <div class="col-12 col-sm-auto d-flex justify-content-center justify-content-sm-start">
+            <div class="pf-card-body">
+              <div class="pf-photo-row">
                 <img
                   src="https://portfolio.eunus.dev/images/profile.png"
                   alt="Eunusur Rahaman"
-                  class="rounded shadow-sm"
-                  style="width: 140px; height: 200px; object-fit: cover"
+                  class="pf-photo shadow-sm"
                 />
+                <div class="d-sm-none">
+                  <h2 class="h5 mb-0">Eunusur Rahaman</h2>
+                  <p class="text-muted small mb-0">AI-Powered Solutions · ABP/.NET · SaaS</p>
+                </div>
               </div>
-              <div class="col-12 col-sm">
-                <h2 class="h4 mb-1">Eunusur Rahaman</h2>
-                <p class="text-muted mb-2 small">
+              <div>
+                <h2 class="h4 mb-1 d-none d-sm-block">Eunusur Rahaman</h2>
+                <p class="text-muted mb-2 small d-none d-sm-block">
                   Software Engineer — AI-Powered Solutions · ABP/.NET · SaaS · Modular
                   Architecture
                 </p>
@@ -500,16 +545,16 @@
                   Angular, Blazor, and MAUI — focusing on modular architecture,
                   long-term maintainability, and scalable design.
                 </p>
-                <ul class="list-inline text-muted small mb-3">
-                  <li class="list-inline-item">3+ years experience</li>
-                  <li class="list-inline-item">&middot;</li>
-                  <li class="list-inline-item">12+ products · 9 SaaS</li>
-                  <li class="list-inline-item">&middot;</li>
-                  <li class="list-inline-item">
-                    Angular · Blazor · .NET · MAUI
-                  </li>
+                <ul class="pf-meta">
+                  <li>3+ years experience</li>
+                  <li>12+ products</li>
+                  <li>9 SaaS</li>
+                  <li>Angular</li>
+                  <li>Blazor</li>
+                  <li>.NET</li>
+                  <li>MAUI</li>
                 </ul>
-                <div class="d-flex gap-2 flex-wrap justify-content-center justify-content-sm-start">
+                <div class="d-flex gap-2 flex-wrap">
                   <a
                     href="https://portfolio.eunus.dev"
                     target="_blank"
