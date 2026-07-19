@@ -24,8 +24,6 @@ hire_for:
     url: "/consulting/"
   - name: "AI integration"
     url: "/consulting/"
-  - name: "Subscription system"
-    url: "/consulting/"
 places_title: "Where My Work Has Shipped"
 places:
   - place: "Saudi Arabia"
