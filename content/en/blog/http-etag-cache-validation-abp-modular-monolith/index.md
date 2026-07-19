@@ -6,7 +6,8 @@ excerpt: "Every caching tutorial ends up polluting the application layer with Ge
 date: 2026-06-28T00:00:00+06:00
 lastmod: 2026-07-02T00:00:00+06:00
 weight: 50
-images: []
+images: ["version-cache-validation-cover.png"]
+fillImage: "1270x715 Center"
 categories: ["Development", ".NET", "ABP Framework", "Architecture"]
 tags: ["Caching", "ETag", "HTTP Caching", "ABP Framework", "Clean Architecture", "DDD", "Decorator Pattern", "Scrutor", "Performance"]
 contributors: []

@@ -6,7 +6,8 @@ excerpt: "I used to build the API, wire up the UI, and call it done if the scree
 date: 2026-07-02T00:00:00+06:00
 lastmod: 2026-07-02T00:00:00+06:00
 draft: false
-images: []
+images: ["mcp-first-development-cover.png"]
+fillImage: "1270x715 Center"
 categories: ["Development", "AI", "MCP", "Testing"]
 tags: ["MCP", "Model Context Protocol", "TDD", "Testing", "AI", "Claude", "Software Architecture", "Regression Testing", "Debugging"]
 contributors: []

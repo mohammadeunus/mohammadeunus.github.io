@@ -7,7 +7,8 @@ date: 2025-07-14T00:00:00+06:00
 lastmod: 2026-06-18T00:00:00+06:00
 draft: false
 weight: 50
-images: []
+images: ["saas-subscription-cover.png"]
+fillImage: "1270x715 Center"
 categories: ["Development", "SaaS", "ABP Framework"]
 tags: ["ABP Framework", "SaaS", "Subscription System", "Feature Management", "Multi-Tenancy", "Payments", "Prorated Billing", "Custom Pricing"]
 contributors: []

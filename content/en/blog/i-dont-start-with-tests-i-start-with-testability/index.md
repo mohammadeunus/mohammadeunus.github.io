@@ -5,7 +5,8 @@ excerpt: "My goal when I tell developers to think about testing isn't to increas
 date: 2025-12-25T00:00:00+06:00
 lastmod: 2025-12-25T00:00:00+06:00
 draft: false
-images: []
+images: ["tests-first-cover.png"]
+fillImage: "1270x715 Center"
 categories: ["Development", "Clean Code", "Software Design"]
 tags: ["Testing", "Testability", "Clean Code", "Software Design", "Dependency Injection", "SOLID", "Refactoring", "Best Practices", ".NET"]
 contributors: []
