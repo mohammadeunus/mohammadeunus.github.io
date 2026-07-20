@@ -222,6 +222,9 @@
 
 {{/* ── Floating pill nav (appears on scroll) ─────────────── */}}
 <nav id="pillNav" class="pill-nav" aria-hidden="true" aria-label="Floating navigation">
+  <a class="pill-nav-avatar-link" href="{{ "/" | relLangURL }}">
+    <img class="pill-nav-avatar" src="https://portfolio.eunus.dev/images/profile.png" alt="" loading="lazy">
+  </a>
   <a class="pill-nav-brand" href="{{ "/" | relLangURL }}">{{ .Site.Params.Title }}</a>
   <div class="pill-nav-links">
     {{ range .Site.Menus.main -}}

@@ -76,7 +76,7 @@
     align-self: flex-end;
   }
 </style>
-<div class="container-xxl py-5">
+<div class="py-5">
 
   {{ $items := where .Pages "Params.image" "!=" nil }}
   {{ $items = $items.ByParam "date" }}
