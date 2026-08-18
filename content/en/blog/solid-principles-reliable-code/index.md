@@ -8,7 +8,7 @@ draft: false
 images: []
 categories: ["Development", "Best Practices", "SOLID"]
 tags: ["ABP Framework","SOLID", "Clean Code", "OOP", "Best Practices"]
-contributors: ["Your Name"]
+contributors: []
 pinned: false
 homepage: false
 ---
